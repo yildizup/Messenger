@@ -16,7 +16,7 @@ namespace Server
         /// <summary>
         /// InterNetwork = IPv4, Stream = Stream-oriented socket where both the sender and receiver can lump data in any size during sending or receiving of data
         /// </summary>
-        private static Socket _serversocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static Socket _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static List<Socket> _clientSockets = new List<Socket>();
         private static byte[] _buffer = new byte[1024];
 
@@ -30,18 +30,18 @@ namespace Server
         private static void SetupServer()
         {
             Console.WriteLine("Setting up server...");
-            _serversocket.Bind(new IPEndPoint(IPAddress.Any, 100));
-            _serversocket.Listen(1);
-            _serversocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
+            _serverSocket.Bind(new IPEndPoint(IPAddress.Any, 100));
+            _serverSocket.Listen(1);
+            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
         }
 
         private static void AcceptCallback(IAsyncResult AR)
         {
-            Socket socket = _serversocket.EndAccept(AR);
+            Socket socket = _serverSocket.EndAccept(AR);
             _clientSockets.Add(socket);
             Console.WriteLine("Client ist verbunden");
             socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
-            _serversocket.BeginAccept(new AsyncCallback(AcceptCallback), null); //Um weitere Verbindung aufbauen zu können
+            _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null); //Um weitere Verbindung aufbauen zu können
 
         }
 
