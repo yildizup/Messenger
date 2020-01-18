@@ -59,7 +59,7 @@ namespace Server
 
             if (text.ToLower() != "get time")
             {
-                response = "ungültige Anfrage";
+                response = "ungueltige Anfrage";
             }
             else
             {

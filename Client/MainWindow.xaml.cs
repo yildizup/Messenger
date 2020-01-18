@@ -24,12 +24,38 @@ namespace Client
     public partial class MainWindow : Window
     {
         private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private Thread _thread = null;
+        private Thread _threadTryToConnect = null;
+        private Thread _threadSendMessage = null;
+
         public MainWindow()
         {
             InitializeComponent();
-            _thread = new Thread(LoopConnect);
-            _thread.Start();
+            _threadTryToConnect = new Thread(LoopConnect);
+            _threadTryToConnect.Start();
+            //_threadSendMessage = new Thread(SendLoop);
+            //_threadSendMessage.Start();
+        }
+
+        private void SendLoop()
+        {
+                string req = "";
+                this.Dispatcher.Invoke(() =>
+                {
+                     req = txtChatplace.Text;
+                });
+                byte[] buffer = Encoding.ASCII.GetBytes(req);
+                _clientSocket.Send(buffer);
+
+                byte[] receivedBuffer = new byte[1024];
+                int rec = _clientSocket.Receive(receivedBuffer);
+                byte[] data = new byte[rec];
+                Array.Copy(receivedBuffer, data, rec);
+                this.Dispatcher.Invoke(() =>
+                {
+                    txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
+                });
+
+
         }
 
         private void LoopConnect()
@@ -42,6 +68,11 @@ namespace Client
                 {
                     attempts++;
                     _clientSocket.Connect(IPAddress.Loopback, 100);
+
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        txtStatus.Text = "Verbindung wurde erfolgreich hergestellt";
+                    });
                 }
                 catch (SocketException)
                 {
@@ -52,12 +83,13 @@ namespace Client
                         txtStatus.Text = "versuche Verbindung herzustellen: " + attempts.ToString();
                     });
                 }
+
             }
         }
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
-
+            SendLoop();
         }
     }
 }
