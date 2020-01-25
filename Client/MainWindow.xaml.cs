@@ -45,10 +45,7 @@ namespace Client
             int rec = _clientSocket.Receive(receivedBuffer);
             byte[] data = new byte[rec];
             Array.Copy(receivedBuffer, data, rec);
-            this.Dispatcher.Invoke(() =>
-            {
-                txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
-            });
+            txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
 
 
         }
