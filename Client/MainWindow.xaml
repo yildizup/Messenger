@@ -1,0 +1,18 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid  Name="pnlMainGrid"  Background="White" >
+        <TextBox Name="txtChatplace" Margin="180,120,224,237">
+            
+        </TextBox>
+        <TextBox Name="txtStatus" Margin="180,248,276,52"></TextBox>
+        <Button Name="btnSend" Content="Senden" HorizontalAlignment="Left" Margin="180,206,0,0" VerticalAlignment="Top" Width="76" Click="btnSend_Click"/>
+
+
+    </Grid>
+</Window>
