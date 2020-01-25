@@ -23,37 +23,32 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        private Thread _threadTryToConnect = null;
-        private Thread _threadSendMessage = null;
+        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); // 
 
         public MainWindow()
         {
             InitializeComponent();
-            _threadTryToConnect = new Thread(LoopConnect);
-            _threadTryToConnect.Start();
-            //_threadSendMessage = new Thread(SendLoop);
-            //_threadSendMessage.Start();
+
+            LoopConnect();
         }
 
         private void SendLoop()
         {
-                string req = "";
-                this.Dispatcher.Invoke(() =>
-                {
-                     req = txtChatplace.Text;
-                });
-                byte[] buffer = Encoding.ASCII.GetBytes(req);
-                _clientSocket.Send(buffer);
+            string req = "";
 
-                byte[] receivedBuffer = new byte[1024];
-                int rec = _clientSocket.Receive(receivedBuffer);
-                byte[] data = new byte[rec];
-                Array.Copy(receivedBuffer, data, rec);
-                this.Dispatcher.Invoke(() =>
-                {
-                    txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
-                });
+            req = "Hallo das ist meine Nachricht";
+
+            byte[] buffer = Encoding.ASCII.GetBytes(req);
+            _clientSocket.Send(buffer);
+
+            byte[] receivedBuffer = new byte[1024];
+            int rec = _clientSocket.Receive(receivedBuffer);
+            byte[] data = new byte[rec];
+            Array.Copy(receivedBuffer, data, rec);
+            this.Dispatcher.Invoke(() =>
+            {
+                txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
+            });
 
 
         }
@@ -67,21 +62,14 @@ namespace Client
                 try
                 {
                     attempts++;
-                    _clientSocket.Connect(IPAddress.Loopback, 100);
+                    _clientSocket.Connect(IPAddress.Loopback, 100); //Loopback ist die lokale IP-Adresse: 127.0.0.1
 
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        txtStatus.Text = "Verbindung wurde erfolgreich hergestellt";
-                    });
+                    txtStatus.Text = "Verbindung wurde erfolgreich hergestellt";
+                    SendLoop();
                 }
                 catch (SocketException)
                 {
 
-                    // TODO: Recherchieren wieso ein Thread nicht auf andere Threads zugreifen kann.
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        txtStatus.Text = "versuche Verbindung herzustellen: " + attempts.ToString();
-                    });
                 }
 
             }
@@ -89,7 +77,7 @@ namespace Client
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            SendLoop();
+
         }
     }
 }

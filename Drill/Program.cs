@@ -32,7 +32,7 @@ namespace Drill
                 Thread.Sleep(1000);
                 /* Interessant:
                  * Wenn keine Verzögerung implementiert wird, kann man sehr schön sehen
-                 * wie die Ausgabe sich beim jeden Neustart ändert. Dies liegt daran, dass
+                 * wie die Ausgabe sich bei jedem Neustart ändert. Dies liegt daran, dass
                  * immer anders entschieden wird welcher Thread ausgeführt werden soll.
                  * Doch entscheidet das Betriebssystem oder der Prozessor ?
                  */

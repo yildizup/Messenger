@@ -42,7 +42,6 @@ namespace Server
             Console.WriteLine("Client ist verbunden");
             socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
             _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null); //Um weitere Verbindung aufbauen zu können
-
         }
 
         private static void ReceiveCallback(IAsyncResult AR)
