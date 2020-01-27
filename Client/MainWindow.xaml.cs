@@ -24,56 +24,19 @@ namespace Client
     public partial class MainWindow : Window
     {
         private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); // 
+        CClient cClient;
 
         public MainWindow()
         {
             InitializeComponent();
+            cClient = new CClient();
 
-            LoopConnect();
-        }
-
-        private void SendLoop()
-        {
-            string req = "";
-
-            req = "Hallo das ist meine Nachricht";
-
-            byte[] buffer = Encoding.ASCII.GetBytes(req);
-            _clientSocket.Send(buffer);
-
-            byte[] receivedBuffer = new byte[1024];
-            int rec = _clientSocket.Receive(receivedBuffer);
-            byte[] data = new byte[rec];
-            Array.Copy(receivedBuffer, data, rec);
-            txtChatplace.Text = "Empfangen:" + Encoding.ASCII.GetString(data);
-
-
-        }
-
-        private void LoopConnect()
-        {
-            int attempts = 0;
-
-            while (!_clientSocket.Connected) //solange der Client nicht verbunden ist
-            {
-                try
-                {
-                    attempts++;
-                    _clientSocket.Connect(IPAddress.Loopback, 100); //Loopback ist die lokale IP-Adresse: 127.0.0.1
-
-                    txtStatus.Text = "Verbindung wurde erfolgreich hergestellt";
-                    SendLoop();
-                }
-                catch (SocketException)
-                {
-
-                }
-
-            }
+            cClient.SetupConn();
         }
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
+            cClient.SendMessage("Hallo");
 
         }
     }
