@@ -21,7 +21,8 @@ namespace Server
             //Für jeden Client soll ein neuer Thread erstellen werden. TODO:  observer design pattern anschauen.
             client = c;
 
-            SetupConn();
+            (new Thread(new ThreadStart(SetupConn))).Start();
+
         }
 
 
