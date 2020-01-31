@@ -11,14 +11,6 @@ namespace Client
 {
     class CClient
     {
-
-
-        #region Packettypen
-        /* Hier kommen die Packettypen rein. Jeder Byte wird eine bestimmte Bedeutung haben. Zum Beispiel wird ein Packet "send" heißen. So kann der Server die Packete zuordnen.
-         */
-
-        #endregion
-
         Thread tcpThread;
 
         public string Server { get { return "localhost"; } }
@@ -28,6 +20,8 @@ namespace Client
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
         public BinaryReader br;
         public BinaryWriter bw;
+        string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
+        string password;
 
         public CClient()
         {
@@ -36,11 +30,10 @@ namespace Client
         public void SetupConn()  // Verbindung aufbauen
         {
             client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            netStream = client.GetStream(); 
+            netStream = client.GetStream();
 
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
-
         }
 
         public void CloseConn() // Verbindung beenden
@@ -51,6 +44,23 @@ namespace Client
         void Receiver()  // Empfange alle Einkommenden Packete.
         {
 
+        }
+
+        /// <summary>
+        /// Zum registrieren
+        /// </summary>
+        /// <param name="email">Email Adresse des Users</param>
+        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
+        public void Register(string mail, string pw)
+        {
+            email = mail;
+            password = pw;
+
+
+            bw.Write(ComHeader.hRegister);
+            bw.Write(email);
+            bw.Write(password);
+            bw.Flush();
         }
 
 

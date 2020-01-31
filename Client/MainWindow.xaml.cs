@@ -36,7 +36,7 @@ namespace Client
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage("Hallo");
+            cClient.Register("Test@gmail.com", "Thatsmypw");
 
         }
     }

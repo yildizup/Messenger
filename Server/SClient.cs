@@ -28,13 +28,36 @@ namespace Server
 
         public void SetupConn()
         {
-                Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
-                netStream = client.GetStream();
+            Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
+            netStream = client.GetStream();
 
-                br = new BinaryReader(netStream);
-                bw = new BinaryWriter(netStream);
+            br = new BinaryReader(netStream);
+            bw = new BinaryWriter(netStream);
 
-                Receiver();
+            byte header = br.ReadByte(); //damit der Server weiß, um was für eine Art von Packet es sich handelt, liest er zuerst den "Header".
+
+            switch (header)
+            {
+                case ComHeader.hRegister:
+                    Register();
+                    break;
+            }
+
+
+            Receiver();
+        }
+
+
+        /// <summary>
+        /// Frage: Darf diese Klasse den dbController kennen ? Welche Lösung ist bewährter ?
+        /// </summary>
+        void Register()
+        {
+            //Nach dem "Header" werden diese Werte übergeben
+            string email = br.ReadString();
+            string password = br.ReadString();
+            dbController.CreateUser(email, password);
+
         }
 
 

@@ -9,7 +9,6 @@ using System.Net;
 namespace Server
 {
 
-    // Für private Variablen wird ein "_" verwendet als Prefix
     class Program
     {
 

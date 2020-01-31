@@ -20,32 +20,20 @@ namespace Server
             con = new MySqlConnection(connectionString);
         }
 
-        // Um eine Verbindung mit der Datenbank herzustellen.
-        static internal void ConnectToLocalDb()
-        {
-            using (con)
-            {
-                try
-                {
-                    con.Open();
 
-                    //hierhin kommen weitere Befehle.
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    con.Close();
-                }
-            }
-        }
-
-        //zum schliessen der Verbindung
-        static internal void DB_Disconnect()
+        static internal void CreateUser(string email, string password)
         {
+            #region Befehl
+            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password) values(@email,@password)");
+            insertCommand.Parameters.AddWithValue("@email", email);
+            insertCommand.Parameters.AddWithValue("@password", password);
+            insertCommand.Connection = con;
+            #endregion
+
+            con.Open();
+            insertCommand.ExecuteNonQuery();
             con.Close();
+
         }
 
 
