@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="500">
     <Grid  Name="pnlMainGrid"  Background="White" >
-        <TextBox Name="txtChatplace" Margin="180,120,224,237">
-            
-        </TextBox>
-        <TextBox Name="txtStatus" Margin="180,248,276,52"></TextBox>
-        <Button Name="btnSend" Content="Senden" HorizontalAlignment="Left" Margin="180,206,0,0" VerticalAlignment="Top" Width="76" Click="btnSend_Click"/>
-
-
+        <Label Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        <TextBox HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="186,194,148,0"/>
+        <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="186,92,224,0" Width="82"/>
+        <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="186,163,224,0" Width="82"/>
+        <Button Content="LogIn" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="205,239,201,0" Height="23"/>
+        <Button Content="Registrieren" HorizontalAlignment="Left" Margin="163,368,0,0" VerticalAlignment="Top" Width="181" Background="Transparent" Foreground="Blue"/>
+        <TextBox HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="186,123,148,0"/>
     </Grid>
 </Window>

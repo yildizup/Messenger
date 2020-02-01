@@ -23,20 +23,15 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); // 
-        CClient cClient;
+        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); 
 
         public MainWindow()
         {
             InitializeComponent();
-            cClient = new CClient();
-
-            cClient.SetupConn();
         }
 
         private void btnSend_Click(object sender, RoutedEventArgs e)
         {
-            cClient.Register("Test@gmail.com", "Thatsmypw");
 
         }
     }
