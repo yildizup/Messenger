@@ -20,7 +20,6 @@ namespace Server
             con = new MySqlConnection(connectionString);
         }
 
-
         static internal void CreateUser(string email, string password)
         {
             #region Befehl
@@ -33,6 +32,28 @@ namespace Server
             con.Open();
             insertCommand.ExecuteNonQuery();
             con.Close();
+
+        }
+
+        static internal bool DoesUserExist(string email)
+        {
+
+            #region Abfrage
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "Select * from user where email=@email";
+            cmd.Parameters.AddWithValue("@email", email);
+            cmd.Connection = con;
+            #endregion
+
+            con.Open();
+
+            MySqlDataReader check = cmd.ExecuteReader();
+            bool valueOfRead = check.Read();
+            check.Close();
+
+            return valueOfRead;
+
 
         }
 

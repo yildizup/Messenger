@@ -7,7 +7,7 @@ public static class ComHeader
      * Die Header werden verwendet, damit der Server die Pakete zuordnen kann */
 
     public const byte hRegister = 0;     // Registrieren
-    public const string HALLO = "hallo"; //test
+    public const byte hLogin = 1; //Login
 
 
 }

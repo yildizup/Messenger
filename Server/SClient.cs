@@ -16,12 +16,14 @@ namespace Server
         public BinaryReader br;
         public BinaryWriter bw;
 
-        public SClient(TcpClient c)
+
+        public SClient(/*TcpClient c*/)
         {
             //Für jeden Client soll ein neuer Thread erstellen werden. TODO:  observer design pattern anschauen.
-            client = c;
 
-            (new Thread(new ThreadStart(SetupConn))).Start();
+
+            //client = c;
+            //(new Thread(new ThreadStart(SetupConn))).Start();
 
         }
 
@@ -34,30 +36,32 @@ namespace Server
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            byte header = br.ReadByte(); //damit der Server weiß, um was für eine Art von Packet es sich handelt, liest er zuerst den "Header".
+            byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
+            string email = br.ReadString();
+            string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
 
-            switch (header)
+
+            // Wenn der Client sich registrieren möchte
+            if (clientMode == ComHeader.hRegister)
             {
-                case ComHeader.hRegister:
-                    Register();
-                    break;
+                Receiver();
             }
-
-
-            Receiver();
         }
 
 
-        /// <summary>
-        /// Frage: Darf diese Klasse den dbController kennen ? Welche Lösung ist bewährter ?
-        /// </summary>
-        void Register()
+        public void CreateUser(string email, string password)
         {
-            //Nach dem "Header" werden diese Werte übergeben
-            string email = br.ReadString();
-            string password = br.ReadString();
-            dbController.CreateUser(email, password);
+            // prüfen, ob die email Adresse bereits existiert
+            if (!dbController.DoesUserExist(email))
+            {
+                // Frage: Darf diese Klasse den dbController kennen ? Welche Lösung ist bewährter ?
+                dbController.CreateUser(email, password);
 
+            }
+            else
+            {
+                //TODO: Rückmeldung Benutzer existiert bereits
+            }
         }
 
 
@@ -68,14 +72,20 @@ namespace Server
         {
             try
             {
-                while (client.Connected) //solange der Client verbunden ist
+
+                while (client.Client.Connected) //solange der Client verbunden ist
                 {
                     string msg = br.ReadString();
                     Console.WriteLine("Nachricht empfangen: {0}", msg);
                 }
             }
 
-            catch (IOException) { }
+            catch (IOException e)
+            {
+                //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
+                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+
+            }
 
         }
 
@@ -84,3 +94,4 @@ namespace Server
         }
     }
 }
+

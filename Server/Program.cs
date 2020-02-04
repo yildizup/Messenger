@@ -28,12 +28,12 @@ namespace Server
         {
             Console.Title = "Telefonico Server";
 
-            server = new TcpListener(ip, port); //Server erstellen und starten
-            Console.WriteLine("----- Telefonico Server -----");
-            Console.WriteLine("[{0}] Server wird gestartet...", DateTime.Now);
+            //server = new TcpListener(ip, port); //Server erstellen und starten
+            //Console.WriteLine("----- Telefonico Server -----");
+            //Console.WriteLine("[{0}] Server wird gestartet...", DateTime.Now);
 
-            server.Start();
-            Listen();
+            //server.Start();
+            //Listen();
         }
 
         void Listen()  // Nach Verbindung ausschau halten.
@@ -41,7 +41,7 @@ namespace Server
             while (running)
             {
                 TcpClient tcpClient = server.AcceptTcpClient(); //wartet auf Verbindungen. Bei erfolgreicher Verbindung wird ein Objekt 'TcpClient' zurückgegeben.
-                SClient client = new SClient(tcpClient); //Behandel den Client in einem neuen Thread.
+                SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
             }
         }
 
@@ -49,6 +49,12 @@ namespace Server
         static void Main(string[] args)
         {
             Program p = new Program();
+            SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
+
+            //client.CreateUser("test@gmail.com", "abcdef");
+
+
+
             Console.ReadLine();
 
         }
