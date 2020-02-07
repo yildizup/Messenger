@@ -16,6 +16,9 @@ namespace Server
         public BinaryReader br;
         public BinaryWriter bw;
 
+        IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
+
+
 
         public SClient(/*TcpClient c*/)
         {
@@ -51,18 +54,18 @@ namespace Server
 
         public void CreateUser(string email, string password)
         {
-            // prüfen, ob die email Adresse bereits existiert
-            if (!dbController.DoesUserExist(email))
-            {
-                // Frage: Darf diese Klasse den dbController kennen ? Welche Lösung ist bewährter ?
-                dbController.CreateUser(email, password);
-
-            }
-            else
-            {
-                //TODO: Rückmeldung Benutzer existiert bereits
-            }
+            dbController.CreateUserAndCheck(email, password);
         }
+
+
+
+        public void Login(string email, string password)
+        {
+
+
+        }
+
+
 
 
         /// <summary>

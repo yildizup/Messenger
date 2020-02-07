@@ -54,6 +54,11 @@ namespace Server
             //client.CreateUser("test@gmail.com", "abcdef");
 
 
+            //Console.WriteLine(dbController.DoesUserExist("@gmail.com").ToString());
+            dbController.CheckPassword("test@gmail.com", "abcdef");
+
+
+
 
             Console.ReadLine();
 
