@@ -118,6 +118,8 @@ namespace Server
             DataTable dt = new DataTable();
             dt.Load(dr);
 
+            con.Close(); //TODO: Schauen, ob ein Fehler auftritt
+
             // eingegebenes Passwort mit der Datenbank vergleichen
             if (password == (string)dt.Rows[0][0])
             {
@@ -166,6 +168,30 @@ namespace Server
             }
 
             #endregion
+        }
+
+
+        static internal DataTable LoadUsers()
+        {
+
+            #region Abfrage
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "Select * from user";
+            cmd.Connection = con;
+            #endregion
+
+            con.Open();
+
+            MySqlDataReader dr = cmd.ExecuteReader();
+
+            // In ein 'DataTable' Objekt schreiben.
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+
+            con.Close();
+
+            return dt;
         }
 
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class

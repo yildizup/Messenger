@@ -34,7 +34,8 @@ namespace Client
         void testcode()
         {
             EstablishConnection();
-            Login("test@gmail.com", "abcdef");
+
+
 
         }
 
@@ -68,11 +69,6 @@ namespace Client
             bw.Flush();
         }
 
-        public void SendMessage(string msg)
-        {
-            bw.Write(msg);
-            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
-        }
 
 
         /// <summary>
@@ -100,10 +96,32 @@ namespace Client
 
         }
 
+        #region Nachrichten senden und empfangen
         void Receiver()  // Empfange alle Einkommenden Packete.
         {
 
+            byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
+
+            switch (type)
+            {
+                case ComHeader.hReceived:
+                    // Eine Nachricht von einem anderen Client
+                    string from = br.ReadString();
+                    string msg = br.ReadString();
+                    break;
+            }
         }
+
+        public void SendMessage(string to,string msg)
+        {
+            bw.Write(ComHeader.hSend);
+            bw.Write(to);
+            bw.Write(msg);
+            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
+        }
+
+        #endregion
+
 
         /// <summary>
         /// Zum registrieren
