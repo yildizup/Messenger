@@ -56,23 +56,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommunicationHeader.cs" />
-    <Compile Include="windowRegister.xaml.cs">
-      <DependentUpon>windowRegister.xaml</DependentUpon>
+    <Compile Include="WndChat.xaml.cs">
+      <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="WndMain.xaml.cs">
+      <DependentUpon>WndMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WndRegistration.xaml.cs">
+      <DependentUpon>WndRegistration.xaml</DependentUpon>
+    </Compile>
+    <Page Include="WndChat.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CClient.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="windowRegister.xaml">
+    <Page Include="WndMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WndRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

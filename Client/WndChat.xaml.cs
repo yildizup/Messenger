@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Client
 {
     /// <summary>
-    /// Interaction logic for windowRegister.xaml
+    /// Interaction logic for WndChat.xaml
     /// </summary>
-    public partial class windowRegister : Window
+    public partial class WndChat : Window
     {
-        public windowRegister()
+        public WndChat()
         {
             InitializeComponent();
         }

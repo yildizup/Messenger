@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -91,6 +87,10 @@ namespace Server
                     Console.WriteLine("Alles richtig");
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
+
+                    bw.Write(ComHeader.hLoginOk);
+                    bw.Flush();
+
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
 

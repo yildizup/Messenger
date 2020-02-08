@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Client
 {
@@ -26,17 +22,7 @@ namespace Client
 
         public CClient()
         {
-                tcpThread = new Thread(testSender);
-                tcpThread.Start();
 
-        }
-
-
-        void testSender()
-        {
-            EstablishConnection();
-            Login("admin@telefonico.de", "1234");
-            SendMessage("test@gmail.com", "wie geht es dir");
         }
 
 
@@ -47,10 +33,37 @@ namespace Client
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            //bw.Write(ComHeader.hRegister);
-            //bw.Flush();
+            bw.Write(ComHeader.hLogin);
+            bw.Write(email);
+            bw.Write(password);
+            bw.Flush();
+
+            byte answer = br.ReadByte(); // Auf eine Antwort warten
+
+            if (answer == ComHeader.hLoginOk)
+            {
+                OnLoginOK(); //Publisher aufrufen
+            }
 
 
+
+        }
+
+        public event EventHandler LoginOK;
+
+        // Events
+        virtual protected void OnLoginOK()
+        {
+            if (LoginOK != null) //TODO: Recherchieren
+                LoginOK(this, EventArgs.Empty);
+        }
+
+        public void connect(string mail, string pw)
+        {
+            email = mail;
+            password = pw;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
         }
 
 

@@ -13,6 +13,7 @@ public static class ComHeader
     public const byte hExists = 4; //Benutzer existiert bereits
     public const byte hReceived = 5; // Nachricht empfangen
     public const byte hSend = 6; // Nachrichten senden
+    public const byte hLoginOk = 7; // Benutzerdaten sind richtig
 
 
 }
