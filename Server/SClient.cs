@@ -39,7 +39,6 @@ namespace Server
                 br = new BinaryReader(netStream);
                 bw = new BinaryWriter(netStream);
 
-
                 byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
                 string email = br.ReadString();
                 string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
@@ -120,24 +119,17 @@ namespace Server
                 while (client.Client.Connected) //solange der Client verbunden ist
                 {
                     byte type = br.ReadByte();
-
                     switch (type)
                     {
                         case ComHeader.hSend:
-                            IndividualUser recipient;
                             string to = br.ReadString();
                             string msg = br.ReadString();
 
+
                             //Sende Nachricht zum Empfänger
 
-
-
                             break;
-
-
                     }
-
-
                 }
             }
 

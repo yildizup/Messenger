@@ -34,9 +34,7 @@ namespace Client
         void testcode()
         {
             EstablishConnection();
-
-
-
+            SendMessage("test@gmail.com", "wie geht es dir");
         }
 
         public void SetupConn()  // Verbindung aufbauen

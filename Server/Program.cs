@@ -17,7 +17,6 @@ namespace Server
         public bool running = true;
         public TcpListener server;  // TCP server
 
-        public List<IndividualUser> individualUsers = new List<IndividualUser>();
 
         public Program()
         {
@@ -51,27 +50,10 @@ namespace Server
 
         void LoadUsers()
         {
+
             Console.WriteLine("[{0}] Benutzer werden geladen...", DateTime.Now);
-            DataTable dt = dbController.LoadUsers();
-
-            foreach (DataRow row in dt.Rows)
-            {
-                IndividualUser user = new IndividualUser();
-
-                user.email = row["email"].ToString();
-                user.password = row["password"].ToString();
-
-                individualUsers.Add(user);
-
-            }
-
-
-
+            UserController.LoadUsers();
             Console.WriteLine("[{0}] Benutzer wurden erfolgreich geladen!", DateTime.Now);
-
-
-
-
 
         }
 
