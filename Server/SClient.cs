@@ -52,8 +52,6 @@ namespace Server
                         break;
                     case ComHeader.hLogin:
                         Login(email, password);
-                        individualUser.Connection = this; //SClient Objekt wird übergeben, bei erfolgreicher Anmeldung
-                        Receiver(); // Dem Client in einer Dauerschleife zuhören
                         break;
                 }
             }
@@ -91,9 +89,9 @@ namespace Server
                 case 0:
                     // Alle Daten richtig
                     Console.WriteLine("Alles richtig");
-
-
-
+                    //Socket des jeweiligen Users speichern
+                    UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
+                    Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
 
                 case 1:
@@ -124,9 +122,10 @@ namespace Server
                         case ComHeader.hSend:
                             string to = br.ReadString();
                             string msg = br.ReadString();
-
-
                             //Sende Nachricht zum Empfänger
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(ComHeader.hReceived);
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(msg);
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Flush();
 
                             break;
                     }

@@ -50,11 +50,9 @@ namespace Server
 
         void LoadUsers()
         {
-
             Console.WriteLine("[{0}] Benutzer werden geladen...", DateTime.Now);
             UserController.LoadUsers();
             Console.WriteLine("[{0}] Benutzer wurden erfolgreich geladen!", DateTime.Now);
-
         }
 
 

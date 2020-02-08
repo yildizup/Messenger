@@ -29,6 +29,17 @@ namespace Server
 
         }
 
+        static internal IndividualUser FindUser(string mail)
+        {
+            IndividualUser user = individualUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            return user;
+        }
+
+        static internal int GetIndexOfUser(string mail)
+        {
+            int index = individualUsers.FindIndex(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            return index;
+        }
 
 
     }

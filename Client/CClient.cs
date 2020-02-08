@@ -26,15 +26,16 @@ namespace Client
 
         public CClient()
         {
-            tcpThread = new Thread(testcode);
+            tcpThread = new Thread(testSender);
             tcpThread.Start();
         }
 
 
-        void testcode()
+        void testSender()
         {
             EstablishConnection();
-            SendMessage("test@gmail.com", "wie geht es dir");
+            Login("admin@telefonico.de","1234");
+            //SendMessage("test@gmail.com", "wie geht es dir");
         }
 
         public void SetupConn()  // Verbindung aufbauen
