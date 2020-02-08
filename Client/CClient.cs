@@ -58,7 +58,7 @@ namespace Client
                 LoginOK(this, EventArgs.Empty);
         }
 
-        public void connect(string mail, string pw)
+        public void Connect(string mail, string pw)
         {
             email = mail;
             password = pw;
@@ -90,17 +90,17 @@ namespace Client
         /// </summary>
         public void EstablishConnection()
         {
-            try
-            {
+            //try
+            //{
                 client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
                 AreWeConnected = true;
                 SetupConn();
-            }
+            //}
 
-            catch (Exception e)
-            {
-                AreWeConnected = false;
-            }
+            //catch (Exception e)
+            //{
+                //AreWeConnected = false;
+            //}
 
 
         }

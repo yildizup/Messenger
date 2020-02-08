@@ -26,9 +26,8 @@ namespace Client
         public WndMain()
         {
             InitializeComponent();
-            CClient cClient = new CClient();
-
-
+            cClient = new CClient();
+            cClient.LoginOK += new EventHandler(cOnLoginOk); //Das Event "subscriben"
 
 
         }
@@ -45,8 +44,26 @@ namespace Client
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
+            cClient.Connect(tbEmail.Text, tbPassword.Text);
+
         }
 
+        void cOnLoginOk(object sender, EventArgs e)
+        {
+            //TODO: Recherchieren "The calling thread must be STA"  
+
+            //TODO: Recherchieren über folgende Aussage
+            /* 
+            If you call a new window UI statement in an existing thread, it throws an error. 
+            Instead of that create a new thread inside the main thread and write the window UI statement in the new child thread.
+            */
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                WndChat wndChat = new WndChat();
+                wndChat.ShowDialog();
+            });
+
+        }
 
 
     }
