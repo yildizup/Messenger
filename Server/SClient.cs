@@ -20,13 +20,11 @@ namespace Server
 
 
 
-        public SClient(/*TcpClient c*/)
+        public SClient(TcpClient c)
         {
-            //Für jeden Client soll ein neuer Thread erstellen werden. TODO:  observer design pattern anschauen.
-
-
-            //client = c;
-            //(new Thread(new ThreadStart(SetupConn))).Start();
+            //Für jeden Client soll ein neuer Thread erstellen werden.TODO:  observer design pattern anschauen.
+            client = c;
+            (new Thread(new ThreadStart(SetupConn))).Start();
 
 
         }

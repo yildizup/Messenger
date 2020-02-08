@@ -38,9 +38,6 @@ namespace Client
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            //windowRegister windowRegister = new windowRegister();
-            //windowRegister.ShowDialog();
-
 
         }
     }

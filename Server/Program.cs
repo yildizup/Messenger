@@ -26,9 +26,6 @@ namespace Server
 
             server.Start();
             Listen();
-
-            SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
-
         }
 
         void Listen()  // Nach Verbindung ausschau halten.
@@ -36,7 +33,7 @@ namespace Server
             while (running)
             {
                 TcpClient tcpClient = server.AcceptTcpClient(); //wartet auf Verbindungen. Bei erfolgreicher Verbindung wird ein Objekt 'TcpClient' zurückgegeben.
-                SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
+                SClient client = new SClient(tcpClient); //Behandel den Client in einem neuen Thread.
             }
         }
 

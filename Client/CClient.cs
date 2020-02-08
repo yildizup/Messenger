@@ -26,12 +26,15 @@ namespace Client
 
         public CClient()
         {
-            tcpThread = new Thread(EstablishConnection);
+            tcpThread = new Thread(testcode);
             tcpThread.Start();
+        }
 
-            /* Interessant: Wenn kein Thread erstellt wird, schließt die Verbindung wieder direkt.
-             * Grund: Nächste Zeile wird ausgeführt und die Methode wird beendet. Deswegen werden paralelle "Prozesse" gebraucht.
-            */
+
+        void testcode()
+        {
+            EstablishConnection();
+            Login("test@gmail.com", "abcdef");
 
         }
 
@@ -46,6 +49,29 @@ namespace Client
             //bw.Flush();
 
 
+        }
+
+
+        public void Register(string mail, string pw)
+        {
+            bw.Write(ComHeader.hRegister);
+            bw.Write(mail);
+            bw.Write(pw);
+            bw.Flush();
+        }
+
+        public void Login(string mail, string pw)
+        {
+            bw.Write(ComHeader.hLogin);
+            bw.Write(mail);
+            bw.Write(pw);
+            bw.Flush();
+        }
+
+        public void SendMessage(string msg)
+        {
+            bw.Write(msg);
+            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
         }
 
 
@@ -84,24 +110,8 @@ namespace Client
         /// </summary>
         /// <param name="email">Email Adresse des Users</param>
         /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
-        public void Register(string mail, string pw)
-        {
-            email = mail;
-            password = pw;
 
 
-            bw.Write(ComHeader.hRegister);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
-        }
-
-
-        public void SendMessage(string msg)
-        {
-            bw.Write(msg);
-            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
-        }
 
         public void Disconnect()
         {
