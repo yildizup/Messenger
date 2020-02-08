@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class SClient
+    public class SClient
     {
         public TcpClient client;
         public NetworkStream netStream;
@@ -20,45 +20,56 @@ namespace Server
 
 
 
-        public SClient(/*TcpClient c*/)
+        public SClient(TcpClient c)
         {
-            //Für jeden Client soll ein neuer Thread erstellen werden. TODO:  observer design pattern anschauen.
-
-
-            //client = c;
-            //(new Thread(new ThreadStart(SetupConn))).Start();
+            //Für jeden Client soll ein neuer Thread erstellen werden.TODO:  observer design pattern anschauen.
+            client = c;
+            (new Thread(new ThreadStart(SetupConn))).Start();
 
 
         }
 
         public void SetupConn()
         {
-            Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
-            netStream = client.GetStream();
-
-            br = new BinaryReader(netStream);
-            bw = new BinaryWriter(netStream);
-
-            byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
-            string email = br.ReadString();
-            string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
-
-            switch (clientMode)
+            try
             {
-                // Wenn der Client sich registrieren möchte
-                case ComHeader.hRegister:
-                    CreateUser(email, password);
-                    break;
-                case ComHeader.hLogin:
-                    Login(email, password);
-                    break;
+                Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
+                netStream = client.GetStream();
+
+                br = new BinaryReader(netStream);
+                bw = new BinaryWriter(netStream);
+
+                byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
+                string email = br.ReadString();
+                string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
+
+
+                switch (clientMode)
+                {
+                    // Wenn der Client sich registrieren möchte
+                    case ComHeader.hRegister:
+                        CreateUser(email, password);
+                        break;
+                    case ComHeader.hLogin:
+                        Login(email, password);
+                        break;
+                }
             }
+            catch (Exception e)
+            {
+                //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
+                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                Console.WriteLine("{0}", e.ToString());
+            }
+
+
+
         }
 
 
         public void CreateUser(string email, string password)
         {
-            if(dbController.CreateUserAndCheck(email, password))
+            if (dbController.CreateUserAndCheck(email, password))
             {
                 // Benutzer konnte erfolgreich erstellt werden
             }
@@ -78,6 +89,9 @@ namespace Server
                 case 0:
                     // Alle Daten richtig
                     Console.WriteLine("Alles richtig");
+                    //Socket des jeweiligen Users speichern
+                    UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
+                    Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
 
                 case 1:
@@ -102,8 +116,19 @@ namespace Server
 
                 while (client.Client.Connected) //solange der Client verbunden ist
                 {
-                    string msg = br.ReadString();
-                    Console.WriteLine("Nachricht empfangen: {0}", msg);
+                    byte type = br.ReadByte();
+                    switch (type)
+                    {
+                        case ComHeader.hSend:
+                            string to = br.ReadString();
+                            string msg = br.ReadString();
+                            //Sende Nachricht zum Empfänger
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(ComHeader.hReceived);
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(msg);
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Flush();
+
+                            break;
+                    }
                 }
             }
 

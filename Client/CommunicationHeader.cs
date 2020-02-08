@@ -10,7 +10,9 @@ public static class ComHeader
     public const byte hLogin = 1; //Login
     public const byte hWrongPass = 2;    // falsches Passwort
     public const byte hDoesntExist = 3;     // Benutzer existiert nicht
-    public const byte Exists = 4; //Benutzer existiert bereits
+    public const byte hExists = 4; //Benutzer existiert bereits
+    public const byte hReceived = 5; // Nachricht empfangen
+    public const byte hSend = 6; // Nachrichten senden
 
 
 }

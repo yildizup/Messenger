@@ -26,14 +26,19 @@ namespace Client
 
         public CClient()
         {
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-
-            /* Interessant: Wenn kein Thread erstellt wird, schließt die Verbindung wieder direkt.
-             * Grund: Nächste Zeile wird ausgeführt und die Methode wird beendet. Deswegen werden paralelle "Prozesse" gebraucht.
-            */
+                tcpThread = new Thread(testSender);
+                tcpThread.Start();
 
         }
+
+
+        void testSender()
+        {
+            EstablishConnection();
+            Login("admin@telefonico.de", "1234");
+            SendMessage("test@gmail.com", "wie geht es dir");
+        }
+
 
         public void SetupConn()  // Verbindung aufbauen
         {
@@ -47,6 +52,24 @@ namespace Client
 
 
         }
+
+
+        public void Register(string mail, string pw)
+        {
+            bw.Write(ComHeader.hRegister);
+            bw.Write(mail);
+            bw.Write(pw);
+            bw.Flush();
+        }
+
+        public void Login(string mail, string pw)
+        {
+            bw.Write(ComHeader.hLogin);
+            bw.Write(mail);
+            bw.Write(pw);
+            bw.Flush();
+        }
+
 
 
         /// <summary>
@@ -74,34 +97,40 @@ namespace Client
 
         }
 
+        #region Nachrichten senden und empfangen
         void Receiver()  // Empfange alle Einkommenden Packete.
         {
 
+            byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
+
+            switch (type)
+            {
+                case ComHeader.hReceived:
+                    // Eine Nachricht von einem anderen Client
+                    //string from = br.ReadString();
+                    string msg = br.ReadString();
+                    break;
+            }
         }
+
+        public void SendMessage(string to, string msg)
+        {
+            bw.Write(ComHeader.hSend);
+            //bw.Write(to);
+            bw.Write(msg);
+            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
+        }
+
+        #endregion
+
 
         /// <summary>
         /// Zum registrieren
         /// </summary>
         /// <param name="email">Email Adresse des Users</param>
         /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
-        public void Register(string mail, string pw)
-        {
-            email = mail;
-            password = pw;
 
 
-            bw.Write(ComHeader.hRegister);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
-        }
-
-
-        public void SendMessage(string msg)
-        {
-            bw.Write(msg);
-            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
-        }
 
         public void Disconnect()
         {

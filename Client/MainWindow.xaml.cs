@@ -38,10 +38,16 @@ namespace Client
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            //windowRegister windowRegister = new windowRegister();
-            //windowRegister.ShowDialog();
 
+        }
 
+        private void btnSender_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
