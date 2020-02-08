@@ -26,17 +26,19 @@ namespace Client
 
         public CClient()
         {
-            tcpThread = new Thread(testSender);
-            tcpThread.Start();
+                tcpThread = new Thread(testSender);
+                tcpThread.Start();
+
         }
 
 
         void testSender()
         {
             EstablishConnection();
-            Login("admin@telefonico.de","1234");
-            //SendMessage("test@gmail.com", "wie geht es dir");
+            Login("admin@telefonico.de", "1234");
+            SendMessage("test@gmail.com", "wie geht es dir");
         }
+
 
         public void SetupConn()  // Verbindung aufbauen
         {
@@ -105,16 +107,16 @@ namespace Client
             {
                 case ComHeader.hReceived:
                     // Eine Nachricht von einem anderen Client
-                    string from = br.ReadString();
+                    //string from = br.ReadString();
                     string msg = br.ReadString();
                     break;
             }
         }
 
-        public void SendMessage(string to,string msg)
+        public void SendMessage(string to, string msg)
         {
             bw.Write(ComHeader.hSend);
-            bw.Write(to);
+            //bw.Write(to);
             bw.Write(msg);
             bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
         }
