@@ -23,22 +23,25 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); 
+        private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        CClient cClient;
         public MainWindow()
         {
             InitializeComponent();
-        }
+            CClient cClient = new CClient();
 
-        private void btnSend_Click(object sender, RoutedEventArgs e)
-        {
+
+
 
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
-            windowRegister windowRegister = new windowRegister();
-            windowRegister.ShowDialog();
+            //windowRegister windowRegister = new windowRegister();
+            //windowRegister.ShowDialog();
+
+
         }
     }
 }

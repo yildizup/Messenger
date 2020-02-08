@@ -11,6 +11,7 @@ namespace Client
 {
     class CClient
     {
+
         Thread tcpThread;
 
         public string Server { get { return "localhost"; } }
@@ -25,15 +26,47 @@ namespace Client
 
         public CClient()
         {
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+
+            /* Interessant: Wenn kein Thread erstellt wird, schließt die Verbindung wieder direkt.
+             * Grund: Nächste Zeile wird ausgeführt und die Methode wird beendet. Deswegen werden paralelle "Prozesse" gebraucht.
+            */
+
         }
 
         public void SetupConn()  // Verbindung aufbauen
         {
-            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
             netStream = client.GetStream();
 
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
+
+            //bw.Write(ComHeader.hRegister);
+            //bw.Flush();
+
+
+        }
+
+
+        /// <summary>
+        /// Versucht eine Verbindung aufzubauen
+        /// </summary>
+        public void EstablishConnection()
+        {
+            try
+            {
+                client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+                AreWeConnected = true;
+                SetupConn();
+            }
+
+            catch (Exception e)
+            {
+                AreWeConnected = false;
+            }
+
+
         }
 
         public void CloseConn() // Verbindung beenden
@@ -74,6 +107,8 @@ namespace Client
         {
             // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
         }
+
+        public bool AreWeConnected { get; set; }
 
     }
 }

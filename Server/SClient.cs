@@ -16,15 +16,20 @@ namespace Server
         public BinaryReader br;
         public BinaryWriter bw;
 
-        public SClient(TcpClient c)
+        IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
+
+
+
+        public SClient(/*TcpClient c*/)
         {
             //Für jeden Client soll ein neuer Thread erstellen werden. TODO:  observer design pattern anschauen.
-            client = c;
 
-            (new Thread(new ThreadStart(SetupConn))).Start();
+
+            //client = c;
+            //(new Thread(new ThreadStart(SetupConn))).Start();
+
 
         }
-
 
         public void SetupConn()
         {
@@ -34,32 +39,58 @@ namespace Server
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            byte header = br.ReadByte(); //damit der Server weiß, um was für eine Art von Packet es sich handelt, liest er zuerst den "Header".
+            byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
+            string email = br.ReadString();
+            string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
 
-            switch (header)
+            switch (clientMode)
             {
+                // Wenn der Client sich registrieren möchte
                 case ComHeader.hRegister:
-                    Register();
+                    CreateUser(email, password);
+                    break;
+                case ComHeader.hLogin:
+                    Login(email, password);
                     break;
             }
-
-
-            Receiver();
         }
 
 
-        /// <summary>
-        /// Frage: Darf diese Klasse den dbController kennen ? Welche Lösung ist bewährter ?
-        /// </summary>
-        void Register()
+        public void CreateUser(string email, string password)
         {
-            //Nach dem "Header" werden diese Werte übergeben
-            string email = br.ReadString();
-            string password = br.ReadString();
-            dbController.CreateUser(email, password);
-
+            if(dbController.CreateUserAndCheck(email, password))
+            {
+                // Benutzer konnte erfolgreich erstellt werden
+            }
+            else
+            {
+                //Email adresse existiert bereits
+            }
         }
 
+
+
+        public void Login(string email, string password)
+        {
+
+            switch (dbController.Login(email, password))
+            {
+                case 0:
+                    // Alle Daten richtig
+                    Console.WriteLine("Alles richtig");
+                    break;
+
+                case 1:
+                    //Benutzer existiert nicht
+                    Console.WriteLine("Benutzer existiert nicht");
+                    break;
+
+                case 2:
+                    //Passwort ist falsch
+                    Console.WriteLine("Passwort ist falsch");
+                    break;
+            }
+        }
 
         /// <summary>
         /// Wartet fortlaufend auf Packete vom Client
@@ -68,19 +99,39 @@ namespace Server
         {
             try
             {
-                while (client.Connected) //solange der Client verbunden ist
+
+                while (client.Client.Connected) //solange der Client verbunden ist
                 {
                     string msg = br.ReadString();
                     Console.WriteLine("Nachricht empfangen: {0}", msg);
                 }
             }
 
-            catch (IOException) { }
+            catch (IOException e)
+            {
+                //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
+                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+
+            }
 
         }
 
         public void CloseConn()
         {
         }
+
+        //Events 
+        public event EventHandler wrongEmail;
+
+        virtual protected void OnWrongEmail()
+        {
+            if (wrongEmail != null) //TODO: Recherchieren
+            {
+                wrongEmail(this, EventArgs.Empty); //Event wird ausgelöst
+            }
+        }
+
+
     }
 }
+

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CommunicationHeader.cs" />
     <Compile Include="dbController.cs" />
+    <Compile Include="IndividualUser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SClient.cs" />
