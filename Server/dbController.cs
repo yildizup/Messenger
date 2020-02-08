@@ -59,7 +59,8 @@ namespace Server
 
             MySqlDataReader check = cmd.ExecuteReader();
             bool valueOfRead = check.Read();
-            check.Close();
+            check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
+            con.Close();
 
             return valueOfRead;
 
@@ -92,27 +93,6 @@ namespace Server
         #region Benutzeranmeldung
 
 
-        //TODO: gibt es alternativen zu enums für verschiedene Fehlermeldungen ?
-        static internal void Login(string email, string password)
-        {
-
-            // Wenn User nicht existiert
-            if (!DoesUserExist(email))
-            {
-                // Rückmeldung, dass der Benutzer nicht existiert
-
-            }
-            else
-            {
-                //Prüfe Passwort Übereinstimmung
-
-            }
-
-
-
-
-        }
-
         /// <summary>
         /// vergleicht Passwort mit der Datenbank
         /// </summary>
@@ -141,17 +121,55 @@ namespace Server
             // eingegebenes Passwort mit der Datenbank vergleichen
             if (password == (string)dt.Rows[0][0])
             {
-                Console.WriteLine("Passwort ist richtig");
                 return true;
             }
             else
             {
-                Console.WriteLine("Passwort ist falsch");
                 return false;
             }
 
         }
 
-        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns>
+        /// 0: Wenn die Daten korrekt sind
+        /// 1: Wenn Benutzer nicht existiert
+        /// 2: Wenn das Passwort falsch ist
+        /// </returns>
+        static internal int Login(string email, string password)
+        {
+            // Wenn User nicht existiert
+            if (!dbController.DoesUserExist(email))
+            {
+                //Rückmeldung, dass solch ein User nicht existiert
+                return 1;
+
+            }
+            else
+            {
+                //Wenn das Passwort richtig ist
+                if (CheckPassword(email, password))
+                {
+                    return 0;
+
+                }
+                else
+                {
+
+                    return 2;
+                }
+            }
+
+            #endregion
+        }
+
+        //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
+
+
     }
 }

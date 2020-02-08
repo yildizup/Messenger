@@ -11,14 +11,6 @@ namespace Server
 
     class Program
     {
-
-        /// <summary>
-        /// InterNetwork = IPv4, Stream = Stream-oriented socket where both the sender and receiver can lump data in any size during sending or receiving of data
-        /// </summary>
-        //private static Socket _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        //private static List<Socket> _clientSockets = new List<Socket>();
-        //private static byte[] _buffer = new byte[1024];
-
         public IPAddress ip = IPAddress.Parse("127.0.0.1");
         public int port = 2000;
         public bool running = true;
@@ -28,12 +20,15 @@ namespace Server
         {
             Console.Title = "Telefonico Server";
 
-            //server = new TcpListener(ip, port); //Server erstellen und starten
-            //Console.WriteLine("----- Telefonico Server -----");
-            //Console.WriteLine("[{0}] Server wird gestartet...", DateTime.Now);
+            server = new TcpListener(ip, port); //Server erstellen und starten
+            Console.WriteLine("----- Telefonico Server -----");
+            Console.WriteLine("[{0}] Server wird gestartet...", DateTime.Now);
 
-            //server.Start();
-            //Listen();
+            server.Start();
+            Listen();
+
+            SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
+
         }
 
         void Listen()  // Nach Verbindung ausschau halten.
@@ -45,24 +40,14 @@ namespace Server
             }
         }
 
-
         static void Main(string[] args)
         {
             Program p = new Program();
-            SClient client = new SClient(); //Behandel den Client in einem neuen Thread.
-
-            //client.CreateUser("test@gmail.com", "abcdef");
-
-
-            //Console.WriteLine(dbController.DoesUserExist("@gmail.com").ToString());
-            dbController.CheckPassword("test@gmail.com", "abcdef");
-
-
-
 
             Console.ReadLine();
 
         }
+
 
 
 

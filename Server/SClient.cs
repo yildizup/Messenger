@@ -28,8 +28,8 @@ namespace Server
             //client = c;
             //(new Thread(new ThreadStart(SetupConn))).Start();
 
-        }
 
+        }
 
         public void SetupConn()
         {
@@ -43,18 +43,29 @@ namespace Server
             string email = br.ReadString();
             string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
 
-
-            // Wenn der Client sich registrieren möchte
-            if (clientMode == ComHeader.hRegister)
+            switch (clientMode)
             {
-                Receiver();
+                // Wenn der Client sich registrieren möchte
+                case ComHeader.hRegister:
+                    CreateUser(email, password);
+                    break;
+                case ComHeader.hLogin:
+                    Login(email, password);
+                    break;
             }
         }
 
 
         public void CreateUser(string email, string password)
         {
-            dbController.CreateUserAndCheck(email, password);
+            if(dbController.CreateUserAndCheck(email, password))
+            {
+                // Benutzer konnte erfolgreich erstellt werden
+            }
+            else
+            {
+                //Email adresse existiert bereits
+            }
         }
 
 
@@ -62,11 +73,24 @@ namespace Server
         public void Login(string email, string password)
         {
 
+            switch (dbController.Login(email, password))
+            {
+                case 0:
+                    // Alle Daten richtig
+                    Console.WriteLine("Alles richtig");
+                    break;
 
+                case 1:
+                    //Benutzer existiert nicht
+                    Console.WriteLine("Benutzer existiert nicht");
+                    break;
+
+                case 2:
+                    //Passwort ist falsch
+                    Console.WriteLine("Passwort ist falsch");
+                    break;
+            }
         }
-
-
-
 
         /// <summary>
         /// Wartet fortlaufend auf Packete vom Client
@@ -95,6 +119,19 @@ namespace Server
         public void CloseConn()
         {
         }
+
+        //Events 
+        public event EventHandler wrongEmail;
+
+        virtual protected void OnWrongEmail()
+        {
+            if (wrongEmail != null) //TODO: Recherchieren
+            {
+                wrongEmail(this, EventArgs.Empty); //Event wird ausgelöst
+            }
+        }
+
+
     }
 }
 
