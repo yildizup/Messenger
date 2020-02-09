@@ -139,6 +139,11 @@ namespace Server
             {
                 //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
                 Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                Console.WriteLine("{0}", e.ToString()); //TODO: 
+                /*
+                 * Wenn ein "Client" sicht  abmeldet, erscheint eine Fehlermeldung("[...] connection was forcibly closed").
+                 * Besser wäre eine Abmeldung mit einer Benachrichtigung an den Server
+                 */
 
             }
 
