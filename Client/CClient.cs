@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Client
 {
-    class CClient
+    public class CClient
     {
 
         Thread tcpThread;
@@ -49,37 +49,29 @@ namespace Client
 
         }
 
-        public event EventHandler LoginOK;
 
-        // Events
-        virtual protected void OnLoginOK()
+        public void Connect(string email, string password)
         {
-            if (LoginOK != null) //TODO: Recherchieren
-                LoginOK(this, EventArgs.Empty);
-        }
-
-        public void Connect(string mail, string pw)
-        {
-            email = mail;
-            password = pw;
+            this.email = email;
+            this.password = password;
             tcpThread = new Thread(EstablishConnection);
             tcpThread.Start();
         }
 
 
-        public void Register(string mail, string pw)
+        public void Register(string email, string password)
         {
             bw.Write(ComHeader.hRegister);
-            bw.Write(mail);
-            bw.Write(pw);
+            bw.Write(email);
+            bw.Write(password);
             bw.Flush();
         }
 
-        public void Login(string mail, string pw)
+        public void Login(string email, string password)
         {
             bw.Write(ComHeader.hLogin);
-            bw.Write(mail);
-            bw.Write(pw);
+            bw.Write(email);
+            bw.Write(password);
             bw.Flush();
         }
 
@@ -92,14 +84,14 @@ namespace Client
         {
             //try
             //{
-                client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-                AreWeConnected = true;
-                SetupConn();
+            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+            AreWeConnected = true;
+            SetupConn();
             //}
 
             //catch (Exception e)
             //{
-                //AreWeConnected = false;
+            //AreWeConnected = false;
             //}
 
 
@@ -151,6 +143,29 @@ namespace Client
         }
 
         public bool AreWeConnected { get; set; }
+
+
+        // Events
+        public event EventHandler LoginOK;
+        public event EventHandler MessageReceived;
+
+        virtual protected void OnLoginOK()
+        {
+            if (LoginOK != null) //TODO: Recherchieren
+            {
+                LoginOK(this, EventArgs.Empty);
+            }
+        }
+
+        virtual protected void OnMessageReceived()
+        {
+            if (MessageReceived != null)
+            {
+                MessageReceived(this, EventArgs.Empty);
+            }
+
+        }
+
 
     }
 }

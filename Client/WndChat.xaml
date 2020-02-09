@@ -7,13 +7,10 @@
         mc:Ignorable="d"
         Title="WndChat" Height="450" Width="800">
     <Grid>
-        <Border BorderThickness="1" BorderBrush="Black">
-            <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="164,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
-        </Border>
-        <Border BorderThickness="1" BorderBrush="Black">
-            <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="459,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        </Border>
+        <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="164,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="482,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <TextBlock  Name="txtbReceivedMessage" HorizontalAlignment="Left" Margin="206,199,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="148" Width="373" >
         </TextBlock>
+        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="341,130,0,0" Click="btnSendMessage_Click"/>
     </Grid>
 </Window>

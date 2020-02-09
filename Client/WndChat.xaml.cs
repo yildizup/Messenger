@@ -19,9 +19,37 @@ namespace Client
     /// </summary>
     public partial class WndChat : Window
     {
-        public WndChat()
+
+
+        public CClient cClient;
+        CRece
+
+        public WndChat(CClient cClient)
         {
             InitializeComponent();
+            this.cClient = cClient;
+            this.cClient.MessageReceived += new EventHandler(cOnMessageReceived); //TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
+            receivedHa
         }
+
+
+        private void btnSendMessage_Click(object sender, RoutedEventArgs e)
+        {
+            cClient.SendMessage(txtTo.Text, txtMessage.Text);
+        }
+
+
+        void cOnMessageReceived(object sender, EventArgs e)
+        {
+
+
+
+        }
+
+
+
+
+
+
     }
 }
