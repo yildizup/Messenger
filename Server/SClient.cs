@@ -87,6 +87,8 @@ namespace Server
                     Console.WriteLine("Alles richtig");
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
+                    individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
+
 
                     bw.Write(ComHeader.hLoginOk);
                     bw.Flush();
@@ -125,10 +127,9 @@ namespace Server
                             //Sende Nachricht zum Empfänger
                             int indexReceiver = UserController.GetIndexOfUser(to);
                             UserController.individualUsers[indexReceiver].Connection.bw.Write(ComHeader.hReceived);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(to);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(individualUser.email); //TODO: Hier muss der Absender hin
                             UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
                             UserController.individualUsers[indexReceiver].Connection.bw.Flush();
-
                             break;
                     }
                 }
