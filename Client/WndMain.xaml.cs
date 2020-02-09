@@ -60,7 +60,7 @@ namespace Client
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
                 WndChat wndChat = new WndChat(cClient);
-                wndChat.ShowDialog();
+                wndChat.Show();
             });
 
         }

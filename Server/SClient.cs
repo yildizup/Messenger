@@ -124,6 +124,7 @@ namespace Server
                             string msg = br.ReadString();
                             //Sende Nachricht zum Empfänger
                             UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(ComHeader.hReceived);
+                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(to);
                             UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(msg);
                             UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Flush();
 

@@ -22,14 +22,15 @@ namespace Client
 
 
         public CClient cClient;
-        CRece
+        CReceivedEventHandler receivedHandler;
 
         public WndChat(CClient cClient)
         {
             InitializeComponent();
             this.cClient = cClient;
-            this.cClient.MessageReceived += new EventHandler(cOnMessageReceived); //TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
-            receivedHa
+            receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
+            this.cClient.MessageReceived += receivedHandler;
+
         }
 
 
@@ -39,17 +40,15 @@ namespace Client
         }
 
 
-        void cOnMessageReceived(object sender, EventArgs e)
+        void cMessageReceived(object sender, CReceivedEventArgs e)
         {
-
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           txtbReceivedMessage.Text = String.Format("{0}: {1}", e.From, e.Message);
+                       });
 
 
         }
-
-
-
-
-
 
     }
 }

@@ -43,6 +43,7 @@ namespace Client
             if (answer == ComHeader.hLoginOk)
             {
                 OnLoginOK(); //Publisher aufrufen
+                Receiver();
             }
 
 
@@ -112,8 +113,9 @@ namespace Client
             {
                 case ComHeader.hReceived:
                     // Eine Nachricht von einem anderen Client
-                    //string from = br.ReadString();
+                    string from = br.ReadString();
                     string msg = br.ReadString();
+                    OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
                     break;
             }
         }
@@ -121,7 +123,7 @@ namespace Client
         public void SendMessage(string to, string msg)
         {
             bw.Write(ComHeader.hSend);
-            //bw.Write(to);
+            bw.Write(to);
             bw.Write(msg);
             bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
         }
@@ -147,7 +149,7 @@ namespace Client
 
         // Events
         public event EventHandler LoginOK;
-        public event EventHandler MessageReceived;
+        public event CReceivedEventHandler MessageReceived;
 
         virtual protected void OnLoginOK()
         {
@@ -157,11 +159,11 @@ namespace Client
             }
         }
 
-        virtual protected void OnMessageReceived()
+        virtual protected void OnMessageReceived(CReceivedEventArgs e)
         {
             if (MessageReceived != null)
             {
-                MessageReceived(this, EventArgs.Empty);
+                MessageReceived(this, e);
             }
 
         }
