@@ -123,10 +123,11 @@ namespace Server
                             string to = br.ReadString();
                             string msg = br.ReadString();
                             //Sende Nachricht zum Empfänger
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(ComHeader.hReceived);
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(to);
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(msg);
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Flush();
+                            int indexReceiver = UserController.GetIndexOfUser(to);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(ComHeader.hReceived);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(to);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Flush();
 
                             break;
                     }
