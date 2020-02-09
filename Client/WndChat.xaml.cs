@@ -32,6 +32,9 @@ namespace Client
             receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
             this.cClient.MessageReceived += receivedHandler;
 
+
+            Closing += ManageClosing;
+
         }
 
 
@@ -48,7 +51,14 @@ namespace Client
                            txtbReceivedMessage.Text += String.Format("{0}: {1}{2}", e.From, e.Message, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
                        });
 
+        }
 
+        private void ManageClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true; //TODO: Recherchieren
+
+            if (MessageBox.Show("Wollen Sie sich wirklich abmelden ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                Environment.Exit(0);
         }
 
     }
