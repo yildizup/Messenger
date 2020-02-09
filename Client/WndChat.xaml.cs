@@ -27,6 +27,7 @@ namespace Client
         public WndChat(CClient cClient)
         {
             InitializeComponent();
+
             this.cClient = cClient;
             receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
             this.cClient.MessageReceived += receivedHandler;
@@ -44,7 +45,7 @@ namespace Client
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           txtbReceivedMessage.Text = String.Format("{0}: {1}", e.From, e.Message);
+                           txtbReceivedMessage.Text += String.Format("{0}: {1}{2}", e.From, e.Message, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
                        });
 
 
