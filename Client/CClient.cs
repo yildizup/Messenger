@@ -106,17 +106,20 @@ namespace Client
         #region Nachrichten senden und empfangen
         void Receiver()  // Empfange alle Einkommenden Packete.
         {
-
-            byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
-
-            switch (type)
+            while (client.Connected)
             {
-                case ComHeader.hReceived:
-                    // Eine Nachricht von einem anderen Client
-                    string from = br.ReadString();
-                    string msg = br.ReadString();
-                    OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
-                    break;
+
+                byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
+
+                switch (type)
+                {
+                    case ComHeader.hReceived:
+                        // Eine Nachricht von einem anderen Client
+                        string from = br.ReadString();
+                        string msg = br.ReadString();
+                        OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
+                        break;
+                }
             }
         }
 
