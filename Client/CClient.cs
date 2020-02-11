@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Client
 {
-    class CClient
+    public class CClient
     {
 
         Thread tcpThread;
@@ -26,17 +22,7 @@ namespace Client
 
         public CClient()
         {
-                tcpThread = new Thread(testSender);
-                tcpThread.Start();
 
-        }
-
-
-        void testSender()
-        {
-            EstablishConnection();
-            Login("admin@telefonico.de", "1234");
-            SendMessage("test@gmail.com", "wie geht es dir");
         }
 
 
@@ -47,26 +33,46 @@ namespace Client
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            //bw.Write(ComHeader.hRegister);
-            //bw.Flush();
+            bw.Write(ComHeader.hLogin);
+            bw.Write(email);
+            bw.Write(password);
+            bw.Flush();
+
+            byte answer = br.ReadByte(); // Auf eine Antwort warten
+
+            if (answer == ComHeader.hLoginOk)
+            {
+                OnLoginOK(); //Publisher aufrufen
+                Receiver();
+            }
+
 
 
         }
 
 
-        public void Register(string mail, string pw)
+        public void Connect(string email, string password)
+        {
+            this.email = email;
+            this.password = password;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+        }
+
+
+        public void Register(string email, string password)
         {
             bw.Write(ComHeader.hRegister);
-            bw.Write(mail);
-            bw.Write(pw);
+            bw.Write(email);
+            bw.Write(password);
             bw.Flush();
         }
 
-        public void Login(string mail, string pw)
+        public void Login(string email, string password)
         {
             bw.Write(ComHeader.hLogin);
-            bw.Write(mail);
-            bw.Write(pw);
+            bw.Write(email);
+            bw.Write(password);
             bw.Flush();
         }
 
@@ -77,17 +83,17 @@ namespace Client
         /// </summary>
         public void EstablishConnection()
         {
-            try
-            {
-                client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-                AreWeConnected = true;
-                SetupConn();
-            }
+            //try
+            //{
+            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+            AreWeConnected = true;
+            SetupConn();
+            //}
 
-            catch (Exception e)
-            {
-                AreWeConnected = false;
-            }
+            //catch (Exception e)
+            //{
+            //AreWeConnected = false;
+            //}
 
 
         }
@@ -100,23 +106,27 @@ namespace Client
         #region Nachrichten senden und empfangen
         void Receiver()  // Empfange alle Einkommenden Packete.
         {
-
-            byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
-
-            switch (type)
+            while (client.Connected)
             {
-                case ComHeader.hReceived:
-                    // Eine Nachricht von einem anderen Client
-                    //string from = br.ReadString();
-                    string msg = br.ReadString();
-                    break;
+
+                byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
+
+                switch (type)
+                {
+                    case ComHeader.hReceived:
+                        // Eine Nachricht von einem anderen Client
+                        string from = br.ReadString();
+                        string msg = br.ReadString();
+                        OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
+                        break;
+                }
             }
         }
 
         public void SendMessage(string to, string msg)
         {
             bw.Write(ComHeader.hSend);
-            //bw.Write(to);
+            bw.Write(to);
             bw.Write(msg);
             bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
         }
@@ -138,6 +148,29 @@ namespace Client
         }
 
         public bool AreWeConnected { get; set; }
+
+
+        // Events
+        public event EventHandler LoginOK;
+        public event CReceivedEventHandler MessageReceived;
+
+        virtual protected void OnLoginOK()
+        {
+            if (LoginOK != null) //TODO: Recherchieren
+            {
+                LoginOK(this, EventArgs.Empty);
+            }
+        }
+
+        virtual protected void OnMessageReceived(CReceivedEventArgs e)
+        {
+            if (MessageReceived != null)
+            {
+                MessageReceived(this, e);
+            }
+
+        }
+
 
     }
 }

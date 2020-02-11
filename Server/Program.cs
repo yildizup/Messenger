@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Sockets;
 using System.Net;
-using System.Data;
+using System.Net.Sockets;
 
 namespace Server
 {
@@ -54,8 +49,6 @@ namespace Server
             UserController.LoadUsers();
             Console.WriteLine("[{0}] Benutzer wurden erfolgreich geladen!", DateTime.Now);
         }
-
-
 
 
     }

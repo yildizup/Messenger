@@ -1,0 +1,16 @@
+﻿<Window x:Class="Client.WndChat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="WndChat" Height="450" Width="800">
+    <Grid>
+        <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="164,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="482,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBlock  Name="txtbReceivedMessage" HorizontalAlignment="Left" Margin="206,199,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="148" Width="373" >
+        </TextBlock>
+        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="341,130,0,0" Click="btnSendMessage_Click"/>
+    </Grid>
+</Window>

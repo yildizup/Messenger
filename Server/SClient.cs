@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -91,6 +87,12 @@ namespace Server
                     Console.WriteLine("Alles richtig");
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
+                    individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
+
+
+                    bw.Write(ComHeader.hLoginOk);
+                    bw.Flush();
+
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
 
@@ -123,10 +125,11 @@ namespace Server
                             string to = br.ReadString();
                             string msg = br.ReadString();
                             //Sende Nachricht zum Empfänger
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(ComHeader.hReceived);
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Write(msg);
-                            UserController.individualUsers[UserController.GetIndexOfUser(to)].Connection.bw.Flush();
-
+                            int indexReceiver = UserController.GetIndexOfUser(to);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(ComHeader.hReceived);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(individualUser.email); //TODO: Hier muss der Absender hin
+                            UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
+                            UserController.individualUsers[indexReceiver].Connection.bw.Flush();
                             break;
                     }
                 }
@@ -136,6 +139,11 @@ namespace Server
             {
                 //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
                 Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                Console.WriteLine("{0}", e.ToString()); //TODO: 
+                /*
+                 * Wenn ein "Client" sicht  abmeldet, erscheint eine Fehlermeldung("[...] connection was forcibly closed").
+                 * Besser wäre eine Abmeldung mit einer Benachrichtigung an den Server
+                 */
 
             }
 
