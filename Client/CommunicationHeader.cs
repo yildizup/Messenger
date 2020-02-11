@@ -16,6 +16,7 @@ public static class ComHeader
     public const byte hLoginOk = 7; // Benutzerdaten sind richtig
     public const byte hRegistrationOk = 8; // Die Registrierung war erfolgreich
     public const byte hRegistrationNotOk = 9; // Die Registrierung ist fehlgeschlagen
+    public const byte hDisconnect = 10;
 
 
 }

@@ -55,10 +55,7 @@ namespace Client
             else
             {
 
-                bw.Write(ComHeader.hRegister);
-                bw.Write(email);
-                bw.Write(password);
-                bw.Flush();
+                Register(email, password);
 
                 Byte answer = br.ReadByte();
 
@@ -66,6 +63,7 @@ namespace Client
                 {
                     // Wenn die Registrierung erfolgreich war
                     case ComHeader.hRegistrationOk:
+                        SmoothDisconnect();
                         OnRegistrationOK();
                         break;
 
@@ -94,6 +92,11 @@ namespace Client
             tcpThread.Start();
         }
 
+        /// <summary>
+        /// Zum registrieren
+        /// </summary>
+        /// <param name="email">Email Adresse des Users</param>
+        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
         public void Register(string email, string password)
         {
             bw.Write(ComHeader.hRegister);
@@ -168,17 +171,21 @@ namespace Client
         #endregion
 
 
-        /// <summary>
-        /// Zum registrieren
-        /// </summary>
-        /// <param name="email">Email Adresse des Users</param>
-        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
 
 
 
-        public void Disconnect()
+
+        public void SmoothDisconnect()
         {
             // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
+
+            bw.Write(ComHeader.hDisconnect);
+            bw.Flush();
+
+            netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
+            client.Close();
+
+
         }
 
         public bool AreWeConnected { get; set; }

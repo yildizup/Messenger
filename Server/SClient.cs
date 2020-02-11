@@ -71,8 +71,7 @@ namespace Server
                 // Rückmeldung, dass die Registrierung erfolgreich war
                 bw.Write(ComHeader.hRegistrationOk);
                 bw.Flush();
-
-
+                Receiver();
 
             }
             else
@@ -136,6 +135,10 @@ namespace Server
                             UserController.individualUsers[indexReceiver].Connection.bw.Write(individualUser.email); //TODO: Hier muss der Absender hin
                             UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
                             UserController.individualUsers[indexReceiver].Connection.bw.Flush();
+                            break;
+                        case ComHeader.hDisconnect:
+                            client.Close();  //Die Verbindung schließen
+                            Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
                             break;
                     }
                 }
