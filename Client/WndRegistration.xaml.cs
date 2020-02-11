@@ -16,5 +16,10 @@ namespace Client
         {
 
         }
+
+        private void tbPassword_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
     }
 }

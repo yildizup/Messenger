@@ -8,20 +8,13 @@
         Title="windowRegister" Height="450" Width="500">
     <Grid>
         <Label Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="172,10,193,0" Width="127" />
-        <TextBox x:Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,204,179,0"/>
-        <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,102,255,0" Width="82"/>
-        <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,173,255,0" Width="82"/>
-        <Button x:Name="btnLogin" Content="LogIn" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="175,249,231,0" Height="23" Click="btnLogin_Click"/>
-        <TextBox x:Name="tbEmail" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,133,179,0" RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-3.434"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="0.69"/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
+        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,178,179,0" TextChanged="tbPassword_TextChanged"/>
+        <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,76,255,0" Width="82"/>
+        <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,147,255,0" Width="82"/>
+        <Button Name="btnLogin" Content="LogIn" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="203,337,203,0" Height="23" Click="btnLogin_Click"/>
+        <TextBox Name="tbEmail" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="156" Margin="157,106,179,0" RenderTransformOrigin="0.5,0.5"></TextBox>
+        <TextBox Name="tbPassword_Again" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="158,259,176,0"/>
+        <Label Content="Passwort erneut eingeben" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,229,179,0" Width="158"/>
 
     </Grid>
 </Window>
