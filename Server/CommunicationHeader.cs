@@ -1,4 +1,6 @@
-﻿public static class ComHeader
+﻿using System;
+
+public static class ComHeader
 {
 
     /* Hier kommen die Header rein. Jeder Byte wird eine bestimmte Bedeutung haben. 
@@ -12,6 +14,8 @@
     public const byte hReceived = 5; // Nachricht empfangen
     public const byte hSend = 6; // Nachrichten senden
     public const byte hLoginOk = 7; // Benutzerdaten sind richtig
+    public const byte hRegistrationOk = 8; // Die Registrierung war erfolgreich
+    public const byte hRegistrationNotOk = 9; // Die Registrierung ist fehlgeschlagen
 
 
 }

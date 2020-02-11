@@ -12,13 +12,14 @@ namespace Client
             InitializeComponent();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
+            CClient cClient = new CClient();
 
-        }
 
-        private void tbPassword_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
+
+
+
 
         }
     }

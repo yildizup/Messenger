@@ -14,6 +14,8 @@ public static class ComHeader
     public const byte hReceived = 5; // Nachricht empfangen
     public const byte hSend = 6; // Nachrichten senden
     public const byte hLoginOk = 7; // Benutzerdaten sind richtig
+    public const byte hRegistrationOk = 8; // Die Registrierung war erfolgreich
+    public const byte hRegistrationNotOk = 9; // Die Registrierung ist fehlgeschlagen
 
 
 }

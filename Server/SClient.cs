@@ -68,6 +68,9 @@ namespace Server
             if (dbController.CreateUserAndCheck(email, password))
             {
                 // Benutzer konnte erfolgreich erstellt werden
+                // Rückmeldung, dass die Registrierung erfolgreich war
+                individualUser.Connection.bw.Write(ComHeader.hRegistrationOk);
+
             }
             else
             {
