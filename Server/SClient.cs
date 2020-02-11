@@ -69,7 +69,10 @@ namespace Server
             {
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
-                individualUser.Connection.bw.Write(ComHeader.hRegistrationOk);
+                bw.Write(ComHeader.hRegistrationOk);
+                bw.Flush();
+
+
 
             }
             else

@@ -20,6 +20,8 @@ namespace Client
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
 
+        bool registrationMode = false;
+
         public CClient()
         {
 
@@ -33,20 +35,44 @@ namespace Client
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            bw.Write(ComHeader.hLogin);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
 
-            byte answer = br.ReadByte(); // Auf eine Antwort warten
-
-            if (answer == ComHeader.hLoginOk)
+            if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
-                OnLoginOK(); //Publisher aufrufen
-                Receiver();
+
+                bw.Write(ComHeader.hLogin);
+                bw.Write(email);
+                bw.Write(password);
+                bw.Flush();
+
+                byte answer = br.ReadByte(); // Auf eine Antwort warten
+
+                if (answer == ComHeader.hLoginOk)
+                {
+                    OnLoginOK(); //Publisher aufrufen
+                    Receiver();
+                }
             }
+            else
+            {
+
+                bw.Write(ComHeader.hRegister);
+                bw.Write(email);
+                bw.Write(password);
+                bw.Flush();
+
+                Byte answer = br.ReadByte();
+
+                switch (answer)
+                {
+                    // Wenn die Registrierung erfolgreich war
+                    case ComHeader.hRegistrationOk:
+                        OnRegistrationOK();
+                        break;
+
+                }
 
 
+            }
 
         }
 
@@ -59,6 +85,14 @@ namespace Client
             tcpThread.Start();
         }
 
+        public void ConnectToRegistrate(string email, string password)
+        {
+            this.email = email;
+            this.password = password;
+            registrationMode = true;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+        }
 
         public void Register(string email, string password)
         {
@@ -153,10 +187,11 @@ namespace Client
         // Events
         public event EventHandler LoginOK;
         public event CReceivedEventHandler MessageReceived;
+        public event EventHandler RegistrationOK;
 
         virtual protected void OnLoginOK()
         {
-            if (LoginOK != null) //TODO: Recherchieren
+            if (LoginOK != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
             {
                 LoginOK(this, EventArgs.Empty);
             }
@@ -167,6 +202,14 @@ namespace Client
             if (MessageReceived != null)
             {
                 MessageReceived(this, e);
+            }
+        }
+
+        virtual protected void OnRegistrationOK()
+        {
+            if (RegistrationOK != null)
+            {
+                RegistrationOK(this, EventArgs.Empty);
             }
 
         }

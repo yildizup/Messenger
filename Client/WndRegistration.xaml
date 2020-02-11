@@ -8,7 +8,7 @@
         Title="windowRegister" Height="450" Width="500">
     <Grid>
         <Label Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="172,10,193,0" Width="127" />
-        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,178,179,0" TextChanged="tbPassword_TextChanged"/>
+        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,178,179,0" />
         <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,76,255,0" Width="82"/>
         <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,147,255,0" Width="82"/>
         <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="203,337,203,0" Height="23" Click="btnRegister_Click"/>
