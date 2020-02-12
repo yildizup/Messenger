@@ -189,6 +189,8 @@ namespace Client
 
         }
 
+
+
         public bool AreWeConnected { get; set; }
 
 
