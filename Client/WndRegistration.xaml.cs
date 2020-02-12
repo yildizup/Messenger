@@ -16,6 +16,7 @@ namespace Client
 
             cClient = new CClient();
             cClient.RegistrationOK += new EventHandler(cOnRegistrationOK);
+            cClient.RegistrationNotOk += new EventHandler(cOnRegistrationNotOK);
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
@@ -32,11 +33,17 @@ namespace Client
 
         void cOnRegistrationOK(object sender, EventArgs e)
         {
-            MessageBox.Show("Alles Ok");
+            MessageBox.Show("Die Registrierung war erfolgreich. Sie können sich nun erfolgreich anmelden");
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
                            this.Close();
                        });
+        }
+
+
+        void cOnRegistrationNotOK(object sender, EventArgs e)
+        {
+            MessageBox.Show("Die Registrierung war nicht erfolgreich. Diese E-Mail Adresse existiert bereits. Bitte versuchen Sie es erneut.");
         }
     }
 }

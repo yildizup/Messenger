@@ -66,6 +66,11 @@ namespace Client
                         SmoothDisconnect();
                         OnRegistrationOK();
                         break;
+                    // Wenn die Registrierung nicht erfolgreich war
+                    case ComHeader.hRegistrationNotOk:
+                        SmoothDisconnect();
+                        OnRegistrationNotOk();
+                        break;
 
                 }
 
@@ -171,10 +176,6 @@ namespace Client
         #endregion
 
 
-
-
-
-
         public void SmoothDisconnect()
         {
             // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
@@ -195,6 +196,7 @@ namespace Client
         public event EventHandler LoginOK;
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
+        public event EventHandler RegistrationNotOk;
 
         virtual protected void OnLoginOK()
         {
@@ -219,6 +221,14 @@ namespace Client
                 RegistrationOK(this, EventArgs.Empty);
             }
 
+        }
+
+        virtual protected void OnRegistrationNotOk()
+        {
+            if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
+            {
+                RegistrationNotOk(this, EventArgs.Empty);
+            }
         }
 
 

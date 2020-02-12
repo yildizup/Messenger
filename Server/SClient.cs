@@ -44,6 +44,7 @@ namespace Server
                 {
                     // Wenn der Client sich registrieren möchte
                     case ComHeader.hRegister:
+                        Console.WriteLine("[{0}] Ein Client möchte sich registrieren...", DateTime.Now);
                         CreateUser(email, password);
                         break;
                     case ComHeader.hLogin:
@@ -69,14 +70,18 @@ namespace Server
             {
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
-                bw.Write(ComHeader.hRegistrationOk);
+                Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
+                bw.Write(ComHeader.hRegistrationOk); // Rückmeldung an den Client über erfolgreiche Registrierung
                 bw.Flush();
                 Receiver();
-
             }
             else
             {
                 //Email adresse existiert bereits
+                Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
+                bw.Write(ComHeader.hRegistrationNotOk); // Rückmeldung an den Client, dass die Registrierung nicht erfolgreich war
+                bw.Flush();
+                Receiver();
             }
         }
 
