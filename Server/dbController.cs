@@ -71,7 +71,7 @@ namespace Server
         /// <returns>true, wenn der User erstellt werden konnte</returns>
         static internal bool CreateUserAndCheck(string email, string password)
         {
-            // Wenn der user nicht existiert, kann ein Konto erstellt werden
+            // Wenn ein User nicht existiert, kann ein Konto erstellt werden
             if (!DoesUserExist(email))
             {
                 CreateUser(email, password);

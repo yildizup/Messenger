@@ -20,6 +20,8 @@ namespace Client
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
 
+        bool registrationMode = false;
+
         public CClient()
         {
 
@@ -33,20 +35,47 @@ namespace Client
             br = new BinaryReader(netStream);
             bw = new BinaryWriter(netStream);
 
-            bw.Write(ComHeader.hLogin);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
 
-            byte answer = br.ReadByte(); // Auf eine Antwort warten
-
-            if (answer == ComHeader.hLoginOk)
+            if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
-                OnLoginOK(); //Publisher aufrufen
-                Receiver();
+
+                bw.Write(ComHeader.hLogin);
+                bw.Write(email);
+                bw.Write(password);
+                bw.Flush();
+
+                byte answer = br.ReadByte(); // Auf eine Antwort warten
+
+                if (answer == ComHeader.hLoginOk)
+                {
+                    OnLoginOK(); //Publisher aufrufen
+                    Receiver();
+                }
             }
+            else
+            {
+
+                Register(email, password);
+
+                Byte answer = br.ReadByte();
+
+                switch (answer)
+                {
+                    // Wenn die Registrierung erfolgreich war
+                    case ComHeader.hRegistrationOk:
+                        SmoothDisconnect();
+                        OnRegistrationOK();
+                        break;
+                    // Wenn die Registrierung nicht erfolgreich war
+                    case ComHeader.hRegistrationNotOk:
+                        SmoothDisconnect();
+                        OnRegistrationNotOk();
+                        break;
+
+                }
 
 
+            }
 
         }
 
@@ -59,7 +88,20 @@ namespace Client
             tcpThread.Start();
         }
 
+        public void ConnectToRegistrate(string email, string password)
+        {
+            this.email = email;
+            this.password = password;
+            registrationMode = true;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+        }
 
+        /// <summary>
+        /// Zum registrieren
+        /// </summary>
+        /// <param name="email">Email Adresse des Users</param>
+        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
         public void Register(string email, string password)
         {
             bw.Write(ComHeader.hRegister);
@@ -134,17 +176,17 @@ namespace Client
         #endregion
 
 
-        /// <summary>
-        /// Zum registrieren
-        /// </summary>
-        /// <param name="email">Email Adresse des Users</param>
-        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
-
-
-
-        public void Disconnect()
+        public void SmoothDisconnect()
         {
             // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
+
+            bw.Write(ComHeader.hDisconnect);
+            bw.Flush();
+
+            netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
+            client.Close();
+
+
         }
 
         public bool AreWeConnected { get; set; }
@@ -153,10 +195,12 @@ namespace Client
         // Events
         public event EventHandler LoginOK;
         public event CReceivedEventHandler MessageReceived;
+        public event EventHandler RegistrationOK;
+        public event EventHandler RegistrationNotOk;
 
         virtual protected void OnLoginOK()
         {
-            if (LoginOK != null) //TODO: Recherchieren
+            if (LoginOK != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
             {
                 LoginOK(this, EventArgs.Empty);
             }
@@ -168,7 +212,23 @@ namespace Client
             {
                 MessageReceived(this, e);
             }
+        }
 
+        virtual protected void OnRegistrationOK()
+        {
+            if (RegistrationOK != null)
+            {
+                RegistrationOK(this, EventArgs.Empty);
+            }
+
+        }
+
+        virtual protected void OnRegistrationNotOk()
+        {
+            if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
+            {
+                RegistrationNotOk(this, EventArgs.Empty);
+            }
         }
 
 

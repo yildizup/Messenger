@@ -35,6 +35,15 @@ namespace Client
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
 
+            Application.Current.Dispatcher.Invoke((Action)delegate
+         {
+             this.Hide();
+             WndRegistration wndRegistration = new WndRegistration();
+             wndRegistration.ShowDialog();
+             this.Show();
+         });
+
+
         }
 
         private void btnSender_Click(object sender, RoutedEventArgs e)
