@@ -32,12 +32,11 @@ namespace Client
 
         void cOnRegistrationOK(object sender, EventArgs e)
         {
-
-
             MessageBox.Show("Alles Ok");
-
-
-
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           this.Close();
+                       });
         }
     }
 }
