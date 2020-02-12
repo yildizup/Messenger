@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="WndChat" Height="450" Width="800">
+        Title="WndChat" Height="550" Width="900">
     <Grid>
-        <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="164,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
-        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="482,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="406,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="599,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <TextBlock  Name="txtbReceivedMessage" HorizontalAlignment="Left" Margin="206,199,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="148" Width="373" >
         </TextBlock>
-        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="341,130,0,0" Click="btnSendMessage_Click"/>
+        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="584,199,0,0" Click="btnSendMessage_Click"/>
     </Grid>
 </Window>

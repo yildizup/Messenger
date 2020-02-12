@@ -94,7 +94,7 @@ namespace Server
             {
                 case 0:
                     // Alle Daten richtig
-                    Console.WriteLine("Alles richtig");
+                    Console.WriteLine("[{0}] Der Client hat sich angemeldet.", DateTime.Now);
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
