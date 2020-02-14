@@ -57,7 +57,7 @@ namespace Server
             catch (Exception e)
             {
                 //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
-                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
                 Console.WriteLine("{0}", e.ToString());
             }
 
@@ -95,11 +95,11 @@ namespace Server
             {
                 case 0:
                     // Alle Daten richtig
-                    Console.WriteLine("[{0}] Der Client hat sich angemeldet.", DateTime.Now);
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
                     listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
+                    Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
 
 
@@ -146,7 +146,7 @@ namespace Server
                             break;
                         case ComHeader.hDisconnect:
                             client.Close();  //Die Verbindung schließen
-                            Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                            Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
                             break;
                     }
                 }
@@ -155,7 +155,7 @@ namespace Server
             catch (IOException e)
             {
                 //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
-                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
                 Console.WriteLine("{0}", e.ToString()); //TODO: 
                 /*
                  * Wenn ein "Client" sicht  abmeldet, erscheint eine Fehlermeldung("[...] connection was forcibly closed").
