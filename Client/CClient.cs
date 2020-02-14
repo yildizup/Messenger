@@ -46,12 +46,16 @@ namespace Client
             if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
 
-                bw.Write(ComHeader.hLogin);
-                bw.Write(email);
-                bw.Write(password);
-                bw.Flush();
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
+                bFormatter.Serialize(netStream, header);
 
-                byte answer = br.ReadByte(); // Auf eine Antwort warten
+                LoginData loginData = new LoginData();
+                loginData.Email = email;
+                loginData.Password = password;
+
+                bFormatter.Serialize(netStream, loginData);
+
+                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
                 if (answer == ComHeader.hLoginOk)
                 {

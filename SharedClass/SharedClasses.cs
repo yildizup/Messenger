@@ -53,6 +53,14 @@ namespace SharedClass
     }
 
 
+    [Serializable]
+    public class LoginData
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+
     /// <summary>
     /// alle möglichen Header
     /// </summary>

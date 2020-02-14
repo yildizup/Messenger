@@ -41,9 +41,11 @@ namespace Server
                 br = new BinaryReader(netStream);
                 bw = new BinaryWriter(netStream);
 
-                byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
-                string email = br.ReadString();
-                string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
+                byte clientMode = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; //Abfragen, ob Client sich registrieren oder einloggen möchte.
+
+                LoginData loginData = ((LoginData)bFormatter.Deserialize(netStream));
+                string email = loginData.Email;
+                string password = loginData.Password;
 
 
                 switch (clientMode)
@@ -105,8 +107,9 @@ namespace Server
                     listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
-                    bw.Write(ComHeader.hLoginOk);
-                    bw.Flush();
+                    AdditionalHeader header = new AdditionalHeader(ComHeader.hLoginOk);
+                    bFormatter.Serialize(netStream, header);
+
 
                     ContactList tst = new ContactList();
                     tst.listContacts = dbController.LoadContacts(email);
@@ -148,7 +151,7 @@ namespace Server
 
                             //Zuerst den Header senden
                             AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
-                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, sHeader); 
+                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, sHeader);
 
                             //Sende Nachricht zum Empfänger
                             MessageReceived messageReceived = new MessageReceived();
