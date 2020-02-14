@@ -24,8 +24,6 @@ namespace Client
         public CClient cClient;
         CReceivedEventHandler receivedHandler;
 
-        List<string> Contacts;
-
         public WndChat(CClient cClient)
         {
             InitializeComponent();
@@ -36,20 +34,11 @@ namespace Client
 
 
             Closing += ManageClosing;
+            lbContactList.ItemsSource = cClient.contactList.listContacts;
 
-            Contacts = new List<string>();
-            Contacts.Add("empfänger@gmail.com");
-            Contacts.Add("nocheinfreund@gmail.com");
-
-            lbContactList.ItemsSource = Contacts;
 
         }
 
-
-        void LoadContacts()
-        {
-
-        }
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {

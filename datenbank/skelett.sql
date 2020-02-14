@@ -24,11 +24,27 @@ create table user (
   
   
  -- Die Benutzer
+insert into user (email, password) values ('admin@telefonico.com','1');
+insert into user (email, password) values ('user@telefonico.com','1');
 insert into user (email, password) values ('absender@gmail.com','1');
 insert into user (email, password) values ('empfänger@gmail.com','1');
-insert into user (email, password) values ('nocheinfreund@gmail.com','1');
+insert into user (email, password) values ('freund1@gmail.com','1');
+insert into user (email, password) values ('freund2@gmail.com','1');
+insert into user (email, password) values ('freund3@gmail.com','1');
+insert into user (email, password) values ('freund4@gmail.com','1');
 
 
 -- Die Kontakte
+
+-- Kontakte von admin@telefonico.com
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','user@telefonico.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','absender@gmail.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','empfänger@gmail.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','freund1@gmail.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','freund2@gmail.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','freund3@gmail.com');
+insert into contacts (main_email, friend_email) values ('admin@telefonico.com','freund4@gmail.com');
+
+-- Kontakte von absender@gmail.com
 insert into contacts (main_email, friend_email) values ('absender@gmail.com','empfänger@gmail.com');
-insert into contacts (main_email, friend_email) values ('absender@gmail.com','nocheinfreund@gmail.com');
+insert into contacts (main_email, friend_email) values ('absender@gmail.com','freund1@gmail.com');

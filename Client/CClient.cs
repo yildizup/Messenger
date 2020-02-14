@@ -23,12 +23,14 @@ namespace Client
         public BinaryFormatter bFormatter;
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
+        public ContactList contactList;
 
         bool registrationMode = false;
 
         public CClient()
         {
             bFormatter = new BinaryFormatter();
+            contactList = new ContactList();
 
         }
 
@@ -53,8 +55,7 @@ namespace Client
 
                 if (answer == ComHeader.hLoginOk)
                 {
-                    ContactList tst = new ContactList();
-                    tst.listContacts = (List<string>)bFormatter.Deserialize(netStream);
+                    contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
                     OnLoginOK(); //Publisher aufrufen
                     Receiver();
                 }
