@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -13,6 +14,7 @@ namespace Server
         public BinaryWriter bw;
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
+        public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
 
 
 
@@ -86,7 +88,6 @@ namespace Server
         }
 
 
-
         public void Login(string email, string password)
         {
 
@@ -98,6 +99,8 @@ namespace Server
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
+                    listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
+
 
 
                     bw.Write(ComHeader.hLoginOk);

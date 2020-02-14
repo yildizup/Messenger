@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Server
@@ -190,6 +191,38 @@ namespace Server
         }
 
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
+
+
+        static internal List<string> LoadContacts(string main_email)
+        {
+            List<string> listContacts = new List<string>();
+
+            #region Abfrage
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "Select * from contacts where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            cmd.Parameters.AddWithValue("@email", main_email);
+            cmd.Connection = con;
+            #endregion
+
+            con.Open();
+
+            MySqlDataReader dr = cmd.ExecuteReader();
+
+            // In ein 'DataTable' Objekt schreiben.
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+
+            con.Close();
+
+
+            foreach (DataRow row in dt.Rows)
+            {
+                listContacts.Add(row["friend_email"].ToString());
+            }
+
+            return listContacts;
+        }
 
 
     }
