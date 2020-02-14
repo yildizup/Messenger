@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace SharedClass
 {
+    [Serializable]
     public class ContactList
     {
-        List<string> listContacts = new List<string>();
+        public List<string> listContacts = new List<string>(); //TODO: Wie kann man das besser lösen ?
 
     }
 

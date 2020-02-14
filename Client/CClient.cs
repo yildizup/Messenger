@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using SharedClass;
 
@@ -18,6 +20,7 @@ namespace Client
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
         public BinaryReader br;
         public BinaryWriter bw;
+        public BinaryFormatter bFormatter;
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
 
@@ -25,6 +28,7 @@ namespace Client
 
         public CClient()
         {
+            bFormatter = new BinaryFormatter();
 
         }
 
@@ -49,6 +53,8 @@ namespace Client
 
                 if (answer == ComHeader.hLoginOk)
                 {
+                    ContactList tst = new ContactList();
+                    tst.listContacts = (List<string>)bFormatter.Deserialize(netStream);
                     OnLoginOK(); //Publisher aufrufen
                     Receiver();
                 }
@@ -74,7 +80,6 @@ namespace Client
                         break;
 
                 }
-
 
             }
 

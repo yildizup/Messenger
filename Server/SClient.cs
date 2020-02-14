@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using SharedClass;
 
@@ -13,6 +14,7 @@ namespace Server
         public NetworkStream netStream;
         public BinaryReader br;
         public BinaryWriter bw;
+        public BinaryFormatter bFormatter;
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
@@ -24,6 +26,7 @@ namespace Server
             //Für jeden Client soll ein neuer Thread erstellen werden.TODO:  observer design pattern anschauen.
             client = c;
             (new Thread(new ThreadStart(SetupConn))).Start();
+            bFormatter = new BinaryFormatter();
 
 
         }
@@ -102,10 +105,12 @@ namespace Server
                     listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
-
-
                     bw.Write(ComHeader.hLoginOk);
                     bw.Flush();
+
+                    ContactList tst = new ContactList();
+                    tst.listContacts = dbController.LoadContacts(email);
+                    bFormatter.Serialize(netStream, tst.listContacts);
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
