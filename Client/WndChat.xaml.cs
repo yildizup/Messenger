@@ -42,7 +42,10 @@ namespace Client
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage(txtTo.Text, txtMessage.Text);
+            cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
+
+
+            txtbReceivedMessage.Text += String.Format("Sie: {0}{1}", txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
         }
 
 

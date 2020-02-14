@@ -7,11 +7,10 @@
         mc:Ignorable="d"
         Title="WndChat" Height="550" Width="900">
     <Grid>
-        <TextBox Name="txtTo" HorizontalAlignment="Left" Height="23" Margin="406,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="141"/>
-        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="599,59,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBlock  Name="txtbReceivedMessage" HorizontalAlignment="Left" Margin="420,288,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="148" Width="373" >
-        </TextBlock>
-        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="584,199,0,0" Click="btnSendMessage_Click"/>
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="277,478,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="506"/>
+            <TextBlock  Name="txtbReceivedMessage" Background="AntiqueWhite" HorizontalAlignment="Left" Margin="278,47,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="421" Width="604" >
+            </TextBlock>
+        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Margin="798,478,0,0" Click="btnSendMessage_Click" Height="24"/>
         <ListBox Name="lbContactList" HorizontalAlignment="Left" Height="464" Margin="10,45,0,0" VerticalAlignment="Top" Width="262"/>
     </Grid>
 </Window>
