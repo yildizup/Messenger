@@ -8,9 +8,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{6F739D3D-AECB-4491-B03A-A6A7F971BFA7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDEFCE3A-CA2B-42C6-A8DC-7DCD3427645A}"
-	ProjectSection(SolutionItems) = preProject
-		CommunicationHeader.cs = CommunicationHeader.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedClass", "SharedClass\SharedClass.csproj", "{A2F407DB-E1F2-4140-AF32-1646FA146352}"
 EndProject
