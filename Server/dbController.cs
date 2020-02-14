@@ -193,7 +193,7 @@ namespace Server
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
 
 
-        static internal List<string> LoadContacts(string main_email)
+        static internal List<string> LoadContacts(string email)
         {
             List<string> listContacts = new List<string>();
 
@@ -201,7 +201,7 @@ namespace Server
 
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from contacts where main_email=@email"; // Abfrage nach allen Kontakten des Users
-            cmd.Parameters.AddWithValue("@email", main_email);
+            cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
             #endregion
 
@@ -222,6 +222,33 @@ namespace Server
             }
 
             return listContacts;
+        }
+
+        static internal DataTable LoadChat(string main_email, string friend_email)
+        {
+            DataTable dtChat = new DataTable();
+
+            #region Abfrage
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by asc";
+            cmd.Parameters.AddWithValue("@mainemail", main_email);
+            cmd.Parameters.AddWithValue("@friendemail", friend_email);
+            cmd.Connection = con;
+            #endregion
+
+            con.Open();
+
+            MySqlDataReader dr = cmd.ExecuteReader();
+
+            // In ein 'DataTable' Objekt schreiben.
+            dtChat.Load(dr);
+
+            con.Close();
+
+            return dtChat;
+
+
         }
 
 

@@ -78,3 +78,4 @@ insert into contacts (main_email, friend_email) values ('empfänger@gmail.com','
 -- Der Chat
 
 insert into chat (main_email, friend_email, message, thetime) values ('absender@gmail.com','empfänger@gmail.com','Hallo empfänger', now());
+insert into chat (main_email, friend_email, message, thetime) values ('empfänger@gmail.com','absender@gmail.com','Hallo Absender. Wie geht es dir ?', now());

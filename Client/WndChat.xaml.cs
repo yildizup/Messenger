@@ -66,5 +66,9 @@ namespace Client
                 Environment.Exit(0);
         }
 
+        private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

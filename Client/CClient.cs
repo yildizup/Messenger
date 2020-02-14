@@ -157,27 +157,33 @@ namespace Client
         {
             while (client.Connected)
             {
+                byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
-                byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
-
-                switch (type)
+                switch (header)
                 {
                     case ComHeader.hReceived:
                         // Eine Nachricht von einem anderen Client
-                        string from = br.ReadString();
-                        string msg = br.ReadString();
-                        OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
+                        MessageReceived messageReceived = (MessageReceived)bFormatter.Deserialize(netStream);
+                        OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Msg)); //Event auslösen
                         break;
+                    case ComHeader.hChat: //Chat Inhalt 
+
+
+                        break;
+
+
                 }
             }
         }
 
         public void SendMessage(string to, string msg)
         {
-            bw.Write(ComHeader.hSend);
-            bw.Write(to);
-            bw.Write(msg);
-            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
+            bFormatter.Serialize(netStream, header);
+            MessageSend message = new MessageSend();
+            message.To = to;
+            message.Msg = msg;
+            bFormatter.Serialize(netStream, message);
         }
 
         #endregion
@@ -195,6 +201,13 @@ namespace Client
 
 
         }
+
+        public void LoadChat()
+        {
+            bw.Write(ComHeader.hChat);
+            bw.Flush();
+        }
+
 
 
 

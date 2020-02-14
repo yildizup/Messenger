@@ -137,22 +137,35 @@ namespace Server
 
                 while (client.Client.Connected) //solange der Client verbunden ist
                 {
-                    byte type = br.ReadByte();
-                    switch (type)
+                    byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+
+                    switch (header)
                     {
                         case ComHeader.hSend:
-                            string to = br.ReadString();
-                            string msg = br.ReadString();
+                            MessageSend message = new MessageSend();
+                            message = (MessageSend)bFormatter.Deserialize(netStream);
+                            int indexReceiver = UserController.GetIndexOfUser(message.To);
+
+                            //Zuerst den Header senden
+                            AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
+                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, sHeader); 
+
                             //Sende Nachricht zum Empfänger
-                            int indexReceiver = UserController.GetIndexOfUser(to);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(ComHeader.hReceived);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(individualUser.email); //TODO: Hier muss der Absender hin
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Flush();
+                            MessageReceived messageReceived = new MessageReceived();
+                            messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin
+                            messageReceived.Msg = message.Msg;
+                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, messageReceived); //Nachricht an den Empfänger senden
+
+
                             break;
                         case ComHeader.hDisconnect:
                             client.Close();  //Die Verbindung schließen
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
+                            break;
+                        case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
+                            bw.Write(ComHeader.hChat);
+                            bw.Flush();
+
                             break;
                     }
                 }
