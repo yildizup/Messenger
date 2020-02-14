@@ -23,6 +23,25 @@ create table user (
   ) ;
   
   
+  
+  
+  create table chat (
+  
+  main_email varchar(255),
+    friend_email varchar(255), 
+  message text,
+  thetime timestamp,
+    
+
+ foreign key (main_email)
+    references user(email),
+ foreign key (friend_email)
+    references user(email)
+  ) ;
+  
+  
+  
+  
  -- Die Benutzer
 insert into user (email, password) values ('admin@telefonico.com','1');
 insert into user (email, password) values ('user@telefonico.com','1');
@@ -48,3 +67,14 @@ insert into contacts (main_email, friend_email) values ('admin@telefonico.com','
 -- Kontakte von absender@gmail.com
 insert into contacts (main_email, friend_email) values ('absender@gmail.com','empfänger@gmail.com');
 insert into contacts (main_email, friend_email) values ('absender@gmail.com','freund1@gmail.com');
+
+-- Kontakte von empfänger@gmail.com
+
+insert into contacts (main_email, friend_email) values ('empfänger@gmail.com','absender@gmail.com');
+
+
+
+
+-- Der Chat
+
+insert into chat (main_email, friend_email, message, thetime) values ('absender@gmail.com','empfänger@gmail.com','Hallo empfänger', now());
