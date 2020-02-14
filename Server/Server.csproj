@@ -36,6 +36,9 @@
     <Reference Include="MySql.Data">
       <HintPath>..\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="SharedClass">
+      <HintPath>..\SharedClass\bin\Debug\netstandard2.0\SharedClass.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommunicationHeader.cs" />
     <Compile Include="dbController.cs" />
     <Compile Include="IndividualUser.cs" />
     <Compile Include="Program.cs" />
