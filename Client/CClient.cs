@@ -18,8 +18,6 @@ namespace Client
 
         public TcpClient client;
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
-        public BinaryReader br;
-        public BinaryWriter bw;
         public BinaryFormatter bFormatter;
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
@@ -39,21 +37,10 @@ namespace Client
         {
             netStream = client.GetStream();
 
-            br = new BinaryReader(netStream);
-            bw = new BinaryWriter(netStream);
-
-
             if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
 
-                AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
-                bFormatter.Serialize(netStream, header);
-
-                LoginData loginData = new LoginData();
-                loginData.Email = email;
-                loginData.Password = password;
-
-                bFormatter.Serialize(netStream, loginData);
+                Login(email, password);
 
                 byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
@@ -69,7 +56,7 @@ namespace Client
 
                 Register(email, password);
 
-                Byte answer = br.ReadByte();
+                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
                 switch (answer)
                 {
@@ -115,18 +102,27 @@ namespace Client
         /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
         public void Register(string email, string password)
         {
-            bw.Write(ComHeader.hRegister);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
+            bFormatter.Serialize(netStream, header);
+
+            LoginData loginData = new LoginData();
+            loginData.Email = email;
+            loginData.Password = password;
+
+            bFormatter.Serialize(netStream, loginData);
+
         }
 
         public void Login(string email, string password)
         {
-            bw.Write(ComHeader.hLogin);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
+            bFormatter.Serialize(netStream, header);
+
+            LoginData loginData = new LoginData();
+            loginData.Email = email;
+            loginData.Password = password;
+
+            bFormatter.Serialize(netStream, loginData);
         }
 
 
@@ -197,19 +193,19 @@ namespace Client
         {
             // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
 
-            bw.Write(ComHeader.hDisconnect);
-            bw.Flush();
+            //bw.Write(ComHeader.hDisconnect);
+            //bw.Flush();
 
-            netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
-            client.Close();
+            //netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
+            //client.Close();
 
 
         }
 
         public void LoadChat()
         {
-            bw.Write(ComHeader.hChat);
-            bw.Flush();
+            //bw.Write(ComHeader.hChat);
+            //bw.Flush();
         }
 
 

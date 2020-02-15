@@ -80,7 +80,7 @@ namespace SharedClass
                     PHeader = ComHeader.hLogin;
                     break;
                 case ComHeader.hRegister:
-                    PHeader = ComHeader.hLogin;
+                    PHeader = ComHeader.hRegister;
                     break;
                 case ComHeader.hRegistrationOk:
                     PHeader = ComHeader.hRegistrationOk;

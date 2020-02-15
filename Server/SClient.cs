@@ -12,8 +12,6 @@ namespace Server
     {
         public TcpClient client;
         public NetworkStream netStream;
-        public BinaryReader br;
-        public BinaryWriter bw;
         public BinaryFormatter bFormatter;
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
@@ -37,9 +35,6 @@ namespace Server
             {
                 Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
                 netStream = client.GetStream();
-
-                br = new BinaryReader(netStream);
-                bw = new BinaryWriter(netStream);
 
                 byte clientMode = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; //Abfragen, ob Client sich registrieren oder einloggen möchte.
 
@@ -79,16 +74,18 @@ namespace Server
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
                 Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
-                bw.Write(ComHeader.hRegistrationOk); // Rückmeldung an den Client über erfolgreiche Registrierung
-                bw.Flush();
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationOk);
+                bFormatter.Serialize(netStream, header);
+
+
                 Receiver();
             }
             else
             {
                 //Email adresse existiert bereits
                 Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
-                bw.Write(ComHeader.hRegistrationNotOk); // Rückmeldung an den Client, dass die Registrierung nicht erfolgreich war
-                bw.Flush();
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationNotOk);
+                bFormatter.Serialize(netStream, header);
                 Receiver();
             }
         }
@@ -148,16 +145,18 @@ namespace Server
                             MessageSend message = new MessageSend();
                             message = (MessageSend)bFormatter.Deserialize(netStream);
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
+                            NetworkStream netStreamOfReceiver = UserController.individualUsers[indexReceiver].Connection.netStream;
 
                             //Zuerst den Header senden
                             AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
-                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, sHeader);
+                            bFormatter.Serialize(netStreamOfReceiver, sHeader);
 
                             //Sende Nachricht zum Empfänger
                             MessageReceived messageReceived = new MessageReceived();
                             messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin
                             messageReceived.Msg = message.Msg;
-                            UserController.individualUsers[indexReceiver].Connection.bFormatter.Serialize(netStream, messageReceived); //Nachricht an den Empfänger senden
+                            bFormatter.Serialize(netStreamOfReceiver, messageReceived);
+
 
 
                             break;
@@ -166,8 +165,8 @@ namespace Server
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
-                            bw.Write(ComHeader.hChat);
-                            bw.Flush();
+                            //bw.Write(ComHeader.hChat);
+                            //bw.Flush();
 
                             break;
                     }
