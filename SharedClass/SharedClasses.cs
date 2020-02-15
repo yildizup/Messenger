@@ -60,6 +60,12 @@ namespace SharedClass
         public string Password { get; set; }
     }
 
+    [Serializable]
+    public class ChatPerson
+    {
+        public string Email { get; set; }
+    }
+
 
     /// <summary>
     /// alle möglichen Header
@@ -96,6 +102,9 @@ namespace SharedClass
                     break;
                 case ComHeader.hSend:
                     PHeader = ComHeader.hSend;
+                    break;
+                case ComHeader.hChat:
+                    PHeader = ComHeader.hChat;
                     break;
             }
         }

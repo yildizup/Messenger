@@ -101,16 +101,16 @@ namespace Server
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
-                    listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
+                    listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
                     AdditionalHeader header = new AdditionalHeader(ComHeader.hLoginOk);
                     bFormatter.Serialize(netStream, header);
 
 
-                    ContactList tst = new ContactList();
-                    tst.listContacts = dbController.LoadContacts(email);
-                    bFormatter.Serialize(netStream, tst.listContacts);
+                    ContactList contactList = new ContactList();
+                    contactList.listContacts = dbController.LoadContacts(email);//Die Kontakte des eingeloggten Users laden
+                    bFormatter.Serialize(netStream, contactList.listContacts);
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
@@ -165,8 +165,17 @@ namespace Server
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
-                            //bw.Write(ComHeader.hChat);
-                            //bw.Flush();
+
+                            AdditionalHeader h = new AdditionalHeader(ComHeader.hChat);
+                            bFormatter.Serialize(netStream, h);
+                            ChatPerson chatPerson = new ChatPerson();
+                            chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+
+
+                            ChatContent chatContent = new ChatContent();
+                            chatContent.chatContent = dbController.LoadChat(individualUser.email,chatPerson.Email);
+                            bFormatter.Serialize(netStream, chatContent);
+
 
                             break;
                     }
@@ -184,6 +193,12 @@ namespace Server
                  */
 
             }
+
+        }
+
+
+        public void LoadChat()
+        {
 
         }
 

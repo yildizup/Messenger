@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,15 +31,31 @@ namespace Client
 
             this.cClient = cClient;
             receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
+
             this.cClient.MessageReceived += receivedHandler;
+            this.cClient.ChatReceived += CClient_ChatReceived;
 
 
-            Closing += ManageClosing;
+            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
             lbContactList.ItemsSource = cClient.contactList.listContacts;
 
 
         }
 
+        private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
+        {
+            DataTable tmp = e.DtChat;
+
+
+            foreach (DataRow row in tmp.Rows)
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                           {
+                               txtbReceivedMessage.Text += String.Format("{0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine);
+                           });
+            }
+
+        }
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
@@ -68,6 +85,8 @@ namespace Client
 
         private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
+            cClient.LoadChat(lbContactList.SelectedItem.ToString());
 
         }
     }

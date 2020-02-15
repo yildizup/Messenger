@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -167,8 +168,8 @@ namespace Client
                         OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Msg)); //Event auslösen
                         break;
                     case ComHeader.hChat: //Chat Inhalt 
-
-
+                        DataTable dtChat = ((ChatContent)bFormatter.Deserialize(netStream)).chatContent;
+                        OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
 
 
@@ -202,10 +203,17 @@ namespace Client
 
         }
 
-        public void LoadChat()
+        public void LoadChat(string friend_email)
         {
-            //bw.Write(ComHeader.hChat);
-            //bw.Flush();
+
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
+            bFormatter.Serialize(netStream, header);
+
+            ChatPerson chatPerson = new ChatPerson();
+            chatPerson.Email = friend_email;
+
+            bFormatter.Serialize(netStream, chatPerson);
+
         }
 
 
@@ -219,6 +227,7 @@ namespace Client
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
         public event EventHandler RegistrationNotOk;
+        public event CChatContentEventHandler ChatReceived;
 
         virtual protected void OnLoginOK()
         {
@@ -233,6 +242,14 @@ namespace Client
             if (MessageReceived != null)
             {
                 MessageReceived(this, e);
+            }
+        }
+
+        virtual protected void OnChatReceived(CChatContentEventArgs e)
+        {
+            if (ChatReceived != null)
+            {
+                ChatReceived(this, e);
             }
         }
 

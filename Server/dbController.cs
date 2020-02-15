@@ -231,7 +231,7 @@ namespace Server
             #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by asc";
+            cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by thetime asc";
             cmd.Parameters.AddWithValue("@mainemail", main_email);
             cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Connection = con;
@@ -247,8 +247,6 @@ namespace Server
             con.Close();
 
             return dtChat;
-
-
         }
 
 
