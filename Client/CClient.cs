@@ -11,9 +11,9 @@ namespace Client
 {
     public class CClient
     {
+        #region Variablen
 
         Thread tcpThread;
-
         public string Server { get { return "localhost"; } }
         public int Port { get { return 2000; } }
 
@@ -23,8 +23,10 @@ namespace Client
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
         public ContactList contactList;
-
         bool registrationMode = false;
+
+        #endregion
+
 
         public CClient()
         {
@@ -33,6 +35,16 @@ namespace Client
 
         }
 
+
+        #region Verbindungsauf- und Abbau
+
+        public void Connect(string email, string password)
+        {
+            this.email = email;
+            this.password = password;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+        }
 
         public void SetupConn()  // Verbindung aufbauen
         {
@@ -79,14 +91,6 @@ namespace Client
         }
 
 
-        public void Connect(string email, string password)
-        {
-            this.email = email;
-            this.password = password;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-        }
-
         public void ConnectToRegistrate(string email, string password)
         {
             this.email = email;
@@ -95,6 +99,50 @@ namespace Client
             tcpThread = new Thread(EstablishConnection);
             tcpThread.Start();
         }
+
+        /// <summary>
+        /// Versucht eine Verbindung aufzubauen
+        /// </summary>
+        public void EstablishConnection()
+        {
+            //try
+            //{
+            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+            AreWeConnected = true;
+            SetupConn();
+            //}
+
+            //catch (Exception e)
+            //{
+            //AreWeConnected = false;
+            //}
+
+
+        }
+
+        public void CloseConn() // Verbindung beenden
+        {
+
+        }
+
+
+        public void SmoothDisconnect()
+        {
+            // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
+
+            //bw.Write(ComHeader.hDisconnect);
+            //bw.Flush();
+
+            //netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
+            //client.Close();
+        }
+
+
+
+        #endregion
+
+
+        #region Anmeldung und Registrierung
 
         /// <summary>
         /// Zum registrieren
@@ -127,34 +175,15 @@ namespace Client
         }
 
 
+        #endregion
 
-        /// <summary>
-        /// Versucht eine Verbindung aufzubauen
-        /// </summary>
-        public void EstablishConnection()
-        {
-            //try
-            //{
-            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            AreWeConnected = true;
-            SetupConn();
-            //}
-
-            //catch (Exception e)
-            //{
-            //AreWeConnected = false;
-            //}
-
-
-        }
-
-        public void CloseConn() // Verbindung beenden
-        {
-
-        }
 
         #region Nachrichten senden und empfangen
-        void Receiver()  // Empfange alle Einkommenden Packete.
+
+        /// <summary>
+        /// Wartet auf Einkommende Pakete
+        /// </summary>
+        void Receiver()
         {
             while (client.Connected)
             {
@@ -177,31 +206,12 @@ namespace Client
             }
         }
 
-        public void SendMessage(string to, string msg)
-        {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
-            bFormatter.Serialize(netStream, header);
-            MessageSend message = new MessageSend();
-            message.To = to;
-            message.Msg = msg;
-            bFormatter.Serialize(netStream, message);
-        }
 
         #endregion
 
 
-        public void SmoothDisconnect()
-        {
-            // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
 
-            //bw.Write(ComHeader.hDisconnect);
-            //bw.Flush();
-
-            //netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
-            //client.Close();
-
-
-        }
+        #region Chat-Methoden
 
         public void LoadChat(string friend_email)
         {
@@ -216,13 +226,29 @@ namespace Client
 
         }
 
+        /// <summary>
+        /// Sendet eine Nachrichtig an einen anderen Client
+        /// </summary>
+        /// <param name="to">Empfänger</param>
+        /// <param name="msg">Nachricht</param>
+        public void SendMessage(string to, string msg)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
+            bFormatter.Serialize(netStream, header);
+            MessageSend message = new MessageSend();
+            message.To = to;
+            message.Msg = msg;
+            bFormatter.Serialize(netStream, message);
+        }
+
+
+        #endregion
 
 
 
-        public bool AreWeConnected { get; set; }
 
+        #region Events
 
-        // Events
         public event EventHandler LoginOK;
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
@@ -270,6 +296,10 @@ namespace Client
             }
         }
 
+        #endregion
 
+
+        //Eigenschaften
+        public bool AreWeConnected { get; set; }
     }
 }

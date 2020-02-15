@@ -7,8 +7,13 @@ namespace Server
     static class dbController
     {
 
+
+        #region Variablen
+
         internal static MySqlConnection con;  // wird verwendet, um eine Verbindung mit der Datenbank herzustellen.
         internal static string connectionString;
+
+        #endregion
 
         static dbController()
         {
@@ -17,16 +22,16 @@ namespace Server
             con = new MySqlConnection(connectionString);
         }
 
-        #region Benutzer erstellen und Email prüfen
+
+
+        #region Anmeldung und Registrierung
 
         static internal void CreateUser(string email, string password)
         {
-            #region Befehl
             MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password) values(@email,@password)");
             insertCommand.Parameters.AddWithValue("@email", email);
             insertCommand.Parameters.AddWithValue("@password", password);
             insertCommand.Connection = con;
-            #endregion
 
             con.Open();
             insertCommand.ExecuteNonQuery();
@@ -43,13 +48,11 @@ namespace Server
         static internal bool DoesUserExist(string email)
         {
 
-            #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from user where email=@email";
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
-            #endregion
 
             con.Open();
 
@@ -84,9 +87,7 @@ namespace Server
             }
 
         }
-        #endregion
 
-        #region Benutzeranmeldung
 
 
         /// <summary>
@@ -97,14 +98,12 @@ namespace Server
         /// <returns>true, wenn Passwort mit der Datenbank übereinstimmt</returns>
         static internal bool CheckPassword(string email, string password)
         {
-            #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
 
             cmd.CommandText = "Select password from user where email=@email";
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
-            #endregion
 
             con.Open();
 
@@ -163,19 +162,22 @@ namespace Server
                 }
             }
 
-            #endregion
         }
+
+
+        #endregion
+
+
+        #region Datensätze laden
 
 
         static internal DataTable LoadUsers()
         {
 
-            #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from user";
             cmd.Connection = con;
-            #endregion
 
             con.Open();
 
@@ -197,13 +199,11 @@ namespace Server
         {
             List<string> listContacts = new List<string>();
 
-            #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from contacts where main_email=@email"; // Abfrage nach allen Kontakten des Users
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
-            #endregion
 
             con.Open();
 
@@ -228,14 +228,12 @@ namespace Server
         {
             DataTable dtChat = new DataTable();
 
-            #region Abfrage
 
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by thetime asc";
             cmd.Parameters.AddWithValue("@mainemail", main_email);
             cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Connection = con;
-            #endregion
 
             con.Open();
 
@@ -249,6 +247,8 @@ namespace Server
             return dtChat;
         }
 
+
+        #endregion
 
     }
 }

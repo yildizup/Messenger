@@ -10,12 +10,16 @@ namespace Server
 {
     public class SClient
     {
+
+
+        #region Variablen
         public TcpClient client;
         public NetworkStream netStream;
         public BinaryFormatter bFormatter;
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
+        #endregion
 
 
 
@@ -28,6 +32,9 @@ namespace Server
 
 
         }
+
+
+        #region Verbindungsauf- und Abbau
 
         public void SetupConn()
         {
@@ -66,6 +73,14 @@ namespace Server
 
         }
 
+        public void CloseConn()
+        {
+        }
+
+        #endregion
+
+
+        #region Anmeldung- und Registrierung
 
         public void CreateUser(string email, string password)
         {
@@ -126,6 +141,10 @@ namespace Server
                     break;
             }
         }
+
+        #endregion
+
+
 
         /// <summary>
         /// Wartet fortlaufend auf Packete vom Client
@@ -202,11 +221,9 @@ namespace Server
 
         }
 
-        public void CloseConn()
-        {
-        }
 
-        //Events 
+
+        #region Events
         public event EventHandler wrongEmail;
 
         virtual protected void OnWrongEmail()
@@ -216,6 +233,7 @@ namespace Server
                 wrongEmail(this, EventArgs.Empty); //Event wird ausgelöst
             }
         }
+        #endregion
 
 
     }
