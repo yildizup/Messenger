@@ -77,5 +77,14 @@ insert into contacts (main_email, friend_email) values ('empfänger@gmail.com','
 
 -- Der Chat
 
+-- zwischen absender@gmail.com und empfänger@gmail.com
 insert into chat (main_email, friend_email, message, thetime) values ('absender@gmail.com','empfänger@gmail.com','Hallo empfänger', now());
 insert into chat (main_email, friend_email, message, thetime) values ('empfänger@gmail.com','absender@gmail.com','Hallo Absender. Wie geht es dir ?', now());
+insert into chat (main_email, friend_email, message, thetime) values ('absender@gmail.com','empfänger@gmail.com','Danke, mir geht es gut und dir Empfänger ?', now());
+insert into chat (main_email, friend_email, message, thetime) values ('empfänger@gmail.com','absender@gmail.com','Herzlichen Dank für die Nachfrage. Mir geht es auch gut', now());
+insert into chat (main_email, friend_email, message, thetime) values ('absender@gmail.com','empfänger@gmail.com','Das Freut mich Empfänger mein Freund', now());
+
+-- zwischen admin@telefonico.com und user@telefonico.com
+insert into chat (main_email, friend_email, message, thetime) values ('user@telefonico.com','admin@telefonico.com','Sehr geehrter Herr admin, \n ich brauche Ihre Hilfe.', now());
+insert into chat (main_email, friend_email, message, thetime) values ('admin@telefonico.com','user@telefonico.com','Hallo Kunde, \n wie kann ich Ihnen weiterhelfen ?', now());
+insert into chat (main_email, friend_email, message, thetime) values ('user@telefonico.com','admin@telefonico.com','Hat sich geklärt. Dennoch vielen Dank für die schnelle Antwort.', now());

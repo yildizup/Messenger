@@ -51,7 +51,7 @@ namespace Client
             {
                 Application.Current.Dispatcher.Invoke((Action)delegate
                            {
-                               txtbReceivedMessage.Text += String.Format("{0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine);
+                               txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
                            });
             }
 
