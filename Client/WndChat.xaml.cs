@@ -21,7 +21,6 @@ namespace Client
     public partial class WndChat : Window
     {
 
-
         public CClient cClient;
         CReceivedEventHandler receivedHandler;
 
@@ -44,15 +43,17 @@ namespace Client
 
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
         {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           txtbReceivedMessage.Text = "";
+                       });
             DataTable tmp = e.DtChat;
-
-
             foreach (DataRow row in tmp.Rows)
             {
                 Application.Current.Dispatcher.Invoke((Action)delegate
-                           {
-                               txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
-                           });
+                               {
+                                   txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
+                               });
             }
 
         }
@@ -85,9 +86,7 @@ namespace Client
 
         private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             cClient.LoadChat(lbContactList.SelectedItem.ToString());
-
         }
     }
 }

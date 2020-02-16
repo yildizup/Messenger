@@ -44,8 +44,6 @@ namespace Client
         }
     }
 
-
-
     public delegate void CReceivedEventHandler(object sender, CReceivedEventArgs e);
     public delegate void CChatContentEventHandler(object sender, CChatContentEventArgs e);
 

@@ -241,8 +241,22 @@ namespace Server
 
             // In ein 'DataTable' Objekt schreiben.
             dtChat.Load(dr);
-
             con.Close();
+
+
+
+            // Wenn die Nachricht vom aktuellen Client ist, soll statt der Email "Sie" stehen
+            foreach (DataRow r in dtChat.Rows) 
+            {
+                if ((string)r["main_email"] == main_email) 
+                {
+                    r["main_email"] = "Sie"; // Namen ändern
+                }
+            }
+
+
+
+
 
             return dtChat;
         }
