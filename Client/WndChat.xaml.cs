@@ -63,7 +63,7 @@ namespace Client
             cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
 
 
-            txtbReceivedMessage.Text += String.Format("Sie: {0}{1}", txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
+            txtbReceivedMessage.Text += String.Format("[{0}]Sie: {1}{2}", DateTime.Now ,txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
         }
 
 
