@@ -254,15 +254,35 @@ namespace Server
                 }
             }
 
-
-
-
-
             return dtChat;
         }
 
 
         #endregion
+
+
+        #region Datensätze speichern
+
+
+        static internal void SaveMessage(string main_email, string friend_email, string message)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "insert into chat (main_email, friend_email, message, thetime) values (@mainemail,@friendemail,@message, now() );";
+            cmd.Parameters.AddWithValue("@mainemail", main_email);
+            cmd.Parameters.AddWithValue("@friendemail", friend_email);
+            cmd.Parameters.AddWithValue("@message", message);
+            cmd.Connection = con;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+
+        }
+
+
+
+        #endregion
+
 
     }
 }
