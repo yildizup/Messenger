@@ -112,7 +112,8 @@ namespace Server
             switch (dbController.Login(email, password))
             {
                 case 0:
-                    // Alle Daten richtig
+                    // Wenn alle Daten richtig sind
+                    UserController.individualUsers[UserController.GetIndexOfUser(email)].LoggedIn = true;
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
@@ -164,26 +165,32 @@ namespace Server
                             MessageSend message = new MessageSend();
                             message = (MessageSend)bFormatter.Deserialize(netStream);
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
-                            NetworkStream netStreamOfReceiver = UserController.individualUsers[indexReceiver].Connection.netStream;
 
-                            //Zuerst den Header senden
-                            AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
-                            bFormatter.Serialize(netStreamOfReceiver, sHeader);
+                            //Ist der Empfänger Online ?
+                            if (UserController.individualUsers[indexReceiver].LoggedIn == true)
+                            {
+                                NetworkStream netStreamOfReceiver = UserController.individualUsers[indexReceiver].Connection.netStream;
 
-                            //Sende Nachricht zum Empfänger
-                            MessageReceived messageReceived = new MessageReceived();
-                            messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin (CHECK)
-                            messageReceived.Msg = message.Msg;
-                            bFormatter.Serialize(netStreamOfReceiver, messageReceived);
+                                //Zuerst den Header senden
+                                AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
+                                bFormatter.Serialize(netStreamOfReceiver, sHeader);
 
-                            //Speichere Nachricht in der Datenbank
-                            dbController.SaveMessage(individualUser.email, message.To, message.Msg);
+                                //Sende Nachricht zum Empfänger
+                                MessageReceived messageReceived = new MessageReceived();
+                                messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin (CHECK)
+                                messageReceived.Msg = message.Msg;
+                                bFormatter.Serialize(netStreamOfReceiver, messageReceived);
 
-
-
-
-
+                                //Speichere Nachricht in der Datenbank
+                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, true);
+                            }
+                            else
+                            {
+                                //Speichere Nachricht in der Datenbank
+                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, false);
+                            }
                             break;
+
                         case ComHeader.hDisconnect:
                             client.Close();  //Die Verbindung schließen
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
@@ -197,7 +204,7 @@ namespace Server
 
 
                             ChatContent chatContent = new ChatContent();
-                            chatContent.chatContent = dbController.LoadChat(individualUser.email,chatPerson.Email);
+                            chatContent.chatContent = dbController.LoadChat(individualUser.email, chatPerson.Email);
                             bFormatter.Serialize(netStream, chatContent);
 
 

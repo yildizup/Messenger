@@ -264,13 +264,14 @@ namespace Server
         #region Datensätze speichern
 
 
-        static internal void SaveMessage(string main_email, string friend_email, string message)
+        static internal void SaveMessage(string main_email, string friend_email, string message, bool received)
         {
             MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "insert into chat (main_email, friend_email, message, thetime) values (@mainemail,@friendemail,@message, now() );";
+            cmd.CommandText = "insert into chat (main_email, friend_email, message, thetime, received) values (@mainemail,@friendemail,@message, now(), @received);";
             cmd.Parameters.AddWithValue("@mainemail", main_email);
             cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Parameters.AddWithValue("@message", message);
+            cmd.Parameters.AddWithValue("@received", received);
             cmd.Connection = con;
 
             con.Open();
