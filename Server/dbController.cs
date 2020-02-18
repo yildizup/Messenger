@@ -6,12 +6,11 @@ namespace Server
 {
     static class dbController
     {
-
-
         #region Variablen
 
         internal static MySqlConnection con;  // wird verwendet, um eine Verbindung mit der Datenbank herzustellen.
         internal static string connectionString;
+
 
         #endregion
 
@@ -21,8 +20,6 @@ namespace Server
             connectionString = @"host=127.0.0.1;user=root;database=telefonico";
             con = new MySqlConnection(connectionString);
         }
-
-
 
         #region Anmeldung und Registrierung
 
@@ -194,7 +191,6 @@ namespace Server
 
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
 
-
         static internal List<string> LoadContacts(string email)
         {
             List<string> listContacts = new List<string>();
@@ -227,8 +223,6 @@ namespace Server
         static internal DataTable LoadChat(string main_email, string friend_email)
         {
             DataTable dtChat = new DataTable();
-
-
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by thetime asc";
             cmd.Parameters.AddWithValue("@mainemail", main_email);
@@ -257,6 +251,20 @@ namespace Server
             return dtChat;
         }
 
+        static internal void MarkNotReceivedMessagesAsReceived(string main_email, string friend_email)
+        {
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "update chat set received = true where main_email=@friendemail && friend_email=@mainemail && received = false;";
+            cmd.Parameters.AddWithValue("@mainemail", main_email);
+            cmd.Parameters.AddWithValue("@friendemail", friend_email);
+            cmd.Connection = con;
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+
+        }
+
 
         #endregion
 
@@ -277,12 +285,12 @@ namespace Server
             con.Open();
             cmd.ExecuteNonQuery();
             con.Close();
-
         }
 
 
 
         #endregion
+
 
 
     }

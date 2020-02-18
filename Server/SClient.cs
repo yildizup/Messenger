@@ -10,8 +10,6 @@ namespace Server
 {
     public class SClient
     {
-
-
         #region Variablen
         public TcpClient client;
         public NetworkStream netStream;
@@ -20,7 +18,6 @@ namespace Server
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
         #endregion
-
 
 
         public SClient(TcpClient c)
@@ -201,6 +198,9 @@ namespace Server
                             bFormatter.Serialize(netStream, h);
                             ChatPerson chatPerson = new ChatPerson();
                             chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+
+                            //Die ungelesenen Nachrichten als gelesen markieren
+                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.email, chatPerson.Email); 
 
 
                             ChatContent chatContent = new ChatContent();
