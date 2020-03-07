@@ -20,10 +20,11 @@ namespace Client
     /// </summary>
     public partial class UserControlMessageSent : UserControl
     {
-        public UserControlMessageSent(string msg)
+        public UserControlMessageSent(string msg, string date)
         {
             InitializeComponent();
-            tbMessage.Text= msg;
+            tbMessage.Text = msg;
+            tbDate.Text = date;
         }
     }
 }

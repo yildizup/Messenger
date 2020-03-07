@@ -55,6 +55,7 @@ namespace Client
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
                            txtbReceivedMessage.Text = "";
+                           splChat.Children.Clear(); //Stackpanel säubern
                        });
             DataTable tmp = e.DtChat;
             foreach (DataRow row in tmp.Rows)
@@ -62,6 +63,24 @@ namespace Client
                 Application.Current.Dispatcher.Invoke((Action)delegate
                                {
                                    txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
+                               });
+            }
+
+            foreach (DataRow row in tmp.Rows)
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                               {
+                                   //TODO: Nach einer anderen Lösungsmöglichkeit recherchieren
+                                   if (row["main_email"].ToString() == "Sie")
+                                   {
+                                       UserControlMessageSent messagesent = new UserControlMessageSent(row["message"].ToString(), row["thetime"].ToString() );
+                                       splChat.Children.Add(messagesent);
+                                   }
+                                   else
+                                   {
+                                       UserControlMessageReceived messagereceived = new UserControlMessageReceived(row["message"].ToString(), row["thetime"].ToString() );
+                                       splChat.Children.Add(messagereceived);
+                                   }
                                });
             }
 
@@ -73,8 +92,6 @@ namespace Client
             cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
             txtbReceivedMessage.Text += String.Format("[{0}] Sie: {1}{2}", DateTime.Now, txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
 
-            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text);
-            splChat.Children.Add(messagesent);
 
 
         }

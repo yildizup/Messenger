@@ -14,8 +14,6 @@
         FontFamily="{materialDesign:MaterialDesignFont}"
         >
     <Grid>
-        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="24" Margin="277,478,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="506"/>
-        <TextBlock  x:Name="txtbReceivedMessage" Background="AntiqueWhite" HorizontalAlignment="Left" Margin="278,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="73" Width="604" ></TextBlock>
         <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Margin="798,478,0,0" Click="btnSendMessage_Click" Height="24"/>
         <ListBox Name="lbContactList" HorizontalAlignment="Left" Height="464" Margin="10,45,0,0" VerticalAlignment="Top" Width="262" SelectionChanged="lbContactList_SelectionChanged"/>
         <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="717,10,0,0" VerticalAlignment="Top" Width="165" Click="btnAddContact_Click"/>
@@ -26,6 +24,12 @@
                 <!--<local:UserControlMessageReceived HorizontalAlignment="Right" Margin="0,0,9,0" Width="601" />
             <local:UserControlMessageSent HorizontalAlignment="Right"/>-->
             </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer HorizontalAlignment="Left" Height="39" Margin="278,463,0,0" VerticalAlignment="Top" Width="515">
+            <TextBox x:Name="txtMessage" TextWrapping="Wrap" Text="TextBox" />
+        </ScrollViewer>
+        <ScrollViewer HorizontalAlignment="Left" Height="91" Margin="278,47,0,0" VerticalAlignment="Top" Width="604">
+            <TextBlock  x:Name="txtbReceivedMessage" Background="AntiqueWhite" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" />
         </ScrollViewer>
     </Grid>
 </Window>
