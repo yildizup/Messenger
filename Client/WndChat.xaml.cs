@@ -58,14 +58,13 @@ namespace Client
 
         }
 
+
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
             cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
 
-
-            txtbReceivedMessage.Text += String.Format("[{0}]Sie: {1}{2}", DateTime.Now ,txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
+            txtbReceivedMessage.Text += String.Format("[{0}] Sie: {1}{2}", DateTime.Now, txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
         }
-
 
         void cMessageReceived(object sender, CReceivedEventArgs e)
         {
@@ -81,12 +80,21 @@ namespace Client
             e.Cancel = true; //TODO: Recherchieren
 
             if (MessageBox.Show("Wollen Sie sich wirklich abmelden ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                cClient.CloseConn();
                 Environment.Exit(0);
+            }
+
         }
 
         private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             cClient.LoadChat(lbContactList.SelectedItem.ToString());
+        }
+
+        private void btnAddContact_Click(object sender, RoutedEventArgs e)
+        {
+            cClient.AddContact(tbContactName.Text);
         }
     }
 }

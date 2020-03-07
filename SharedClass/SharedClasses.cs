@@ -8,13 +8,13 @@ namespace SharedClass
     public class ContactList
     {
         public List<string> listContacts = new List<string>(); //TODO: Wie kann man das besser lösen ?
-
     }
 
     [Serializable] //TODO: Recherchieren
     public class ChatContent
     {
         public DataTable chatContent = new DataTable();
+
     }
 
 
@@ -85,6 +85,9 @@ namespace SharedClass
                 case ComHeader.hChat:
                     PHeader = ComHeader.hChat;
                     break;
+                case ComHeader.hAddContact:
+                    PHeader = ComHeader.hAddContact;
+                    break;
             }
         }
     }
@@ -106,6 +109,7 @@ namespace SharedClass
         public const byte hRegistrationNotOk = 9; // Die Registrierung ist fehlgeschlagen
         public const byte hDisconnect = 10; //Um den Server zu benachrichten, dass der Client die Verbindung schließt
         public const byte hChat = 11; //Anfrage nach Chat Inhalten
+        public const byte hAddContact = 12; //Kontakt hinzufügen
     }
 }
 

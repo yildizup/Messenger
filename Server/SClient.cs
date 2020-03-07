@@ -17,6 +17,8 @@ namespace Server
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
+
+        Thread tcpThread;
         #endregion
 
 
@@ -24,10 +26,9 @@ namespace Server
         {
             //Für jeden Client soll ein neuer Thread erstellen werden.TODO:  observer design pattern anschauen.
             client = c;
-            (new Thread(new ThreadStart(SetupConn))).Start();
+            tcpThread = new Thread(SetupConn);
+            tcpThread.Start();
             bFormatter = new BinaryFormatter();
-
-
         }
 
 
@@ -72,6 +73,16 @@ namespace Server
 
         public void CloseConn()
         {
+            // Benutzer als abgemeldet markieren
+            UserController.individualUsers[UserController.GetIndexOfUser(individualUser.email)].LoggedIn = false;
+
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
+            bFormatter.Serialize(netStream, header);
+
+            // Verbindung schließen
+            //tcpThread.Abort();
+            client.Close();
+
         }
 
         #endregion
@@ -162,7 +173,6 @@ namespace Server
                             MessageSend message = new MessageSend();
                             message = (MessageSend)bFormatter.Deserialize(netStream);
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
-
                             //Ist der Empfänger Online ?
                             if (UserController.individualUsers[indexReceiver].LoggedIn == true)
                             {
@@ -189,8 +199,8 @@ namespace Server
                             break;
 
                         case ComHeader.hDisconnect:
-                            client.Close();  //Die Verbindung schließen
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
+                            CloseConn();
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
 
@@ -200,13 +210,24 @@ namespace Server
                             chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
 
                             //Die ungelesenen Nachrichten als gelesen markieren
-                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.email, chatPerson.Email); 
+                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.email, chatPerson.Email);
 
 
                             ChatContent chatContent = new ChatContent();
                             chatContent.chatContent = dbController.LoadChat(individualUser.email, chatPerson.Email);
                             bFormatter.Serialize(netStream, chatContent);
+                            break;
 
+                        case ComHeader.hAddContact:
+                            ChatPerson friend = new ChatPerson();
+                            friend = (ChatPerson)bFormatter.Deserialize(netStream);
+
+                            // Nur wenn der zu Hinzufügende Freund existiert TODO: Fehlermeldung wenn Benutzer nicht existiert
+                            if (dbController.DoesUserExist(friend.Email))
+                            {
+                                // neuen Kontakt in die Datenbank hinzufügen
+                                dbController.AddContact(individualUser.email, friend.Email);
+                            }
 
                             break;
                     }

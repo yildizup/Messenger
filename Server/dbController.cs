@@ -44,8 +44,6 @@ namespace Server
         /// <returns>true, wenn user existiert</returns>
         static internal bool DoesUserExist(string email)
         {
-
-
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from user where email=@email";
             cmd.Parameters.AddWithValue("@email", email);
@@ -280,6 +278,25 @@ namespace Server
             cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Parameters.AddWithValue("@message", message);
             cmd.Parameters.AddWithValue("@received", received);
+            cmd.Connection = con;
+
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+
+        /// <summary>
+        /// Kontakt des Benutzers in die Datenbank hinzufügen
+        /// </summary>
+        /// <param name="main_email"></param>
+        /// <param name="friend_email"></param>
+        static internal void AddContact(string main_email, string friend_email)
+        {
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
+            cmd.Parameters.AddWithValue("@mainemail", main_email);
+            cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Connection = con;
 
             con.Open();

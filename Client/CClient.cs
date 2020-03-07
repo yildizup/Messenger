@@ -75,12 +75,10 @@ namespace Client
                 {
                     // Wenn die Registrierung erfolgreich war
                     case ComHeader.hRegistrationOk:
-                        SmoothDisconnect();
                         OnRegistrationOK();
                         break;
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
-                        SmoothDisconnect();
                         OnRegistrationNotOk();
                         break;
 
@@ -108,7 +106,6 @@ namespace Client
             //try
             //{
             client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            AreWeConnected = true;
             SetupConn();
             //}
 
@@ -122,22 +119,9 @@ namespace Client
 
         public void CloseConn() // Verbindung beenden
         {
-
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
+            bFormatter.Serialize(netStream, header);
         }
-
-
-        public void SmoothDisconnect()
-        {
-            // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
-
-            //bw.Write(ComHeader.hDisconnect);
-            //bw.Flush();
-
-            //netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
-            //client.Close();
-        }
-
-
 
         #endregion
 
@@ -178,7 +162,7 @@ namespace Client
         #endregion
 
 
-        #region Nachrichten senden und empfangen
+        #region Nachrichten empfangen
 
         /// <summary>
         /// Wartet auf Einkommende Pakete
@@ -200,8 +184,13 @@ namespace Client
                         DataTable dtChat = ((ChatContent)bFormatter.Deserialize(netStream)).chatContent;
                         OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
+                    case ComHeader.hDisconnect:
+                        tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Nachrichten. Sobald die Verbindung 
+                        client.Close();
+                        break;
+                    case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
 
-
+                        break;
                 }
             }
         }
@@ -239,6 +228,19 @@ namespace Client
             message.To = to;
             message.Msg = msg;
             bFormatter.Serialize(netStream, message);
+        }
+
+        /// <summary>
+        /// Ein Kontakt in die Kontaktliste hinzufügen
+        /// </summary>
+        /// <param name="friend_email"></param>
+        public void AddContact(string friend_email)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
+            bFormatter.Serialize(netStream, header);
+            ChatPerson friend = new ChatPerson();
+            friend.Email = friend_email;
+            bFormatter.Serialize(netStream, friend);
         }
 
 
@@ -298,8 +300,5 @@ namespace Client
 
         #endregion
 
-
-        //Eigenschaften
-        public bool AreWeConnected { get; set; }
     }
 }
