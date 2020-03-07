@@ -189,7 +189,8 @@ namespace Client
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
-
+                        contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream);
+                        OnRefreshContacts(); //Event auslösen
                         break;
                 }
             }
@@ -256,6 +257,7 @@ namespace Client
         public event EventHandler RegistrationOK;
         public event EventHandler RegistrationNotOk;
         public event CChatContentEventHandler ChatReceived;
+        public event EventHandler RefreshContacts;
 
         virtual protected void OnLoginOK()
         {
@@ -296,6 +298,16 @@ namespace Client
             {
                 RegistrationNotOk(this, EventArgs.Empty);
             }
+        }
+
+        virtual protected void OnRefreshContacts()
+        {
+            if (RefreshContacts != null)
+            {
+                RefreshContacts(this, EventArgs.Empty);
+
+            }
+
         }
 
         #endregion

@@ -34,11 +34,20 @@ namespace Client
             this.cClient.MessageReceived += receivedHandler;
             this.cClient.ChatReceived += CClient_ChatReceived;
 
-
-            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
             lbContactList.ItemsSource = cClient.contactList.listContacts;
 
+            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
+            cClient.RefreshContacts += new EventHandler(ReloadContacts);
+
+        }
+
+        private void ReloadContacts(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           lbContactList.ItemsSource = cClient.contactList.listContacts;
+                       });
         }
 
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)

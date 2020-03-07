@@ -114,6 +114,7 @@ namespace Server
         }
 
 
+
         public void Login(string email, string password)
         {
 
@@ -219,15 +220,26 @@ namespace Server
                             break;
 
                         case ComHeader.hAddContact:
+
+                            #region Kontakt hinzufügen
                             ChatPerson friend = new ChatPerson();
                             friend = (ChatPerson)bFormatter.Deserialize(netStream);
-
                             // Nur wenn der zu Hinzufügende Freund existiert TODO: Fehlermeldung wenn Benutzer nicht existiert
                             if (dbController.DoesUserExist(friend.Email))
                             {
                                 // neuen Kontakt in die Datenbank hinzufügen
                                 dbController.AddContact(individualUser.email, friend.Email);
+
+                                AdditionalHeader head = new AdditionalHeader(ComHeader.hAddContact);
+                                bFormatter.Serialize(netStream, head);
+
+                                ContactList contactList = new ContactList();
+                                contactList.listContacts = dbController.LoadContacts(individualUser.email);//Die Kontakte des Users erneut laden
+                                bFormatter.Serialize(netStream, contactList.listContacts);
                             }
+                            #endregion
+
+
 
                             break;
                     }
