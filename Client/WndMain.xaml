@@ -3,17 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="WndMain" Height="450" Width="800">
-    <Grid  Name="pnlMainGrid"  Background="White" >
+        Title="WndMain" Height="450" Width="800"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="12"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
+    <Grid  Name="pnlMainGrid">
         <Label Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" />
-        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="186,194,148,0"/>
+        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="24"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="336,192,298,0"/>
+        <TextBox Name="tbEmail" HorizontalAlignment="Center" Height="24"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="336,121,298,0"/>
         <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="186,92,224,0" Width="82"/>
         <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="186,163,224,0" Width="82"/>
-        <Button Name="btnLogin" Content="LogIn" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="205,239,201,0" Height="23" Click="btnLogin_Click"/>
+        <Button Name="btnLogin" Content="LogIn" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="103" Margin="355,239,334,0" Height="29" Click="btnLogin_Click"/>
         <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Left" Margin="323,357,0,0" VerticalAlignment="Top" Width="181" Background="Transparent" Foreground="Blue" Click="btnRegister_Click" />
-        <TextBox Name="tbEmail" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="186,123,148,0"/>
         <Label Name="lblStatus" Content="Offline" HorizontalAlignment="Left" Margin="40,25,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

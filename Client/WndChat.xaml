@@ -3,16 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="WndChat" Height="550" Width="900">
+        Title="WndChat" Height="550" Width="900" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="12"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
     <Grid>
-        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="23" Margin="277,478,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="506"/>
+        <TextBox Name="txtMessage" HorizontalAlignment="Left" Height="24" Margin="277,478,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="506"/>
         <TextBlock  x:Name="txtbReceivedMessage" Background="AntiqueWhite" HorizontalAlignment="Left" Margin="278,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="421" Width="604" ></TextBlock>
         <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Margin="798,478,0,0" Click="btnSendMessage_Click" Height="24"/>
         <ListBox Name="lbContactList" HorizontalAlignment="Left" Height="464" Margin="10,45,0,0" VerticalAlignment="Top" Width="262" SelectionChanged="lbContactList_SelectionChanged"/>
-        <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="765,10,0,0" VerticalAlignment="Top" Width="75" Click="btnAddContact_Click"/>
+        <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="717,10,0,0" VerticalAlignment="Top" Width="165" Click="btnAddContact_Click"/>
         <Label HorizontalAlignment="Left" Margin="704,30,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="623,11,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="523,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="181"/>
     </Grid>
 </Window>
