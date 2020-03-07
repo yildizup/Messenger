@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,6 @@ namespace Client
     public partial class WndChat : Window
     {
 
-
         public CClient cClient;
         CReceivedEventHandler receivedHandler;
 
@@ -30,12 +30,40 @@ namespace Client
 
             this.cClient = cClient;
             receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
+
             this.cClient.MessageReceived += receivedHandler;
+            this.cClient.ChatReceived += CClient_ChatReceived;
 
-
-            Closing += ManageClosing;
             lbContactList.ItemsSource = cClient.contactList.listContacts;
 
+            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
+
+            cClient.RefreshContacts += new EventHandler(ReloadContacts);
+
+        }
+
+        private void ReloadContacts(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           lbContactList.ItemsSource = cClient.contactList.listContacts;
+                       });
+        }
+
+        private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           txtbReceivedMessage.Text = "";
+                       });
+            DataTable tmp = e.DtChat;
+            foreach (DataRow row in tmp.Rows)
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                               {
+                                   txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
+                               });
+            }
 
         }
 
@@ -44,10 +72,8 @@ namespace Client
         {
             cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
 
-
-            txtbReceivedMessage.Text += String.Format("Sie: {0}{1}", txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
+            txtbReceivedMessage.Text += String.Format("[{0}] Sie: {1}{2}", DateTime.Now, txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
         }
-
 
         void cMessageReceived(object sender, CReceivedEventArgs e)
         {
@@ -63,8 +89,21 @@ namespace Client
             e.Cancel = true; //TODO: Recherchieren
 
             if (MessageBox.Show("Wollen Sie sich wirklich abmelden ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                cClient.CloseConn();
                 Environment.Exit(0);
+            }
+
         }
 
+        private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cClient.LoadChat(lbContactList.SelectedItem.ToString());
+        }
+
+        private void btnAddContact_Click(object sender, RoutedEventArgs e)
+        {
+            cClient.AddContact(tbContactName.Text);
+        }
     }
 }

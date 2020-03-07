@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -10,22 +11,22 @@ namespace Client
 {
     public class CClient
     {
+        #region Variablen
 
         Thread tcpThread;
-
         public string Server { get { return "localhost"; } }
         public int Port { get { return 2000; } }
 
         public TcpClient client;
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
-        public BinaryReader br;
-        public BinaryWriter bw;
         public BinaryFormatter bFormatter;
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
         public ContactList contactList;
-
         bool registrationMode = false;
+
+        #endregion
+
 
         public CClient()
         {
@@ -35,23 +36,26 @@ namespace Client
         }
 
 
+        #region Verbindungsauf- und Abbau
+
+        public void Connect(string email, string password)
+        {
+            this.email = email;
+            this.password = password;
+            tcpThread = new Thread(EstablishConnection);
+            tcpThread.Start();
+        }
+
         public void SetupConn()  // Verbindung aufbauen
         {
             netStream = client.GetStream();
 
-            br = new BinaryReader(netStream);
-            bw = new BinaryWriter(netStream);
-
-
             if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
 
-                bw.Write(ComHeader.hLogin);
-                bw.Write(email);
-                bw.Write(password);
-                bw.Flush();
+                Login(email, password);
 
-                byte answer = br.ReadByte(); // Auf eine Antwort warten
+                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
                 if (answer == ComHeader.hLoginOk)
                 {
@@ -65,18 +69,16 @@ namespace Client
 
                 Register(email, password);
 
-                Byte answer = br.ReadByte();
+                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
                 switch (answer)
                 {
                     // Wenn die Registrierung erfolgreich war
                     case ComHeader.hRegistrationOk:
-                        SmoothDisconnect();
                         OnRegistrationOK();
                         break;
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
-                        SmoothDisconnect();
                         OnRegistrationNotOk();
                         break;
 
@@ -86,14 +88,6 @@ namespace Client
 
         }
 
-
-        public void Connect(string email, string password)
-        {
-            this.email = email;
-            this.password = password;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-        }
 
         public void ConnectToRegistrate(string email, string password)
         {
@@ -105,29 +99,6 @@ namespace Client
         }
 
         /// <summary>
-        /// Zum registrieren
-        /// </summary>
-        /// <param name="email">Email Adresse des Users</param>
-        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
-        public void Register(string email, string password)
-        {
-            bw.Write(ComHeader.hRegister);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
-        }
-
-        public void Login(string email, string password)
-        {
-            bw.Write(ComHeader.hLogin);
-            bw.Write(email);
-            bw.Write(password);
-            bw.Flush();
-        }
-
-
-
-        /// <summary>
         /// Versucht eine Verbindung aufzubauen
         /// </summary>
         public void EstablishConnection()
@@ -135,7 +106,6 @@ namespace Client
             //try
             //{
             client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            AreWeConnected = true;
             SetupConn();
             //}
 
@@ -149,63 +119,145 @@ namespace Client
 
         public void CloseConn() // Verbindung beenden
         {
-
-        }
-
-        #region Nachrichten senden und empfangen
-        void Receiver()  // Empfange alle Einkommenden Packete.
-        {
-            while (client.Connected)
-            {
-
-                byte type = br.ReadByte(); // um welche Art von Paket handelt es sich ?
-
-                switch (type)
-                {
-                    case ComHeader.hReceived:
-                        // Eine Nachricht von einem anderen Client
-                        string from = br.ReadString();
-                        string msg = br.ReadString();
-                        OnMessageReceived(new CReceivedEventArgs(from, msg)); //Event auslösen
-                        break;
-                }
-            }
-        }
-
-        public void SendMessage(string to, string msg)
-        {
-            bw.Write(ComHeader.hSend);
-            bw.Write(to);
-            bw.Write(msg);
-            bw.Flush(); // Löscht sämtliche Puffer für den aktuellen Writer und veranlasst die Ausgabe aller gepufferten Daten an das zugrunde liegende Gerät. (.NET-Dokumentation)
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
+            bFormatter.Serialize(netStream, header);
         }
 
         #endregion
 
 
-        public void SmoothDisconnect()
+        #region Anmeldung und Registrierung
+
+        /// <summary>
+        /// Zum registrieren
+        /// </summary>
+        /// <param name="email">Email Adresse des Users</param>
+        /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
+        public void Register(string email, string password)
         {
-            // Wenn der Client verbunden ist, kann man auch wieder die Verbindung schließen
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
+            bFormatter.Serialize(netStream, header);
 
-            bw.Write(ComHeader.hDisconnect);
-            bw.Flush();
+            LoginData loginData = new LoginData();
+            loginData.Email = email;
+            loginData.Password = password;
 
-            netStream.Close(); //Stream beenden, bevor die Verbindung geschlossen wird.
-            client.Close();
-
+            bFormatter.Serialize(netStream, loginData);
 
         }
 
+        public void Login(string email, string password)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
+            bFormatter.Serialize(netStream, header);
+
+            LoginData loginData = new LoginData();
+            loginData.Email = email;
+            loginData.Password = password;
+
+            bFormatter.Serialize(netStream, loginData);
+        }
 
 
-        public bool AreWeConnected { get; set; }
+        #endregion
 
 
-        // Events
+        #region Nachrichten empfangen
+
+        /// <summary>
+        /// Wartet auf Einkommende Pakete
+        /// </summary>
+        void Receiver()
+        {
+            while (client.Connected)
+            {
+                byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+
+                switch (header)
+                {
+                    case ComHeader.hReceived:
+                        // Eine Nachricht von einem anderen Client
+                        MessageReceived messageReceived = (MessageReceived)bFormatter.Deserialize(netStream);
+                        OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Msg)); //Event auslösen
+                        break;
+                    case ComHeader.hChat: //Chat Inhalt 
+                        DataTable dtChat = ((ChatContent)bFormatter.Deserialize(netStream)).chatContent;
+                        OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
+                        break;
+                    case ComHeader.hDisconnect:
+                        tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Nachrichten. Sobald die Verbindung 
+                        client.Close();
+                        break;
+                    case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
+                        contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream);
+                        OnRefreshContacts(); //Event auslösen
+                        break;
+                }
+            }
+        }
+
+
+        #endregion
+
+
+
+        #region Chat-Methoden
+
+        public void LoadChat(string friend_email)
+        {
+
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
+            bFormatter.Serialize(netStream, header);
+
+            ChatPerson chatPerson = new ChatPerson();
+            chatPerson.Email = friend_email;
+
+            bFormatter.Serialize(netStream, chatPerson);
+
+        }
+
+        /// <summary>
+        /// Sendet eine Nachrichtig an einen anderen Client
+        /// </summary>
+        /// <param name="to">Empfänger</param>
+        /// <param name="msg">Nachricht</param>
+        public void SendMessage(string to, string msg)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
+            bFormatter.Serialize(netStream, header);
+            MessageSend message = new MessageSend();
+            message.To = to;
+            message.Msg = msg;
+            bFormatter.Serialize(netStream, message);
+        }
+
+        /// <summary>
+        /// Ein Kontakt in die Kontaktliste hinzufügen
+        /// </summary>
+        /// <param name="friend_email"></param>
+        public void AddContact(string friend_email)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
+            bFormatter.Serialize(netStream, header);
+            ChatPerson friend = new ChatPerson();
+            friend.Email = friend_email;
+            bFormatter.Serialize(netStream, friend);
+        }
+
+
+        #endregion
+
+
+
+
+        #region Events
+
         public event EventHandler LoginOK;
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
         public event EventHandler RegistrationNotOk;
+        public event CChatContentEventHandler ChatReceived;
+        public event EventHandler RefreshContacts;
 
         virtual protected void OnLoginOK()
         {
@@ -220,6 +272,14 @@ namespace Client
             if (MessageReceived != null)
             {
                 MessageReceived(this, e);
+            }
+        }
+
+        virtual protected void OnChatReceived(CChatContentEventArgs e)
+        {
+            if (ChatReceived != null)
+            {
+                ChatReceived(this, e);
             }
         }
 
@@ -240,6 +300,17 @@ namespace Client
             }
         }
 
+        virtual protected void OnRefreshContacts()
+        {
+            if (RefreshContacts != null)
+            {
+                RefreshContacts(this, EventArgs.Empty);
+
+            }
+
+        }
+
+        #endregion
 
     }
 }

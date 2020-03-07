@@ -10,26 +10,29 @@ namespace Server
 {
     public class SClient
     {
+        #region Variablen
         public TcpClient client;
         public NetworkStream netStream;
-        public BinaryReader br;
-        public BinaryWriter bw;
         public BinaryFormatter bFormatter;
 
         IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
 
+        Thread tcpThread;
+        #endregion
 
 
         public SClient(TcpClient c)
         {
             //Für jeden Client soll ein neuer Thread erstellen werden.TODO:  observer design pattern anschauen.
             client = c;
-            (new Thread(new ThreadStart(SetupConn))).Start();
+            tcpThread = new Thread(SetupConn);
+            tcpThread.Start();
             bFormatter = new BinaryFormatter();
-
-
         }
+
+
+        #region Verbindungsauf- und Abbau
 
         public void SetupConn()
         {
@@ -38,12 +41,11 @@ namespace Server
                 Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
                 netStream = client.GetStream();
 
-                br = new BinaryReader(netStream);
-                bw = new BinaryWriter(netStream);
+                byte clientMode = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; //Abfragen, ob Client sich registrieren oder einloggen möchte.
 
-                byte clientMode = br.ReadByte(); //Abfragen, ob Client sich registrieren oder einloggen möchte.
-                string email = br.ReadString();
-                string password = br.ReadString(); // Die potenziellen login oder Registrierungsdaten bereits speichern.
+                LoginData loginData = ((LoginData)bFormatter.Deserialize(netStream));
+                string email = loginData.Email;
+                string password = loginData.Password;
 
 
                 switch (clientMode)
@@ -69,6 +71,24 @@ namespace Server
 
         }
 
+        public void CloseConn()
+        {
+            // Benutzer als abgemeldet markieren
+            UserController.individualUsers[UserController.GetIndexOfUser(individualUser.email)].LoggedIn = false;
+
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
+            bFormatter.Serialize(netStream, header);
+
+            // Verbindung schließen
+            //tcpThread.Abort();
+            client.Close();
+
+        }
+
+        #endregion
+
+
+        #region Anmeldung- und Registrierung
 
         public void CreateUser(string email, string password)
         {
@@ -77,19 +97,22 @@ namespace Server
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
                 Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
-                bw.Write(ComHeader.hRegistrationOk); // Rückmeldung an den Client über erfolgreiche Registrierung
-                bw.Flush();
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationOk);
+                bFormatter.Serialize(netStream, header);
+
+
                 Receiver();
             }
             else
             {
                 //Email adresse existiert bereits
                 Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
-                bw.Write(ComHeader.hRegistrationNotOk); // Rückmeldung an den Client, dass die Registrierung nicht erfolgreich war
-                bw.Flush();
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationNotOk);
+                bFormatter.Serialize(netStream, header);
                 Receiver();
             }
         }
+
 
 
         public void Login(string email, string password)
@@ -98,19 +121,21 @@ namespace Server
             switch (dbController.Login(email, password))
             {
                 case 0:
-                    // Alle Daten richtig
+                    // Wenn alle Daten richtig sind
+                    UserController.individualUsers[UserController.GetIndexOfUser(email)].LoggedIn = true;
                     //Socket des jeweiligen Users speichern
                     UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
-                    listContacts = dbController.LoadContacts(email); //Die Kontakte des eingeloggten Users laden
+                    listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
-                    bw.Write(ComHeader.hLoginOk);
-                    bw.Flush();
+                    AdditionalHeader header = new AdditionalHeader(ComHeader.hLoginOk);
+                    bFormatter.Serialize(netStream, header);
 
-                    ContactList tst = new ContactList();
-                    tst.listContacts = dbController.LoadContacts(email);
-                    bFormatter.Serialize(netStream, tst.listContacts);
+
+                    ContactList contactList = new ContactList();
+                    contactList.listContacts = dbController.LoadContacts(email);//Die Kontakte des eingeloggten Users laden
+                    bFormatter.Serialize(netStream, contactList.listContacts);
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
@@ -127,6 +152,10 @@ namespace Server
             }
         }
 
+        #endregion
+
+
+
         /// <summary>
         /// Wartet fortlaufend auf Packete vom Client
         /// </summary>
@@ -137,22 +166,81 @@ namespace Server
 
                 while (client.Client.Connected) //solange der Client verbunden ist
                 {
-                    byte type = br.ReadByte();
-                    switch (type)
+                    byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+
+                    switch (header)
                     {
                         case ComHeader.hSend:
-                            string to = br.ReadString();
-                            string msg = br.ReadString();
-                            //Sende Nachricht zum Empfänger
-                            int indexReceiver = UserController.GetIndexOfUser(to);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(ComHeader.hReceived);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(individualUser.email); //TODO: Hier muss der Absender hin
-                            UserController.individualUsers[indexReceiver].Connection.bw.Write(msg);
-                            UserController.individualUsers[indexReceiver].Connection.bw.Flush();
+                            MessageSend message = new MessageSend();
+                            message = (MessageSend)bFormatter.Deserialize(netStream);
+                            int indexReceiver = UserController.GetIndexOfUser(message.To);
+                            //Ist der Empfänger Online ?
+                            if (UserController.individualUsers[indexReceiver].LoggedIn == true)
+                            {
+                                NetworkStream netStreamOfReceiver = UserController.individualUsers[indexReceiver].Connection.netStream;
+
+                                //Zuerst den Header senden
+                                AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
+                                bFormatter.Serialize(netStreamOfReceiver, sHeader);
+
+                                //Sende Nachricht zum Empfänger
+                                MessageReceived messageReceived = new MessageReceived();
+                                messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin (CHECK)
+                                messageReceived.Msg = message.Msg;
+                                bFormatter.Serialize(netStreamOfReceiver, messageReceived);
+
+                                //Speichere Nachricht in der Datenbank
+                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, true);
+                            }
+                            else
+                            {
+                                //Speichere Nachricht in der Datenbank
+                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, false);
+                            }
                             break;
+
                         case ComHeader.hDisconnect:
-                            client.Close();  //Die Verbindung schließen
                             Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
+                            CloseConn();
+                            break;
+                        case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
+
+                            AdditionalHeader h = new AdditionalHeader(ComHeader.hChat);
+                            bFormatter.Serialize(netStream, h);
+                            ChatPerson chatPerson = new ChatPerson();
+                            chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+
+                            //Die ungelesenen Nachrichten als gelesen markieren
+                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.email, chatPerson.Email);
+
+
+                            ChatContent chatContent = new ChatContent();
+                            chatContent.chatContent = dbController.LoadChat(individualUser.email, chatPerson.Email);
+                            bFormatter.Serialize(netStream, chatContent);
+                            break;
+
+                        case ComHeader.hAddContact:
+
+                            #region Kontakt hinzufügen
+                            ChatPerson friend = new ChatPerson();
+                            friend = (ChatPerson)bFormatter.Deserialize(netStream);
+                            // Nur wenn der zu Hinzufügende Freund existiert TODO: Fehlermeldung wenn Benutzer nicht existiert
+                            if (dbController.DoesUserExist(friend.Email))
+                            {
+                                // neuen Kontakt in die Datenbank hinzufügen
+                                dbController.AddContact(individualUser.email, friend.Email);
+
+                                AdditionalHeader head = new AdditionalHeader(ComHeader.hAddContact);
+                                bFormatter.Serialize(netStream, head);
+
+                                ContactList contactList = new ContactList();
+                                contactList.listContacts = dbController.LoadContacts(individualUser.email);//Die Kontakte des Users erneut laden
+                                bFormatter.Serialize(netStream, contactList.listContacts);
+                            }
+                            #endregion
+
+
+
                             break;
                     }
                 }
@@ -172,11 +260,15 @@ namespace Server
 
         }
 
-        public void CloseConn()
+
+        public void LoadChat()
         {
+
         }
 
-        //Events 
+
+
+        #region Events
         public event EventHandler wrongEmail;
 
         virtual protected void OnWrongEmail()
@@ -186,6 +278,7 @@ namespace Server
                 wrongEmail(this, EventArgs.Empty); //Event wird ausgelöst
             }
         }
+        #endregion
 
 
     }

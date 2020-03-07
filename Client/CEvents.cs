@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,22 @@ namespace Client
         }
     }
 
+    public class CChatContentEventArgs : EventArgs
+    {
+        DataTable dtChat;
+
+        public CChatContentEventArgs(DataTable dt)
+        {
+            dtChat = dt;
+        }
+
+        public DataTable DtChat
+        {
+            get { return dtChat; }
+        }
+    }
+
     public delegate void CReceivedEventHandler(object sender, CReceivedEventArgs e);
+    public delegate void CChatContentEventHandler(object sender, CChatContentEventArgs e);
 
 }
