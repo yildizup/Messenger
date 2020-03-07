@@ -105,5 +105,6 @@ namespace Client
         {
             cClient.AddContact(tbContactName.Text);
         }
+
     }
 }
