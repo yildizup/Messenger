@@ -67,37 +67,37 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CEvents.cs" />
-    <Compile Include="UserControlContactItem.xaml.cs">
+    <Compile Include="UserControls\UserControlContactItem.xaml.cs">
       <DependentUpon>UserControlContactItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControlMessageReceived.xaml.cs">
+    <Compile Include="UserControls\UserControlMessageReceived.xaml.cs">
       <DependentUpon>UserControlMessageReceived.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControlMessageSent.xaml.cs">
+    <Compile Include="UserControls\UserControlMessageSent.xaml.cs">
       <DependentUpon>UserControlMessageSent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WndChat.xaml.cs">
+    <Compile Include="Window\WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WndMain.xaml.cs">
+    <Compile Include="Window\WndMain.xaml.cs">
       <DependentUpon>WndMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WndRegistration.xaml.cs">
+    <Compile Include="Window\WndRegistration.xaml.cs">
       <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
-    <Page Include="UserControlContactItem.xaml">
+    <Page Include="UserControls\UserControlContactItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControlMessageReceived.xaml">
+    <Page Include="UserControls\UserControlMessageReceived.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControlMessageSent.xaml">
+    <Page Include="UserControls\UserControlMessageSent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WndChat.xaml">
+    <Page Include="Window\WndChat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -106,11 +106,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CClient.cs" />
-    <Page Include="WndMain.xaml">
+    <Page Include="Window\WndMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WndRegistration.xaml">
+    <Page Include="Window\WndRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
