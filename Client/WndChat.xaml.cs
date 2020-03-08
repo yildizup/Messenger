@@ -34,7 +34,12 @@ namespace Client
             this.cClient.MessageReceived += receivedHandler;
             this.cClient.ChatReceived += CClient_ChatReceived;
 
-            lbContactList.ItemsSource = cClient.contactList.listContacts;
+
+            foreach (string s in cClient.contactList.listContacts)
+            {
+                UserControlContactItem contact = new UserControlContactItem(s);
+                lvContacts.Items.Add(contact);
+            }
 
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
@@ -42,11 +47,22 @@ namespace Client
 
         }
 
+        /// <summary>
+        /// Kontaktliste aktualiseren, wenn ein neuer Kontakt hinzugefügt wurde
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReloadContacts(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           lbContactList.ItemsSource = cClient.contactList.listContacts;
+                           lvContacts.Items.Clear();
+                           foreach (string s in cClient.contactList.listContacts)
+                           {
+                               UserControlContactItem contact = new UserControlContactItem(s);
+                               lvContacts.Items.Add(contact);
+                           }
+
                        });
         }
 
@@ -81,7 +97,7 @@ namespace Client
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
+            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
             UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
             splChat.Children.Add(messagesent);
         }
@@ -108,20 +124,17 @@ namespace Client
 
         }
 
-        private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            cClient.LoadChat(lbContactList.SelectedItem.ToString());
-
-        }
-
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
-            //cClient.AddContact(tbContactName.Text);
-            Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           UserControlContactItem contact = new UserControlContactItem();
-                           lvContacts.Items.Add(contact);
-                       });
+            cClient.AddContact(tbContactName.Text);
+        }
+
+        private void lvContacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lvContacts.SelectedItem != null)
+            {
+                cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
+            }
         }
 
     }

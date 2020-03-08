@@ -20,9 +20,17 @@ namespace Client
     /// </summary>
     public partial class UserControlContactItem : UserControl
     {
-        public UserControlContactItem()
+        private string email;
+        public UserControlContactItem(string email)
         {
             InitializeComponent();
+            this.email = email;
+            tbEmail.Text = this.email;
         }
+
+        public string Email
+        {
+            get { return email; }
+        } 
     }
 }

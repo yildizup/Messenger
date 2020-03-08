@@ -15,7 +15,6 @@
         >
     <Grid>
         <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Margin="798,478,0,0" Click="btnSendMessage_Click" Height="24"/>
-        <ListBox Name="lbContactList" Background="WhiteSmoke" HorizontalAlignment="Left" Height="171" Margin="10,45,0,0" VerticalAlignment="Top" Width="211" SelectionChanged="lbContactList_SelectionChanged"/>
         <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="717,10,0,0" VerticalAlignment="Top" Width="165" Click="btnAddContact_Click"/>
         <Label HorizontalAlignment="Left" Margin="704,30,0,0" VerticalAlignment="Top"/>
         <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="523,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="181"/>
@@ -28,9 +27,7 @@
         </ScrollViewer>
 
         <!--#region Kontaktliste-->
-        <ListView Name="lvContacts" HorizontalAlignment="Left" Height="220" Margin="10,252,0,0" VerticalAlignment="Top" Width="242">
-            <ListViewItem HorizontalAlignment="Stretch" Name="lviContact">
-            </ListViewItem>
+        <ListView Name="lvContacts" HorizontalAlignment="Left" Height="425" Margin="10,47,0,0" VerticalAlignment="Top" Width="240" SelectionChanged="lvContacts_SelectionChanged">
         </ListView>
         <!--#endregion-->
 
