@@ -178,7 +178,7 @@ namespace Client
                     case ComHeader.hReceived:
                         // Eine Nachricht von einem anderen Client
                         MessageReceived messageReceived = (MessageReceived)bFormatter.Deserialize(netStream);
-                        OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Msg)); //Event auslösen
+                        OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Message, DateTime.Now.ToString())); //Event auslösen
                         break;
                     case ComHeader.hChat: //Chat Inhalt 
                         DataTable dtChat = ((ChatContent)bFormatter.Deserialize(netStream)).chatContent;

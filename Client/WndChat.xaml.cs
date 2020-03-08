@@ -34,7 +34,12 @@ namespace Client
             this.cClient.MessageReceived += receivedHandler;
             this.cClient.ChatReceived += CClient_ChatReceived;
 
-            lbContactList.ItemsSource = cClient.contactList.listContacts;
+
+            foreach (string s in cClient.contactList.listContacts)
+            {
+                UserControlContactItem contact = new UserControlContactItem(s);
+                lvContacts.Items.Add(contact);
+            }
 
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
@@ -42,11 +47,22 @@ namespace Client
 
         }
 
+        /// <summary>
+        /// Kontaktliste aktualiseren, wenn ein neuer Kontakt hinzugefügt wurde
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReloadContacts(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           lbContactList.ItemsSource = cClient.contactList.listContacts;
+                           lvContacts.Items.Clear();
+                           foreach (string s in cClient.contactList.listContacts)
+                           {
+                               UserControlContactItem contact = new UserControlContactItem(s);
+                               lvContacts.Items.Add(contact);
+                           }
+
                        });
         }
 
@@ -54,14 +70,25 @@ namespace Client
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           txtbReceivedMessage.Text = "";
+                           splChat.Children.Clear(); //Stackpanel säubern
                        });
             DataTable tmp = e.DtChat;
+
             foreach (DataRow row in tmp.Rows)
             {
                 Application.Current.Dispatcher.Invoke((Action)delegate
                                {
-                                   txtbReceivedMessage.Text += String.Format("[{3}] {0}: {1}{2}", row["main_email"], row["message"], Environment.NewLine, row["thetime"]);
+                                   //TODO: Nach einer anderen Lösungsmöglichkeit recherchieren
+                                   if (row["main_email"].ToString() == "Sie")
+                                   {
+                                       UserControlMessageSent messagesent = new UserControlMessageSent(row["message"].ToString(), row["thetime"].ToString());
+                                       splChat.Children.Add(messagesent);
+                                   }
+                                   else
+                                   {
+                                       UserControlMessageReceived messagereceived = new UserControlMessageReceived(row["message"].ToString(), row["thetime"].ToString());
+                                       splChat.Children.Add(messagereceived);
+                                   }
                                });
             }
 
@@ -70,16 +97,17 @@ namespace Client
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage(lbContactList.SelectedItem.ToString(), txtMessage.Text);
-
-            txtbReceivedMessage.Text += String.Format("[{0}] Sie: {1}{2}", DateTime.Now, txtMessage.Text, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
+            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
+            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
+            splChat.Children.Add(messagesent);
         }
 
         void cMessageReceived(object sender, CReceivedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           txtbReceivedMessage.Text += String.Format("{0}: {1}{2}", e.From, e.Message, Environment.NewLine); //\r\n würde auch für eine neue Zeile reichen
+                           UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
+                           splChat.Children.Add(messagereceived);
                        });
 
         }
@@ -96,14 +124,18 @@ namespace Client
 
         }
 
-        private void lbContactList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            cClient.LoadChat(lbContactList.SelectedItem.ToString());
-        }
-
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
             cClient.AddContact(tbContactName.Text);
         }
+
+        private void lvContacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lvContacts.SelectedItem != null)
+            {
+                cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
+            }
+        }
+
     }
 }

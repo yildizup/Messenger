@@ -185,8 +185,8 @@ namespace Server
 
                                 //Sende Nachricht zum Empfänger
                                 MessageReceived messageReceived = new MessageReceived();
-                                messageReceived.From = individualUser.email;//TODO: Hier muss der Absender hin (CHECK)
-                                messageReceived.Msg = message.Msg;
+                                messageReceived.From = individualUser.email;
+                                messageReceived.Message = message.Msg;
                                 bFormatter.Serialize(netStreamOfReceiver, messageReceived);
 
                                 //Speichere Nachricht in der Datenbank
