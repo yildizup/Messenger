@@ -128,8 +128,8 @@ namespace Client
             //TODO: gibt es eine bessere Lösung dafür ?
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                                   // Nachricht wird angezeigt, wenn man sich im selben Chat befinden
-                                   if (lvContacts.SelectedItem != null)
+                           // Nachricht wird angezeigt, wenn man sich im selben Chat befinden
+                           if (lvContacts.SelectedItem != null)
                            {
 
                                if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)

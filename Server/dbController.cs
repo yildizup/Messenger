@@ -68,7 +68,7 @@ namespace Server
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns>true, wenn der User erstellt werden konnte</returns>
-        static internal bool CreateUserAndCheck(string email, string password)
+        static internal bool CheckUserAndCreate(string email, string password)
         {
             // Wenn ein User nicht existiert, kann ein Konto erstellt werden
             if (!DoesUserExist(email))

@@ -54,6 +54,7 @@ namespace Server
                     case ComHeader.hRegister:
                         Console.WriteLine("[{0}] Ein Client möchte sich registrieren...", DateTime.Now);
                         CreateUser(email, password);
+                        Receiver(); // Dem Client in einer Dauerschleife zuhören. 
                         break;
                     case ComHeader.hLogin:
                         Login(email, password);
@@ -73,8 +74,12 @@ namespace Server
 
         public void CloseConn()
         {
-            // Benutzer als abgemeldet markieren
-            UserController.individualUsers[UserController.GetIndexOfUser(individualUser.email)].LoggedIn = false;
+
+            if (individualUser != null)
+            {
+                // Benutzer als abgemeldet markieren
+                UserController.ConnectedUsers[UserController.GetIndexOfUser(individualUser.email)].LoggedIn = false;
+            }
 
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
             bFormatter.Serialize(netStream, header);
@@ -92,16 +97,22 @@ namespace Server
 
         public void CreateUser(string email, string password)
         {
-            if (dbController.CreateUserAndCheck(email, password))
+
+            // Wenn die Email noch nicht existiert, kann der Benutzer erstellt werden
+            if (dbController.CheckUserAndCreate(email, password))
             {
+                // Benutzer in die Liste "ConnectedUsers" hinzufügen. Mithilfe dieser Liste wird der jeweilige Socket des Clients angesprochen.
+                IndividualUser user = new IndividualUser();
+                user.email = email;
+                user.password = password;
+                UserController.ConnectedUsers.Add(user); 
+
+
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
                 Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
                 AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationOk);
                 bFormatter.Serialize(netStream, header);
-
-
-                Receiver();
             }
             else
             {
@@ -109,7 +120,6 @@ namespace Server
                 Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
                 AdditionalHeader header = new AdditionalHeader(ComHeader.hRegistrationNotOk);
                 bFormatter.Serialize(netStream, header);
-                Receiver();
             }
         }
 
@@ -122,10 +132,10 @@ namespace Server
             {
                 case 0:
                     // Wenn alle Daten richtig sind
-                    UserController.individualUsers[UserController.GetIndexOfUser(email)].LoggedIn = true;
+                    UserController.ConnectedUsers[UserController.GetIndexOfUser(email)].LoggedIn = true;
                     //Socket des jeweiligen Users speichern
-                    UserController.individualUsers[UserController.GetIndexOfUser(email)].Connection = this;
-                    individualUser = UserController.individualUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
+                    UserController.ConnectedUsers[UserController.GetIndexOfUser(email)].Connection = this;
+                    individualUser = UserController.ConnectedUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
                     listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.email);
 
@@ -175,9 +185,9 @@ namespace Server
                             message = (MessageSend)bFormatter.Deserialize(netStream);
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
                             //Ist der Empfänger Online ?
-                            if (UserController.individualUsers[indexReceiver].LoggedIn == true)
+                            if (UserController.ConnectedUsers[indexReceiver].LoggedIn == true)
                             {
-                                NetworkStream netStreamOfReceiver = UserController.individualUsers[indexReceiver].Connection.netStream;
+                                NetworkStream netStreamOfReceiver = UserController.ConnectedUsers[indexReceiver].Connection.netStream;
 
                                 //Zuerst den Header senden
                                 AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
@@ -200,8 +210,16 @@ namespace Server
                             break;
 
                         case ComHeader.hDisconnect:
-                            Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
-                            CloseConn();
+                            if (individualUser != null) //individualUser ist null, wenn der Benutzer sich nur registrieren möchte
+                            {
+                                Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.email);
+                                CloseConn();
+                            }
+                            else
+                            {
+                                Console.WriteLine("[{0}] Client hat sich abgemeldet", DateTime.Now);
+                                CloseConn();
+                            }
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
 
