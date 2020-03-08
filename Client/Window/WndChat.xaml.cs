@@ -94,36 +94,6 @@ namespace Client
 
         }
 
-
-        private void btnSendMessage_Click(object sender, RoutedEventArgs e)
-        {
-            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
-            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
-            splChat.Children.Add(messagesent);
-        }
-
-        void cMessageReceived(object sender, CReceivedEventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
-                           splChat.Children.Add(messagereceived);
-                       });
-
-        }
-
-        private void ManageClosing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true; //TODO: Recherchieren
-
-            if (MessageBox.Show("Wollen Sie sich wirklich abmelden ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-            {
-                cClient.CloseConn();
-                Environment.Exit(0);
-            }
-
-        }
-
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
             cClient.AddContact(tbContactName.Text);
@@ -137,5 +107,54 @@ namespace Client
             }
         }
 
+        #region Nachrichten senden und empfangen
+
+        private void btnSendMessage_Click(object sender, RoutedEventArgs e)
+        {
+            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
+            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
+            splChat.Children.Add(messagesent);
+        }
+
+
+        /// <summary>
+        /// neue Nachricht anzeigen 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void cMessageReceived(object sender, CReceivedEventArgs e)
+        {
+
+            //TODO: gibt es eine bessere Lösung dafür ?
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                                   // Nachricht wird angezeigt, wenn man sich im selben Chat befinden
+                                   if (lvContacts.SelectedItem != null)
+                           {
+
+                               if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
+                               {
+
+                                   UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
+                                   splChat.Children.Add(messagereceived);
+                               }
+                           }
+                       });
+
+        }
+
+        #endregion
+
+        private void ManageClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true; //TODO: Recherchieren
+
+            if (MessageBox.Show("Wollen Sie sich wirklich abmelden ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                cClient.CloseConn();
+                Environment.Exit(0);
+            }
+
+        }
     }
 }
