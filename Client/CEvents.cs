@@ -11,21 +11,28 @@ namespace Client
     public class CReceivedEventArgs : EventArgs
     {
         string email;
-        string msg;
+        string message;
+        string date;
 
-        public CReceivedEventArgs(string user, string msg)
+        public CReceivedEventArgs(string user, string message,string date)
         {
             this.email = user;
-            this.msg = msg;
+            this.message = message;
+            this.date = date;
         }
 
         public string From
         {
             get { return email; }
         }
+
         public string Message
         {
-            get { return msg; }
+            get { return message; }
+        }
+        public string Date
+        {
+            get { return date; }
         }
     }
 
