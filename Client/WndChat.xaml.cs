@@ -116,7 +116,12 @@ namespace Client
 
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
-            cClient.AddContact(tbContactName.Text);
+            //cClient.AddContact(tbContactName.Text);
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           UserControlContactItem contact = new UserControlContactItem();
+                           lvContacts.Items.Add(contact);
+                       });
         }
 
     }

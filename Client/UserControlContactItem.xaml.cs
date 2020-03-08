@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client.Views
+namespace Client
 {
     /// <summary>
-    /// Interaction logic for UsersView.xaml
+    /// Interaction logic for UserControlContactItem.xaml
     /// </summary>
-    public partial class UsersView : UserControl
+    public partial class UserControlContactItem : UserControl
     {
-        public UsersView()
+        public UserControlContactItem()
         {
             InitializeComponent();
         }

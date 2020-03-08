@@ -28,19 +28,8 @@
         </ScrollViewer>
 
         <!--#region Kontaktliste-->
-        <ListView HorizontalAlignment="Left" Height="220" Margin="10,252,0,0" VerticalAlignment="Top" Width="242">
-            <ListViewItem HorizontalAlignment="Stretch">
-                <Grid HorizontalAlignment="Center" Margin="5">
-                    <!-- 2 Spalten (Spalte 1: Benutzername, Spalte2: Anwesenheitsstatus) -->
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="175"/>
-                        <ColumnDefinition Width="50*"/>
-                        <!--TODO: Was bedeutet * ?-->
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0" Text="Benutzername" Margin="10 0" Opacity="0.8"/>
-                    <Border Grid.Column="1" Width="10" Height="10" VerticalAlignment="Bottom" Margin="5" HorizontalAlignment="Right" CornerRadius="15" Background="LightGreen"/>
-                </Grid>
+        <ListView Name="lvContacts" HorizontalAlignment="Left" Height="220" Margin="10,252,0,0" VerticalAlignment="Top" Width="242">
+            <ListViewItem HorizontalAlignment="Stretch" Name="lviContact">
             </ListViewItem>
         </ListView>
         <!--#endregion-->

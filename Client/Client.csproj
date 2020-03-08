@@ -67,6 +67,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CEvents.cs" />
+    <Compile Include="UserControlContactItem.xaml.cs">
+      <DependentUpon>UserControlContactItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControlMessageReceived.xaml.cs">
       <DependentUpon>UserControlMessageReceived.xaml</DependentUpon>
     </Compile>
@@ -82,6 +85,10 @@
     <Compile Include="WndRegistration.xaml.cs">
       <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControlContactItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControlMessageReceived.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
