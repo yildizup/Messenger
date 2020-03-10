@@ -200,8 +200,20 @@ namespace Client
                         contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
+                    case ComHeader.hState:
+
+                        break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Fragt wer Online ist
+        /// </summary>
+        void WhoIsOnline()
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+            bFormatter.Serialize(netStream, header);
         }
 
 

@@ -4,6 +4,7 @@ create table user (
  
   email varchar(255),
   password varchar(255),
+  status boolean, -- Aktivitätsstatus des Benutzers. Wird u.a. benötigt, damit der mehrmalige Anmeldungen unter demselben Namen verhindert werden.
   
   primary key (email)
   

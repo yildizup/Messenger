@@ -200,11 +200,11 @@ namespace Server
                                 bFormatter.Serialize(netStreamOfReceiver, messageReceived);
 
                                 //Speichere Nachricht in der Datenbank
-                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, true);
+                                dbController.SaveMessage(individualUser.email, message.To, message.Msg, false);
                             }
                             else
                             {
-                                //Speichere Nachricht in der Datenbank
+                                //Speichere die Nachricht in der Datenbank
                                 dbController.SaveMessage(individualUser.email, message.To, message.Msg, false);
                             }
                             break;
@@ -238,7 +238,6 @@ namespace Server
                             break;
 
                         case ComHeader.hAddContact:
-
                             #region Kontakt hinzufügen
                             ChatPerson friend = new ChatPerson();
                             friend = (ChatPerson)bFormatter.Deserialize(netStream);
@@ -256,8 +255,8 @@ namespace Server
                                 bFormatter.Serialize(netStream, contactList.listContacts);
                             }
                             #endregion
-
-
+                            break;
+                        case ComHeader.hState:
 
                             break;
                     }

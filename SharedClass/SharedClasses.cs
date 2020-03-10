@@ -88,6 +88,9 @@ namespace SharedClass
                 case ComHeader.hAddContact:
                     PHeader = ComHeader.hAddContact;
                     break;
+                case ComHeader.hState:
+                    PHeader = ComHeader.hState;
+                    break;
             }
         }
     }
@@ -110,6 +113,7 @@ namespace SharedClass
         public const byte hDisconnect = 10; //Um den Server zu benachrichten, dass der Client die Verbindung schließt
         public const byte hChat = 11; //Anfrage nach Chat Inhalten
         public const byte hAddContact = 12; //Kontakt hinzufügen
+        public const byte hState = 13; //Paket, um nach dem Status der Kontakte zu fragen.
     }
 }
 
