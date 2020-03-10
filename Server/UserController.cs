@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using SharedClass;
 
 namespace Server
 {
@@ -7,7 +8,7 @@ namespace Server
 
     static class UserController
     {
-        public static List<IndividualUser> ConnectedUsers = new List<IndividualUser>();
+        public static List<User> ConnectedUsers = new List<User>();
 
         static internal void LoadUsers()
         {
@@ -15,19 +16,16 @@ namespace Server
 
             foreach (DataRow row in dt.Rows)
             {
-                IndividualUser individualUser = new IndividualUser();
-
+                User individualUser = new User();
                 individualUser.email = row["email"].ToString();
-                individualUser.password = row["password"].ToString();
-
                 ConnectedUsers.Add(individualUser);
             }
 
         }
 
-        static internal IndividualUser FindUser(string mail)
+        static internal User FindUser(string mail)
         {
-            IndividualUser user = ConnectedUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            User user = ConnectedUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
             return user;
         }
 

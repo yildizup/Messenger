@@ -17,6 +17,15 @@ namespace SharedClass
 
     }
 
+    public class User
+    {
+        public string email;
+        public bool status; //ist der Benutzer eingeloggt ?
+
+
+        //TODO: Recherchieren nach Vor- und Nachteilen
+        public object Connection; //Um die jeweiligen Clients anzusprechen
+    }
 
     [Serializable]
     public class MessageSend

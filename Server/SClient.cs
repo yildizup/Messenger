@@ -15,7 +15,7 @@ namespace Server
         public NetworkStream netStream;
         public BinaryFormatter bFormatter;
 
-        IndividualUser individualUser; // Informationen über den aktuell eingeloggten User
+        User individualUser; // Informationen über den aktuell eingeloggten User
         public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
 
         Thread tcpThread;
@@ -103,9 +103,8 @@ namespace Server
             if (dbController.CheckUserAndCreate(email, password))
             {
                 // Benutzer in die Liste "ConnectedUsers" hinzufügen. Mithilfe dieser Liste wird der jeweilige Socket des Clients angesprochen.
-                IndividualUser user = new IndividualUser();
+                User user = new User();
                 user.email = email;
-                user.password = password;
                 UserController.ConnectedUsers.Add(user); 
 
 
@@ -195,7 +194,7 @@ namespace Server
                             //Ist der Empfänger Online ?
                             if (UserController.ConnectedUsers[indexReceiver].status == true)
                             {
-                                NetworkStream netStreamOfReceiver = UserController.ConnectedUsers[indexReceiver].Connection.netStream;
+                                NetworkStream netStreamOfReceiver = ((SClient)UserController.ConnectedUsers[indexReceiver].Connection).netStream;
 
                                 //Zuerst den Header senden
                                 AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
@@ -265,6 +264,8 @@ namespace Server
                             #endregion
                             break;
                         case ComHeader.hState:
+
+
 
                             break;
                     }
