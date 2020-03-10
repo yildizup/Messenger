@@ -17,7 +17,7 @@
         <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,178,179,0" />
         <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,76,255,0" Width="82"/>
         <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,147,255,0" Width="82"/>
-        <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="86" Margin="203,337,203,0" Height="23" Click="btnRegister_Click"/>
+        <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="110" Margin="203,337,179,0" Height="23" Click="btnRegister_Click"/>
         <TextBox Name="tbEmail" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="156" Margin="157,106,179,0" RenderTransformOrigin="0.5,0.5"></TextBox>
         <TextBox Name="tbPassword_Again" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="158,259,176,0"/>
         <Label Content="Passwort erneut eingeben" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,229,179,0" Width="158"/>

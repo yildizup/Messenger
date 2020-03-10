@@ -22,6 +22,7 @@ namespace Client
         public BinaryFormatter bFormatter;
         string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
+
         public ContactList contactList;
         bool registrationMode = false;
 
@@ -76,10 +77,17 @@ namespace Client
                     // Wenn die Registrierung erfolgreich war
                     case ComHeader.hRegistrationOk:
                         OnRegistrationOK();
+                        CloseConn();
+                        Receiver(); 
+                        /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfra  sendet, um die Verbindung zu beenden und bevor er 
+                         * dem Server lauschen kann, der Server bereits ein Paket gesendet hat, um die Verbindung zu schließen ?
+                         */
                         break;
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
                         OnRegistrationNotOk();
+                        //CloseConn();
+                        client.Client.Disconnect(true);
                         break;
 
                 }
@@ -185,7 +193,7 @@ namespace Client
                         OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
                     case ComHeader.hDisconnect:
-                        tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Nachrichten. Sobald die Verbindung 
+                        tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Paketen. 
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde

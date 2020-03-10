@@ -7,7 +7,7 @@ namespace Server
 
     static class UserController
     {
-        public static List<IndividualUser> individualUsers = new List<IndividualUser>();
+        public static List<IndividualUser> ConnectedUsers = new List<IndividualUser>();
 
         static internal void LoadUsers()
         {
@@ -20,20 +20,20 @@ namespace Server
                 individualUser.email = row["email"].ToString();
                 individualUser.password = row["password"].ToString();
 
-                individualUsers.Add(individualUser);
+                ConnectedUsers.Add(individualUser);
             }
 
         }
 
         static internal IndividualUser FindUser(string mail)
         {
-            IndividualUser user = individualUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            IndividualUser user = ConnectedUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
             return user;
         }
 
         static internal int GetIndexOfUser(string mail)
         {
-            int index = individualUsers.FindIndex(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            int index = ConnectedUsers.FindIndex(i => i.email == mail); 
             return index;
         }
 
