@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SharedClass; //TODO: Recherchieren
 
 namespace Client
 {
@@ -34,12 +35,12 @@ namespace Client
             this.cClient.MessageReceived += receivedHandler;
             this.cClient.ChatReceived += CClient_ChatReceived;
 
-
-            foreach (string s in cClient.contactEmails)
+            foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(s);
+                UserControlContactItem contact = new UserControlContactItem(user.email);
                 lvContacts.Items.Add(contact);
             }
+
 
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
@@ -57,9 +58,9 @@ namespace Client
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
                            lvContacts.Items.Clear();
-                           foreach (string s in cClient.contactEmails)
+                           foreach (User user in cClient.contactList.listContacts)
                            {
-                               UserControlContactItem contact = new UserControlContactItem(s);
+                               UserControlContactItem contact = new UserControlContactItem(user.email);
                                lvContacts.Items.Add(contact);
                            }
 

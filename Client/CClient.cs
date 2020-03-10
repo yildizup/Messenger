@@ -25,8 +25,6 @@ namespace Client
 
         public ContactList contactList;
 
-        public List<string> contactEmails; // Die E-Mail Adresse der Kontakte befindet sich auch in contactList, doch die Views sollen diese Klasse nicht kennen. TODO: Wie kann man das anders lösen ?
-
         bool registrationMode = false;
 
         #endregion
@@ -36,7 +34,6 @@ namespace Client
         {
             bFormatter = new BinaryFormatter();
             contactList = new ContactList();
-            contactEmails = new List<string>();
 
         }
 
@@ -65,13 +62,6 @@ namespace Client
                 if (answer == ComHeader.hLoginOk)
                 {
                     contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
-
-                    // Die Email Adressen in die Kontaktliste hinzufügen
-                    foreach (User user in contactList.listContacts)
-                    {
-                        contactEmails.Add(user.email);
-                    }
-
                     OnLoginOK(); //Publisher aufrufen
                     Receiver();
                 }
@@ -209,14 +199,6 @@ namespace Client
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
                         contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
-
-                        contactEmails.Clear();
-                        // Die Email Adressen in die Kontaktliste hinzufügen
-                        foreach (User user in contactList.listContacts)
-                        {
-                            contactEmails.Add(user.email);
-                        }
-
                         OnRefreshContacts(); //Event auslösen
                         break;
                     case ComHeader.hState:
