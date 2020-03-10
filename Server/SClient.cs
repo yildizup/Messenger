@@ -78,7 +78,8 @@ namespace Server
             if (individualUser != null)
             {
                 // Benutzer als abgemeldet markieren
-                UserController.ConnectedUsers[UserController.GetIndexOfUser(individualUser.email)].LoggedIn = false;
+                UserController.ConnectedUsers[UserController.GetIndexOfUser(individualUser.email)].status = false;
+                dbController.ChangeStatus(individualUser.email, false);
             }
 
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
@@ -132,7 +133,13 @@ namespace Server
             {
                 case 0:
                     // Wenn alle Daten richtig sind
-                    UserController.ConnectedUsers[UserController.GetIndexOfUser(email)].LoggedIn = true;
+
+
+                    //User als angemeldet markieren
+                    UserController.ConnectedUsers[UserController.GetIndexOfUser(email)].status = true;
+                    dbController.ChangeStatus(email, true);
+
+
                     //Socket des jeweiligen Users speichern
                     UserController.ConnectedUsers[UserController.GetIndexOfUser(email)].Connection = this;
                     individualUser = UserController.ConnectedUsers[UserController.GetIndexOfUser(email)]; //Um zu wissen wer der aktuelle User ist
@@ -146,6 +153,7 @@ namespace Server
                     ContactList contactList = new ContactList();
                     contactList.listContacts = dbController.LoadContacts(email);//Die Kontakte des eingeloggten Users laden
                     bFormatter.Serialize(netStream, contactList.listContacts);
+
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
                     break;
@@ -185,7 +193,7 @@ namespace Server
                             message = (MessageSend)bFormatter.Deserialize(netStream);
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
                             //Ist der Empfänger Online ?
-                            if (UserController.ConnectedUsers[indexReceiver].LoggedIn == true)
+                            if (UserController.ConnectedUsers[indexReceiver].status == true)
                             {
                                 NetworkStream netStreamOfReceiver = UserController.ConnectedUsers[indexReceiver].Connection.netStream;
 

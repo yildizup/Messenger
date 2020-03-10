@@ -159,7 +159,34 @@ namespace Server
 
         }
 
-
+        /// <summary>
+        /// Ändert Aktivitätsstatus des Users
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="status"></param>
+        static internal void ChangeStatus(string email, bool status)
+        {
+            if (status)
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "update user set status = true where email=@email";
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Connection = con;
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+            else
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "update user set status = false where email=@email";
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Connection = con;
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
         #endregion
 
 

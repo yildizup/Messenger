@@ -45,14 +45,14 @@ create table user (
   
   
  -- Die Benutzer
-insert into user (email, password) values ('admin@telefonico.com','1');
-insert into user (email, password) values ('user@telefonico.com','1');
-insert into user (email, password) values ('absender@gmail.com','1');
-insert into user (email, password) values ('empfänger@gmail.com','1');
-insert into user (email, password) values ('freund1@gmail.com','1');
-insert into user (email, password) values ('freund2@gmail.com','1');
-insert into user (email, password) values ('freund3@gmail.com','1');
-insert into user (email, password) values ('freund4@gmail.com','1');
+insert into user (email, password, status) values ('admin@telefonico.com','1',0);
+insert into user (email, password, status) values ('user@telefonico.com','1',0);
+insert into user (email, password, status) values ('absender@gmail.com','1',0);
+insert into user (email, password, status) values ('empfänger@gmail.com','1',0);
+insert into user (email, password, status) values ('freund1@gmail.com','1',0);
+insert into user (email, password, status) values ('freund2@gmail.com','1',0);
+insert into user (email, password, status) values ('freund3@gmail.com','1',0);
+insert into user (email, password, status) values ('freund4@gmail.com','1',0);
 
 
 -- Die Kontakte
