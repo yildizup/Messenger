@@ -35,7 +35,7 @@ namespace Client
             this.cClient.ChatReceived += CClient_ChatReceived;
 
 
-            foreach (string s in cClient.contactList.listContacts)
+            foreach (string s in cClient.contactEmails)
             {
                 UserControlContactItem contact = new UserControlContactItem(s);
                 lvContacts.Items.Add(contact);
@@ -57,7 +57,7 @@ namespace Client
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
                            lvContacts.Items.Clear();
-                           foreach (string s in cClient.contactList.listContacts)
+                           foreach (string s in cClient.contactEmails)
                            {
                                UserControlContactItem contact = new UserControlContactItem(s);
                                lvContacts.Items.Add(contact);

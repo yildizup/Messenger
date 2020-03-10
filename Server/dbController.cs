@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using SharedClass;
 
 namespace Server
 {
@@ -216,9 +217,9 @@ namespace Server
 
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
 
-        static internal List<string> LoadContacts(string email)
+        static internal List<User> LoadContacts(string email)
         {
-            List<string> listContacts = new List<string>();
+            List<User> listContacts = new List<User>();
 
 
             MySqlCommand cmd = new MySqlCommand();
@@ -239,7 +240,9 @@ namespace Server
 
             foreach (DataRow row in dt.Rows)
             {
-                listContacts.Add(row["friend_email"].ToString());
+                User tmpUser = new User();
+                tmpUser.email = row["friend_email"].ToString();
+                listContacts.Add(tmpUser);
             }
 
             return listContacts;
@@ -265,9 +268,9 @@ namespace Server
 
 
             // Wenn die Nachricht vom aktuellen Client ist, soll statt der Email "Sie" stehen
-            foreach (DataRow r in dtChat.Rows) 
+            foreach (DataRow r in dtChat.Rows)
             {
-                if ((string)r["main_email"] == main_email) 
+                if ((string)r["main_email"] == main_email)
                 {
                     r["main_email"] = "Sie"; // Namen ändern
                 }

@@ -16,7 +16,7 @@ namespace Server
         public BinaryFormatter bFormatter;
 
         User individualUser; // Informationen über den aktuell eingeloggten User
-        public List<string> listContacts = new List<string>(); //Die Kontaktliste des jeweiligen Benutzers
+        public List<User> listContacts = new List<User>(); //Die Kontaktliste des jeweiligen Benutzers
 
         Thread tcpThread;
         #endregion
@@ -150,6 +150,7 @@ namespace Server
 
 
                     ContactList contactList = new ContactList();
+                    List<User> tmp = dbController.LoadContacts(email);
                     contactList.listContacts = dbController.LoadContacts(email);//Die Kontakte des eingeloggten Users laden
                     bFormatter.Serialize(netStream, contactList.listContacts);
 

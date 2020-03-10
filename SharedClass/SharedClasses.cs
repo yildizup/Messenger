@@ -7,7 +7,7 @@ namespace SharedClass
     [Serializable]
     public class ContactList
     {
-        public List<string> listContacts = new List<string>(); //TODO: Wie kann man das besser lösen ?
+        public List<User> listContacts = new List<User>(); //TODO: Wie kann man das besser lösen ?
     }
 
     [Serializable] //TODO: Recherchieren
@@ -17,11 +17,11 @@ namespace SharedClass
 
     }
 
+    [Serializable]
     public class User
     {
         public string email;
         public bool status; //ist der Benutzer eingeloggt ?
-
 
         //TODO: Recherchieren nach Vor- und Nachteilen
         public object Connection; //Um die jeweiligen Clients anzusprechen
