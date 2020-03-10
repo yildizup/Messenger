@@ -105,7 +105,7 @@ namespace Server
                 // Benutzer in die Liste "ConnectedUsers" hinzufügen. Mithilfe dieser Liste wird der jeweilige Socket des Clients angesprochen.
                 User user = new User();
                 user.email = email;
-                UserController.ConnectedUsers.Add(user); 
+                UserController.ConnectedUsers.Add(user);
 
 
                 // Benutzer konnte erfolgreich erstellt werden
@@ -255,18 +255,19 @@ namespace Server
                                 // neuen Kontakt in die Datenbank hinzufügen
                                 dbController.AddContact(individualUser.email, friend.Email);
 
-                                AdditionalHeader head = new AdditionalHeader(ComHeader.hAddContact);
-                                bFormatter.Serialize(netStream, head);
+                                AdditionalHeader htmp = new AdditionalHeader(ComHeader.hAddContact);
+                                bFormatter.Serialize(netStream, htmp);
 
-                                ContactList contactList = new ContactList();
-                                contactList.listContacts = dbController.LoadContacts(individualUser.email);//Die Kontakte des Users erneut laden
-                                bFormatter.Serialize(netStream, contactList.listContacts);
+                                bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.email));//Die Kontakte des Users erneut laden
                             }
                             #endregion
                             break;
                         case ComHeader.hState:
 
+                            AdditionalHeader head = new AdditionalHeader(ComHeader.hState);
+                            bFormatter.Serialize(netStream, head);
 
+                            bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.email));//Die Kontakte des Users erneut laden
 
                             break;
                     }

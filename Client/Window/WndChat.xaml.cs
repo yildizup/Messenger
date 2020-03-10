@@ -37,7 +37,7 @@ namespace Client
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.email);
+                UserControlContactItem contact = new UserControlContactItem(user.email, user.status);
                 lvContacts.Items.Add(contact);
             }
 
@@ -60,7 +60,7 @@ namespace Client
                            lvContacts.Items.Clear();
                            foreach (User user in cClient.contactList.listContacts)
                            {
-                               UserControlContactItem contact = new UserControlContactItem(user.email);
+                               UserControlContactItem contact = new UserControlContactItem(user.email, user.status);
                                lvContacts.Items.Add(contact);
                            }
 
@@ -155,6 +155,13 @@ namespace Client
                 cClient.CloseConn();
                 Environment.Exit(0);
             }
+
+        }
+
+        private void tmpWhoIsOnline_Click(object sender, RoutedEventArgs e)
+        {
+
+            cClient.WhoIsOnline();
 
         }
     }

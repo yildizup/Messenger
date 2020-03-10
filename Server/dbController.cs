@@ -221,9 +221,8 @@ namespace Server
         {
             List<User> listContacts = new List<User>();
 
-
             MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from contacts where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            cmd.CommandText = "Select main_email, friend_email, status from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
 
@@ -242,6 +241,7 @@ namespace Server
             {
                 User tmpUser = new User();
                 tmpUser.email = row["friend_email"].ToString();
+                tmpUser.status = (bool)row["status"];
                 listContacts.Add(tmpUser);
             }
 

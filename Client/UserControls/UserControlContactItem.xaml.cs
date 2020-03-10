@@ -21,16 +21,30 @@ namespace Client
     public partial class UserControlContactItem : UserControl
     {
         private string email;
-        public UserControlContactItem(string email)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="status">Ist der User online ? </param>
+        public UserControlContactItem(string email, bool status)
         {
             InitializeComponent();
             this.email = email;
             tbEmail.Text = this.email;
+
+            if (status)
+            {
+                borderStatus.Background = Brushes.LightGreen;
+            }
+            else
+            {
+                borderStatus.Background = Brushes.DarkRed;
+            }
         }
 
         public string Email
         {
             get { return email; }
-        } 
+        }
     }
 }

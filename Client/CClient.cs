@@ -202,7 +202,8 @@ namespace Client
                         OnRefreshContacts(); //Event auslösen
                         break;
                     case ComHeader.hState:
-
+                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
+                        OnRefreshContacts(); //Event auslösen
                         break;
                 }
             }
@@ -211,7 +212,7 @@ namespace Client
         /// <summary>
         /// Fragt wer Online ist
         /// </summary>
-        void WhoIsOnline()
+        public void WhoIsOnline()
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
             bFormatter.Serialize(netStream, header);
@@ -219,7 +220,6 @@ namespace Client
 
 
         #endregion
-
 
 
         #region Chat-Methoden
@@ -265,10 +265,7 @@ namespace Client
             bFormatter.Serialize(netStream, friend);
         }
 
-
         #endregion
-
-
 
 
         #region Events
