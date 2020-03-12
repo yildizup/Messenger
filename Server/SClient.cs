@@ -263,12 +263,9 @@ namespace Server
                             #endregion
                             break;
                         case ComHeader.hState:
-
                             AdditionalHeader head = new AdditionalHeader(ComHeader.hState);
                             bFormatter.Serialize(netStream, head);
-
                             bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.email));//Die Kontakte des Users erneut laden
-
                             break;
                     }
                 }

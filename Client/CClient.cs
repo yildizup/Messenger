@@ -14,7 +14,9 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
-        public string Server { get { return "localhost"; } }
+        Thread pullThread;
+
+        public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
 
         public TcpClient client;
@@ -46,6 +48,7 @@ namespace Client
             this.password = password;
             tcpThread = new Thread(EstablishConnection);
             tcpThread.Start();
+            pullThread = new Thread(WhoIsOnline);
         }
 
         public void SetupConn()  // Verbindung aufbauen
@@ -178,6 +181,7 @@ namespace Client
         /// </summary>
         void Receiver()
         {
+            //pullThread.Start(); 
             while (client.Connected)
             {
                 byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
@@ -198,10 +202,7 @@ namespace Client
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
-                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
-                        OnRefreshContacts(); //Event auslösen
-                        break;
-                    case ComHeader.hState:
+                    case ComHeader.hState: // Wenn Aktivitätsstatus der User mitgeteilt wird
                         contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
@@ -210,12 +211,17 @@ namespace Client
         }
 
         /// <summary>
-        /// Fragt wer Online ist
+        /// Fragt wiederholen in einem bestimmten Zeitintervall wer online ist
         /// </summary>
         public void WhoIsOnline()
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-            bFormatter.Serialize(netStream, header);
+
+            while (true)
+            {
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+                bFormatter.Serialize(netStream, header);
+                Thread.Sleep(1000);
+            }
         }
 
 

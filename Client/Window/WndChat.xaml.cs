@@ -160,9 +160,7 @@ namespace Client
 
         private void tmpWhoIsOnline_Click(object sender, RoutedEventArgs e)
         {
-
             cClient.WhoIsOnline();
-
         }
     }
 }
