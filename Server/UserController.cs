@@ -17,7 +17,7 @@ namespace Server
             foreach (DataRow row in dt.Rows)
             {
                 User individualUser = new User();
-                individualUser.email = row["email"].ToString();
+                individualUser.Email = row["email"].ToString();
                 ConnectedUsers.Add(individualUser);
             }
 
@@ -25,13 +25,13 @@ namespace Server
 
         static internal User FindUser(string mail)
         {
-            User user = ConnectedUsers.Find(i => i.email == mail); //TODO: Recherchieren über Lambda Expressions
+            User user = ConnectedUsers.Find(i => i.Email == mail); //TODO: Recherchieren über Lambda Expressions
             return user;
         }
 
         static internal int GetIndexOfUser(string mail)
         {
-            int index = ConnectedUsers.FindIndex(i => i.email == mail); 
+            int index = ConnectedUsers.FindIndex(i => i.Email == mail); 
             return index;
         }
 

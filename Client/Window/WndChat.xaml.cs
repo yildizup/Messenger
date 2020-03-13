@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -37,7 +38,7 @@ namespace Client
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.email, user.status);
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
                 lvContacts.Items.Add(contact);
             }
 
@@ -56,15 +57,15 @@ namespace Client
         private void ReloadContacts(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           lvContacts.Items.Clear();
-                           foreach (User user in cClient.contactList.listContacts)
-                           {
-                               UserControlContactItem contact = new UserControlContactItem(user.email, user.status);
-                               lvContacts.Items.Add(contact);
-                           }
+                                 {
+                                     lvContacts.Items.Clear();
+                                     foreach (User user in cClient.contactList.listContacts)
+                                     {
+                                         UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
+                                         lvContacts.Items.Add(contact);
+                                     }
 
-                       });
+                                 });
         }
 
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
@@ -106,15 +107,22 @@ namespace Client
             {
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
             }
+            else
+            {
+                splChat.Children.Clear();
+            }
         }
 
         #region Nachrichten senden und empfangen
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
-            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
-            splChat.Children.Add(messagesent);
+            if (lvContacts.SelectedItem != null) //Nur wenn ein Kontakt ausgewählt ist
+            {
+                cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
+                UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
+                splChat.Children.Add(messagesent);
+            }
         }
 
 
@@ -133,7 +141,7 @@ namespace Client
                            if (lvContacts.SelectedItem != null)
                            {
 
-                               if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
+                               if (e.From == ((User)lvContacts.SelectedItem).Email)
                                {
 
                                    UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
@@ -162,5 +170,6 @@ namespace Client
         {
             cClient.WhoIsOnline();
         }
+
     }
 }

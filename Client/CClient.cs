@@ -181,7 +181,6 @@ namespace Client
         /// </summary>
         void Receiver()
         {
-            //pullThread.Start(); 
             while (client.Connected)
             {
                 byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
@@ -203,6 +202,7 @@ namespace Client
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
                     case ComHeader.hState: // Wenn Aktivitätsstatus der User mitgeteilt wird
+                        //Kontaktliste aktualiseren
                         contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
@@ -215,13 +215,8 @@ namespace Client
         /// </summary>
         public void WhoIsOnline()
         {
-
-            while (true)
-            {
                 AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
                 bFormatter.Serialize(netStream, header);
-                Thread.Sleep(1000);
-            }
         }
 
 

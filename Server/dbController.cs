@@ -240,8 +240,8 @@ namespace Server
             foreach (DataRow row in dt.Rows)
             {
                 User tmpUser = new User();
-                tmpUser.email = row["friend_email"].ToString();
-                tmpUser.status = (bool)row["status"];
+                tmpUser.Email = row["friend_email"].ToString();
+                tmpUser.Status = (bool)row["status"];
                 listContacts.Add(tmpUser);
             }
 

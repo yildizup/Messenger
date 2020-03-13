@@ -20,8 +20,13 @@ namespace SharedClass
     [Serializable]
     public class User
     {
-        public string email;
-        public bool status; //ist der Benutzer eingeloggt ?
+        public string Email { get; set; }
+        public bool Status { get; set; } //ist der Benutzer eingeloggt ?
+
+        public override string ToString()
+        {
+            return this.Email + String.Format("[{0}]",this.Status);
+        }
 
         //TODO: Recherchieren nach Vor- und Nachteilen
         public object Connection; //Um die jeweiligen Clients anzusprechen
