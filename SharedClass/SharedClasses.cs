@@ -22,11 +22,7 @@ namespace SharedClass
     {
         public string Email { get; set; }
         public bool Status { get; set; } //ist der Benutzer eingeloggt ?
-
-        public override string ToString()
-        {
-            return this.Email + String.Format("[{0}]",this.Status);
-        }
+        public int NewMessages { get; set; }
 
         //TODO: Recherchieren nach Vor- und Nachteilen
         public object Connection; //Um die jeweiligen Clients anzusprechen
