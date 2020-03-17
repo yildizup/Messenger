@@ -27,7 +27,7 @@ namespace Client
                 password = tbPassword.Text;
             }
 
-            cClient.ConnectToRegistrate(tbEmail.Text, password);
+            cClient.Connect(tbEmail.Text, password, true);
 
         }
 

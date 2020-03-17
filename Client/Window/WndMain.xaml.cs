@@ -53,7 +53,7 @@ namespace Client
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-                cClient.Connect(tbEmail.Text, tbPassword.Text);
+            cClient.Connect(tbEmail.Text, tbPassword.Text, false);
 
         }
 

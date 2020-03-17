@@ -41,12 +41,32 @@ namespace Client
 
         #region Verbindungsauf- und Abbau
 
-        public void Connect(string email, string password)
+        public void Connect(string email, string password, bool regMode)
         {
             this.email = email;
             this.password = password;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
+
+            if (regMode)
+            {
+                registrationMode = true;
+            }
+            else
+            {
+                registrationMode = false;
+            }
+
+            try
+            {
+                client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+                tcpThread = new Thread(SetupConn);
+                tcpThread.Start();
+                
+            }
+
+            catch (Exception e)
+            {
+            }
+
         }
 
         public void SetupConn()  // Verbindung aufbauen
@@ -95,35 +115,6 @@ namespace Client
                 }
 
             }
-
-        }
-
-
-        public void ConnectToRegistrate(string email, string password)
-        {
-            this.email = email;
-            this.password = password;
-            registrationMode = true;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-        }
-
-        /// <summary>
-        /// Versucht eine Verbindung aufzubauen
-        /// </summary>
-        public void EstablishConnection()
-        {
-            //try
-            //{
-            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            SetupConn();
-            //}
-
-            //catch (Exception e)
-            //{
-            //AreWeConnected = false;
-            //}
-
 
         }
 
@@ -213,8 +204,8 @@ namespace Client
         /// </summary>
         public void WhoIsOnline()
         {
-                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-                bFormatter.Serialize(netStream, header);
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+            bFormatter.Serialize(netStream, header);
         }
 
 
