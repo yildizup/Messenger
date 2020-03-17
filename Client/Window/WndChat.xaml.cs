@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SharedClass; //TODO: Recherchieren
+using System;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using SharedClass; //TODO: Recherchieren
 
 namespace Client
 {
@@ -25,6 +14,7 @@ namespace Client
 
         public CClient cClient;
         CReceivedEventHandler receivedHandler;
+        int selectedContact; //index des ausgewählten Kontaktes
 
         public WndChat(CClient cClient)
         {
@@ -47,6 +37,8 @@ namespace Client
 
             cClient.RefreshContacts += new EventHandler(ReloadContacts);
 
+            YourEmail.Content = cClient.email;
+
         }
 
         /// <summary>
@@ -64,6 +56,8 @@ namespace Client
                                          UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages);
                                          lvContacts.Items.Add(contact);
                                      }
+
+                                     lvContacts.SelectedIndex = selectedContact;
 
                                  });
         }
@@ -92,8 +86,14 @@ namespace Client
                                        splChat.Children.Add(messagereceived);
                                    }
                                });
+
             }
 
+            // Nach unten scrollen
+            Application.Current.Dispatcher.Invoke((Action)delegate
+                       {
+                           chatViewScroller.ScrollToBottom();
+                       });
         }
 
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
@@ -105,7 +105,9 @@ namespace Client
         {
             if (lvContacts.SelectedItem != null)
             {
+                selectedContact = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
+
             }
             else
             {
@@ -122,6 +124,13 @@ namespace Client
                 cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
                 UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
                 splChat.Children.Add(messagesent);
+
+
+                // Nach unten scrollen
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                           {
+                               chatViewScroller.ScrollToBottom();
+                           });
             }
         }
 

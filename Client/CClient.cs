@@ -14,7 +14,6 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
-        Thread pullThread;
 
         public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
@@ -22,7 +21,7 @@ namespace Client
         public TcpClient client;
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
         public BinaryFormatter bFormatter;
-        string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
+        public string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
 
         public ContactList contactList;
@@ -48,7 +47,6 @@ namespace Client
             this.password = password;
             tcpThread = new Thread(EstablishConnection);
             tcpThread.Start();
-            pullThread = new Thread(WhoIsOnline);
         }
 
         public void SetupConn()  // Verbindung aufbauen
