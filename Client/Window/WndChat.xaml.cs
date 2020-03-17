@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SharedClass; //TODO: Recherchieren
 
 namespace Client
 {
@@ -34,12 +36,12 @@ namespace Client
             this.cClient.MessageReceived += receivedHandler;
             this.cClient.ChatReceived += CClient_ChatReceived;
 
-
-            foreach (string s in cClient.contactList.listContacts)
+            foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(s);
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
                 lvContacts.Items.Add(contact);
             }
+
 
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
@@ -55,15 +57,15 @@ namespace Client
         private void ReloadContacts(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           lvContacts.Items.Clear();
-                           foreach (string s in cClient.contactList.listContacts)
-                           {
-                               UserControlContactItem contact = new UserControlContactItem(s);
-                               lvContacts.Items.Add(contact);
-                           }
+                                 {
+                                     lvContacts.Items.Clear();
+                                     foreach (User user in cClient.contactList.listContacts)
+                                     {
+                                         UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
+                                         lvContacts.Items.Add(contact);
+                                     }
 
-                       });
+                                 });
         }
 
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
@@ -105,15 +107,22 @@ namespace Client
             {
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
             }
+            else
+            {
+                splChat.Children.Clear();
+            }
         }
 
         #region Nachrichten senden und empfangen
 
         private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
-            UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
-            splChat.Children.Add(messagesent);
+            if (lvContacts.SelectedItem != null) //Nur wenn ein Kontakt ausgewählt ist
+            {
+                cClient.SendMessage(((UserControlContactItem)lvContacts.SelectedItem).Email, txtMessage.Text);
+                UserControlMessageSent messagesent = new UserControlMessageSent(txtMessage.Text, DateTime.Now.ToString());
+                splChat.Children.Add(messagesent);
+            }
         }
 
 
@@ -132,7 +141,7 @@ namespace Client
                            if (lvContacts.SelectedItem != null)
                            {
 
-                               if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
+                               if (e.From == ((User)lvContacts.SelectedItem).Email)
                                {
 
                                    UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
@@ -156,5 +165,11 @@ namespace Client
             }
 
         }
+
+        private void tmpWhoIsOnline_Click(object sender, RoutedEventArgs e)
+        {
+            cClient.WhoIsOnline();
+        }
+
     }
 }

@@ -14,7 +14,9 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
-        public string Server { get { return "localhost"; } }
+        Thread pullThread;
+
+        public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
 
         public TcpClient client;
@@ -24,6 +26,7 @@ namespace Client
         string password;
 
         public ContactList contactList;
+
         bool registrationMode = false;
 
         #endregion
@@ -45,6 +48,7 @@ namespace Client
             this.password = password;
             tcpThread = new Thread(EstablishConnection);
             tcpThread.Start();
+            pullThread = new Thread(WhoIsOnline);
         }
 
         public void SetupConn()  // Verbindung aufbauen
@@ -60,7 +64,7 @@ namespace Client
 
                 if (answer == ComHeader.hLoginOk)
                 {
-                    contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
+                    contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
                     OnLoginOK(); //Publisher aufrufen
                     Receiver();
                 }
@@ -78,7 +82,7 @@ namespace Client
                     case ComHeader.hRegistrationOk:
                         OnRegistrationOK();
                         CloseConn();
-                        Receiver(); 
+                        Receiver();
                         /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfra  sendet, um die Verbindung zu beenden und bevor er 
                          * dem Server lauschen kann, der Server bereits ein Paket gesendet hat, um die Verbindung zu schließen ?
                          */
@@ -197,16 +201,26 @@ namespace Client
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
-                        contactList.listContacts = (List<string>)bFormatter.Deserialize(netStream);
+                    case ComHeader.hState: // Wenn Aktivitätsstatus der User mitgeteilt wird
+                        //Kontaktliste aktualiseren
+                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Fragt wiederholen in einem bestimmten Zeitintervall wer online ist
+        /// </summary>
+        public void WhoIsOnline()
+        {
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+                bFormatter.Serialize(netStream, header);
+        }
+
 
         #endregion
-
 
 
         #region Chat-Methoden
@@ -252,10 +266,7 @@ namespace Client
             bFormatter.Serialize(netStream, friend);
         }
 
-
         #endregion
-
-
 
 
         #region Events

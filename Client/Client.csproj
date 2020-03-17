@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -86,8 +87,8 @@
       <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControls\UserControlContactItem.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\UserControlMessageReceived.xaml">
       <SubType>Designer</SubType>

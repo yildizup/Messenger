@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
+using SharedClass;
 
 namespace Server
 {
@@ -159,7 +160,34 @@ namespace Server
 
         }
 
-
+        /// <summary>
+        /// Ändert Aktivitätsstatus des Users
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="status"></param>
+        static internal void ChangeStatus(string email, bool status)
+        {
+            if (status)
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "update user set status = true where email=@email";
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Connection = con;
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+            else
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "update user set status = false where email=@email";
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Connection = con;
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
         #endregion
 
 
@@ -189,13 +217,12 @@ namespace Server
 
         //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
 
-        static internal List<string> LoadContacts(string email)
+        static internal List<User> LoadContacts(string email)
         {
-            List<string> listContacts = new List<string>();
-
+            List<User> listContacts = new List<User>();
 
             MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from contacts where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            cmd.CommandText = "Select main_email, friend_email, status from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
 
@@ -212,7 +239,10 @@ namespace Server
 
             foreach (DataRow row in dt.Rows)
             {
-                listContacts.Add(row["friend_email"].ToString());
+                User tmpUser = new User();
+                tmpUser.Email = row["friend_email"].ToString();
+                tmpUser.Status = (bool)row["status"];
+                listContacts.Add(tmpUser);
             }
 
             return listContacts;
@@ -238,9 +268,9 @@ namespace Server
 
 
             // Wenn die Nachricht vom aktuellen Client ist, soll statt der Email "Sie" stehen
-            foreach (DataRow r in dtChat.Rows) 
+            foreach (DataRow r in dtChat.Rows)
             {
-                if ((string)r["main_email"] == main_email) 
+                if ((string)r["main_email"] == main_email)
                 {
                     r["main_email"] = "Sie"; // Namen ändern
                 }

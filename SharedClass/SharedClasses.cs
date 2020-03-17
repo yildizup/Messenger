@@ -7,7 +7,7 @@ namespace SharedClass
     [Serializable]
     public class ContactList
     {
-        public List<string> listContacts = new List<string>(); //TODO: Wie kann man das besser lösen ?
+        public List<User> listContacts = new List<User>(); //TODO: Wie kann man das besser lösen ?
     }
 
     [Serializable] //TODO: Recherchieren
@@ -17,6 +17,20 @@ namespace SharedClass
 
     }
 
+    [Serializable]
+    public class User
+    {
+        public string Email { get; set; }
+        public bool Status { get; set; } //ist der Benutzer eingeloggt ?
+
+        public override string ToString()
+        {
+            return this.Email + String.Format("[{0}]",this.Status);
+        }
+
+        //TODO: Recherchieren nach Vor- und Nachteilen
+        public object Connection; //Um die jeweiligen Clients anzusprechen
+    }
 
     [Serializable]
     public class MessageSend
@@ -88,6 +102,9 @@ namespace SharedClass
                 case ComHeader.hAddContact:
                     PHeader = ComHeader.hAddContact;
                     break;
+                case ComHeader.hState:
+                    PHeader = ComHeader.hState;
+                    break;
             }
         }
     }
@@ -110,6 +127,7 @@ namespace SharedClass
         public const byte hDisconnect = 10; //Um den Server zu benachrichten, dass der Client die Verbindung schließt
         public const byte hChat = 11; //Anfrage nach Chat Inhalten
         public const byte hAddContact = 12; //Kontakt hinzufügen
+        public const byte hState = 13; //Paket, um nach dem Status der Kontakte zu fragen.
     }
 }
 
