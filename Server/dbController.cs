@@ -215,7 +215,7 @@ namespace Server
             return dt;
         }
 
-        //TODO: Recherchieren über Vor- und Nachteile von Events in einer static Class
+        //TODO: Recherchieren über Vor- und Nachteilen von Events in einer static Class
 
         static internal List<User> LoadContacts(string email)
         {
@@ -242,10 +242,43 @@ namespace Server
                 User tmpUser = new User();
                 tmpUser.Email = row["friend_email"].ToString();
                 tmpUser.Status = (bool)row["status"];
+
+                #region Neue Nachrichten
+
+                tmpUser.NewMessages = CountNewMessages(email, row["friend_email"].ToString());
+
+                #endregion
+
                 listContacts.Add(tmpUser);
             }
 
             return listContacts;
+        }
+
+        static internal int CountNewMessages(string email, string friend_email)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            // Alle Nachrichten, die noch nicht gelesen wurden 
+            cmd.CommandText = "Select count(main_email) as sum from chat where ((main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) && received = 0)"; 
+            cmd.Parameters.AddWithValue("@mainemail", email);
+            cmd.Parameters.AddWithValue("@friendemail", friend_email);
+            cmd.Connection = con;
+
+            con.Open();
+            MySqlDataReader dr = cmd.ExecuteReader();
+
+            // In ein 'DataTable' Objekt schreiben.
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+
+            DataRow tmpRow = dt.Rows[0];
+
+            con.Close();
+
+            int tmpInt = int.Parse(tmpRow["sum"].ToString());
+            return tmpInt;
+
+
         }
 
         static internal DataTable LoadChat(string main_email, string friend_email)
