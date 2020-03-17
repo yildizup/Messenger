@@ -17,6 +17,7 @@ namespace Client
             cClient = new CClient();
             cClient.RegistrationOK += new EventHandler(cOnRegistrationOK);
             cClient.RegistrationNotOk += new EventHandler(cOnRegistrationNotOK);
+            cClient.LoginNotOk += new EventHandler(cOnLoginNotOk);
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
@@ -31,6 +32,10 @@ namespace Client
 
         }
 
+        void cOnLoginNotOk(object sender, EventArgs e)
+        {
+            MessageBox.Show("Es konnte keine Verbindung zum Server hergestellt werden.");
+        }
         void cOnRegistrationOK(object sender, EventArgs e)
         {
             MessageBox.Show("Die Registrierung war erfolgreich. Sie können sich nun erfolgreich anmelden");

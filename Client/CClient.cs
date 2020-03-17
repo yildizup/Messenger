@@ -41,6 +41,12 @@ namespace Client
 
         #region Verbindungsauf- und Abbau
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <param name="regMode">true --> Registrierungsanfrage</param>
         public void Connect(string email, string password, bool regMode)
         {
             this.email = email;
@@ -60,11 +66,11 @@ namespace Client
                 client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
                 tcpThread = new Thread(SetupConn);
                 tcpThread.Start();
-                
             }
 
             catch (Exception e)
             {
+                OnLoginNotOk();
             }
 
         }
@@ -107,7 +113,7 @@ namespace Client
                         break;
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
-                        OnRegistrationNotOk();
+                        OnRegistrationWrong();
                         //CloseConn();
                         client.Client.Disconnect(true);
                         break;
@@ -261,6 +267,7 @@ namespace Client
         #region Events
 
         public event EventHandler LoginOK;
+        public event EventHandler LoginNotOk;
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
         public event EventHandler RegistrationNotOk;
@@ -275,6 +282,13 @@ namespace Client
             }
         }
 
+        virtual protected void OnLoginNotOk()
+        {
+            if (LoginNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
+            {
+                LoginNotOk(this, EventArgs.Empty);
+            }
+        }
         virtual protected void OnMessageReceived(CReceivedEventArgs e)
         {
             if (MessageReceived != null)
@@ -300,7 +314,7 @@ namespace Client
 
         }
 
-        virtual protected void OnRegistrationNotOk()
+        virtual protected void OnRegistrationWrong()
         {
             if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
             {
