@@ -38,7 +38,7 @@ namespace Client
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages);
                 lvContacts.Items.Add(contact);
             }
 
@@ -61,7 +61,7 @@ namespace Client
                                      lvContacts.Items.Clear();
                                      foreach (User user in cClient.contactList.listContacts)
                                      {
-                                         UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status);
+                                         UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages);
                                          lvContacts.Items.Add(contact);
                                      }
 
@@ -133,23 +133,19 @@ namespace Client
         /// <param name="e"></param>
         void cMessageReceived(object sender, CReceivedEventArgs e)
         {
-
-            //TODO: gibt es eine bessere Lösung dafür ?
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           // Nachricht wird angezeigt, wenn man sich im selben Chat befinden
+                           // Nachricht wird nur angezeigt, wenn man sich im selben Chat befinden
                            if (lvContacts.SelectedItem != null)
                            {
-
-                               if (e.From == ((User)lvContacts.SelectedItem).Email)
+                               if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
                                {
-
                                    UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
                                    splChat.Children.Add(messagereceived);
                                }
                            }
-                       });
 
+                       });
         }
 
         #endregion

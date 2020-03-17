@@ -258,8 +258,8 @@ namespace Server
         static internal int CountNewMessages(string email, string friend_email)
         {
             MySqlCommand cmd = new MySqlCommand();
-            // Alle Nachrichten, die noch nicht gelesen wurden 
-            cmd.CommandText = "Select count(main_email) as sum from chat where ((main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) && received = 0)"; 
+            // Alle Nachrichten, die vom "Freund" gesendet wurden und noch nicht gelesen wurden zählen
+            cmd.CommandText = "Select count(main_email) as sum from chat where (( main_email=@friendemail)&& (friend_email=@mainemail) && received = 0)";
             cmd.Parameters.AddWithValue("@mainemail", email);
             cmd.Parameters.AddWithValue("@friendemail", friend_email);
             cmd.Connection = con;
@@ -275,10 +275,8 @@ namespace Server
 
             con.Close();
 
-            int tmpInt = int.Parse(tmpRow["sum"].ToString());
-            return tmpInt;
 
-
+            return int.Parse(tmpRow["sum"].ToString()); //Die Anzahl der neuen Nachrichten zurücksenden
         }
 
         static internal DataTable LoadChat(string main_email, string friend_email)

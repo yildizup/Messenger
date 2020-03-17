@@ -26,11 +26,12 @@ namespace Client
         /// </summary>
         /// <param name="email"></param>
         /// <param name="status">Ist der User online ? </param>
-        public UserControlContactItem(string email, bool status)
+        public UserControlContactItem(string email, bool status, int NewMessages)
         {
             InitializeComponent();
             this.email = email;
             tbEmail.Text = this.email;
+            lblNewMessages.Content = NewMessages.ToString();
 
             if (status)
             {
