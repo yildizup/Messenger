@@ -43,7 +43,7 @@ namespace Client
 
             // Kontrollelemente zum Senden einer Nachricht verstecken
             btnSendMessage.Visibility = Visibility.Hidden;
-            txtMessage.Visibility = Visibility.Hidden; 
+            txtMessage.Visibility = Visibility.Hidden;
             splChat.Children.Add(new UserControlMessageSent("Bitte wählen Sie einen Chat aus, um eine Unterhaltung zu beginnen", " "));
 
 
@@ -56,13 +56,33 @@ namespace Client
         /// <param name="e"></param>
         private void ReloadContacts(object sender, EventArgs e)
         {
+            // Die neuen Kontaktinformationen werden mit den alten verglichen. Falls Veränderung vorhanden sind, wird das jeweilige item aktualisert.
             Application.Current.Dispatcher.Invoke((Action)delegate
                                  {
-                                     lvContacts.Items.Clear();
-                                     foreach (User user in cClient.contactList.listContacts)
+                                     //Wenn die Anzahl der Kontakte sich nicht verändert hat.
+                                     if (lvContacts.Items.Count == cClient.contactList.listContacts.Count)
                                      {
-                                         UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages);
-                                         lvContacts.Items.Add(contact);
+
+                                         foreach (UserControlContactItem item in lvContacts.Items)
+                                         {
+                                             foreach (User user in cClient.contactList.listContacts)
+                                             {
+                                                 if (item.Email == user.Email)
+                                                 {
+                                                     item.NewMessages = user.NewMessages;
+                                                     item.Status = user.Status;
+
+                                                 }
+
+                                             }
+                                         }
+                                     }
+                                     else
+                                     {
+                                         // der neue Kontakt wird in die "listview" hinzugefügt
+                                         int tmpIndex = cClient.contactList.listContacts.Count - 1;
+                                         User tmpUser = cClient.contactList.listContacts[cClient.contactList.listContacts.Count - 1];
+                                         lvContacts.Items.Add(new UserControlContactItem(tmpUser.Email, tmpUser.Status, tmpUser.NewMessages));
                                      }
 
                                      lvContacts.SelectedIndex = selectedContact[1];
@@ -79,15 +99,15 @@ namespace Client
                 Application.Current.Dispatcher.Invoke((Action)delegate
                            {
                                splChat.Children.Clear(); //Stackpanel säubern
-                       });
+                           });
                 DataTable tmp = e.DtChat;
 
                 foreach (DataRow row in tmp.Rows)
                 {
                     Application.Current.Dispatcher.Invoke((Action)delegate
                                    {
-                                   //TODO: Nach einer anderen Lösungsmöglichkeit recherchieren
-                                   if (row["main_email"].ToString() == "Sie")
+                                       //TODO: Nach einer anderen Lösungsmöglichkeit recherchieren
+                                       if (row["main_email"].ToString() == "Sie")
                                        {
                                            UserControlMessageSent messagesent = new UserControlMessageSent(row["message"].ToString(), row["thetime"].ToString());
                                            splChat.Children.Add(messagesent);
@@ -125,7 +145,7 @@ namespace Client
             if (lvContacts.SelectedItem != null)
             {
                 // Alle Elemente im Array werden 1 nach links "geshiftet". Wird benötigt, um zu testen, ob ein neuer Kontakt ausgewählt wurde
-                selectedContact[0] = selectedContact[1]; 
+                selectedContact[0] = selectedContact[1];
                 selectedContact[1] = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
 
