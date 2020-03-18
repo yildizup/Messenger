@@ -14,11 +14,14 @@ namespace Client
 
         public CClient cClient;
         CReceivedEventHandler receivedHandler;
-        int selectedContact; //index des ausgewählten Kontaktes
+
+        int[] selectedContact; //index des zuletzt und des neu ausgewählten Kontakts
 
         public WndChat(CClient cClient)
         {
             InitializeComponent();
+            selectedContact = new int[2];
+            selectedContact[1] = 99; // zur Initialisierung müssen zwei unterschiedliche Werte vorhanden sein.
 
             this.cClient = cClient;
             receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
@@ -62,43 +65,48 @@ namespace Client
                                          lvContacts.Items.Add(contact);
                                      }
 
-                                     lvContacts.SelectedIndex = selectedContact;
+                                     lvContacts.SelectedIndex = selectedContact[1];
 
                                  });
         }
 
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
         {
-            Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           splChat.Children.Clear(); //Stackpanel säubern
-                       });
-            DataTable tmp = e.DtChat;
 
-            foreach (DataRow row in tmp.Rows)
+            if (selectedContact[0] != selectedContact[1])
             {
+
                 Application.Current.Dispatcher.Invoke((Action)delegate
-                               {
+                           {
+                               splChat.Children.Clear(); //Stackpanel säubern
+                       });
+                DataTable tmp = e.DtChat;
+
+                foreach (DataRow row in tmp.Rows)
+                {
+                    Application.Current.Dispatcher.Invoke((Action)delegate
+                                   {
                                    //TODO: Nach einer anderen Lösungsmöglichkeit recherchieren
                                    if (row["main_email"].ToString() == "Sie")
-                                   {
-                                       UserControlMessageSent messagesent = new UserControlMessageSent(row["message"].ToString(), row["thetime"].ToString());
-                                       splChat.Children.Add(messagesent);
-                                   }
-                                   else
-                                   {
-                                       UserControlMessageReceived messagereceived = new UserControlMessageReceived(row["message"].ToString(), row["thetime"].ToString());
-                                       splChat.Children.Add(messagereceived);
-                                   }
-                               });
+                                       {
+                                           UserControlMessageSent messagesent = new UserControlMessageSent(row["message"].ToString(), row["thetime"].ToString());
+                                           splChat.Children.Add(messagesent);
+                                       }
+                                       else
+                                       {
+                                           UserControlMessageReceived messagereceived = new UserControlMessageReceived(row["message"].ToString(), row["thetime"].ToString());
+                                           splChat.Children.Add(messagereceived);
+                                       }
+                                   });
 
+                }
+
+                // Nach unten scrollen
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                           {
+                               chatViewScroller.ScrollToBottom();
+                           });
             }
-
-            // Nach unten scrollen
-            Application.Current.Dispatcher.Invoke((Action)delegate
-                       {
-                           chatViewScroller.ScrollToBottom();
-                       });
         }
 
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
@@ -112,16 +120,15 @@ namespace Client
             {
                 btnSendMessage.Visibility = Visibility.Visible;
                 txtMessage.Visibility = Visibility.Visible;
+                splChat.Children.Clear();
             }
             if (lvContacts.SelectedItem != null)
             {
-                selectedContact = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
+                // Alle Elemente im Array werden 1 nach links "geshiftet". Wird benötigt, um zu testen, ob ein neuer Kontakt ausgewählt wurde
+                selectedContact[0] = selectedContact[1]; 
+                selectedContact[1] = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
 
-            }
-            else
-            {
-                splChat.Children.Clear();
             }
         }
 
