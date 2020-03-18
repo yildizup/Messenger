@@ -127,7 +127,7 @@ namespace Client
         public void CloseConn() // Verbindung beenden
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
         }
 
         #endregion
@@ -143,7 +143,7 @@ namespace Client
         public void Register(string email, string password)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
@@ -156,7 +156,7 @@ namespace Client
         public void Login(string email, string password)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
@@ -211,7 +211,7 @@ namespace Client
         public void WhoIsOnline()
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
         }
 
 
@@ -222,15 +222,13 @@ namespace Client
 
         public void LoadChat(string friend_email)
         {
-
             AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             ChatPerson chatPerson = new ChatPerson();
             chatPerson.Email = friend_email;
 
             bFormatter.Serialize(netStream, chatPerson);
-
         }
 
         /// <summary>
@@ -241,7 +239,7 @@ namespace Client
         public void SendMessage(string to, string msg)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
             MessageSend message = new MessageSend();
             message.To = to;
             message.Msg = msg;
@@ -255,10 +253,15 @@ namespace Client
         public void AddContact(string friend_email)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
             ChatPerson friend = new ChatPerson();
             friend.Email = friend_email;
             bFormatter.Serialize(netStream, friend);
+        }
+
+        void SendHeader(AdditionalHeader h)
+        {
+            bFormatter.Serialize(netStream, h);
         }
 
         #endregion

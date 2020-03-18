@@ -21,6 +21,7 @@ namespace Server
         Thread tcpThread;
         #endregion
 
+        AdditionalHeader sHeader;
 
         public SClient(TcpClient c)
         {
@@ -184,9 +185,10 @@ namespace Server
 
                 while (client.Client.Connected) //solange der Client verbunden ist
                 {
-                    byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+                    byte cHeader = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+                    sHeader = null;
 
-                    switch (header)
+                    switch (cHeader)
                     {
                         case ComHeader.hSend:
                             MessageSend message = new MessageSend();
@@ -198,7 +200,7 @@ namespace Server
                                 NetworkStream netStreamOfReceiver = ((SClient)UserController.ConnectedUsers[indexReceiver].Connection).netStream;
 
                                 //Zuerst den Header senden
-                                AdditionalHeader sHeader = new AdditionalHeader(ComHeader.hReceived);
+                                sHeader = new AdditionalHeader(ComHeader.hReceived);
                                 bFormatter.Serialize(netStreamOfReceiver, sHeader);
 
                                 //Sende Nachricht zum Empfänger
@@ -231,8 +233,8 @@ namespace Server
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
 
-                            AdditionalHeader h = new AdditionalHeader(ComHeader.hChat);
-                            bFormatter.Serialize(netStream, h);
+                            sHeader = new AdditionalHeader(ComHeader.hChat);
+                            SendHeader(sHeader);
                             ChatPerson chatPerson = new ChatPerson();
                             chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
 
@@ -255,8 +257,8 @@ namespace Server
                                 // neuen Kontakt in die Datenbank hinzufügen
                                 dbController.AddContact(individualUser.Email, friend.Email);
 
-                                AdditionalHeader htmp = new AdditionalHeader(ComHeader.hAddContact);
-                                bFormatter.Serialize(netStream, htmp);
+                                sHeader = new AdditionalHeader(ComHeader.hAddContact);
+                                SendHeader(sHeader);
 
                                 bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
                             }
@@ -264,7 +266,7 @@ namespace Server
                             break;
                         case ComHeader.hState:
                             AdditionalHeader head = new AdditionalHeader(ComHeader.hState);
-                            bFormatter.Serialize(netStream, head);
+                            SendHeader(head);
                             bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
                             break;
                     }
@@ -285,6 +287,14 @@ namespace Server
 
         }
 
+        /// <summary>
+        /// Vor jeder Nachricht wird dem Client ein Header gesendet
+        /// </summary>
+        /// <param name="h"></param>
+        void SendHeader(AdditionalHeader h)
+        {
+            bFormatter.Serialize(netStream, h);
+        }
 
         public void LoadChat()
         {
