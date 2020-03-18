@@ -36,8 +36,13 @@ namespace Client
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
             cClient.RefreshContacts += new EventHandler(ReloadContacts);
-
             YourEmail.Content = cClient.email;
+
+            // Kontrollelemente zum Senden einer Nachricht verstecken
+            btnSendMessage.Visibility = Visibility.Hidden;
+            txtMessage.Visibility = Visibility.Hidden; 
+            splChat.Children.Add(new UserControlMessageSent("Bitte wählen Sie einen Chat aus, um eine Unterhaltung zu beginnen", " "));
+
 
         }
 
@@ -103,6 +108,11 @@ namespace Client
 
         private void lvContacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (btnSendMessage.Visibility == Visibility.Hidden && txtMessage.Visibility == Visibility.Hidden)
+            {
+                btnSendMessage.Visibility = Visibility.Visible;
+                txtMessage.Visibility = Visibility.Visible;
+            }
             if (lvContacts.SelectedItem != null)
             {
                 selectedContact = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes

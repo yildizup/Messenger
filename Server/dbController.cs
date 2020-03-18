@@ -364,17 +364,21 @@ namespace Server
             con.Close();
             #endregion
 
-            // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
-            if (!valueOfRead)
+            // Man darf sich nicht als Kontakt hinzufügen
+            if (!(main_email == friend_email)) 
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
-                cmd.Parameters.AddWithValue("@mainemail", main_email);
-                cmd.Parameters.AddWithValue("@friendemail", friend_email);
-                cmd.Connection = con;
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
+                // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
+                if (!valueOfRead)
+                {
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
+                    cmd.Parameters.AddWithValue("@mainemail", main_email);
+                    cmd.Parameters.AddWithValue("@friendemail", friend_email);
+                    cmd.Connection = con;
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
             }
             else
             {
