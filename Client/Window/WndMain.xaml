@@ -20,6 +20,6 @@
         <Button Name="btnRegister" Content="Registrieren" Margin="73,351,0,0" VerticalAlignment="Top"  Click="btnRegister_Click" HorizontalAlignment="Left" Width="244" />
         <TextBox Name="tbEmail"  HorizontalAlignment="Left" Height="24" Margin="73,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>
         <TextBox Name="tbPassword" HorizontalAlignment="Left" Height="23" Margin="73,248,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>
-        <Label FontSize="20" FontWeight="Bold" Foreground="Purple" Content="Telefonico" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Height="29" Width="108"/>
+        <Label FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryHueMidBrush}" Content="Telefonico" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Height="29" Width="108"/>
     </Grid>
 </Window>

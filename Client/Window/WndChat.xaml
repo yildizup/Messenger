@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="WndChat" Height="550" Width="900" 
+        Title="WndChat" Height="716.5" Width="1213.5" 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -14,28 +14,32 @@
         FontFamily="{materialDesign:MaterialDesignFont}"
         >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="9*"/>
-            <RowDefinition Height="164*"/>
-        </Grid.RowDefinitions>
-        <Button   Name="btnSendMessage" Content="{materialDesign:PackIcon Kind=Send}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="58" Margin="806,445,0,0" Click="btnSendMessage_Click" Height="33" Grid.Row="1"/>
-        <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="717,10,0,0" VerticalAlignment="Top" Width="165" Click="btnAddContact_Click" Grid.RowSpan="2"/>
-        <Label HorizontalAlignment="Left" Margin="704,3,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="523,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="181" Grid.RowSpan="2"/>
-        <ScrollViewer Name="chatViewScroller" Background="White" HorizontalAlignment="Left" Height="401" Margin="278,20,0,0" VerticalAlignment="Top" Width="604" Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="500*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Background="{StaticResource PrimaryHueMidBrush}">
+            <StackPanel Orientation="Horizontal" Background="White" HorizontalAlignment="Left" Height="120" VerticalAlignment="Top" Width="300">
+                <Label FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryHueMidBrush}" Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" Height="36" Width="154" Margin="2,38,0,0"/>
+                <Button ToolTip="Kontakt hinzufügen" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" x:Name="btnAddContact"  Content="{materialDesign:PackIcon Kind=Plus}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="36" Click="btnAddContact_Click" Margin="0,38,0,46" Height="36"/>
+                <Button  ToolTip="Aktualisieren" x:Name="tmpWhoIsOnline" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Content="{materialDesign:PackIcon Sync}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="36" Click="tmpWhoIsOnline_Click" Height="36" Margin="0,38,0,46"/>
+            </StackPanel>
+            <ListView Grid.Column="0"  x:Name="lvContacts" Height="565" Margin="0,120,0,0" VerticalAlignment="Top" SelectionChanged="lvContacts_SelectionChanged" HorizontalAlignment="Left" Width="300"/>
+        </Grid>
+        <Button   Name="btnSendMessage" Content="{materialDesign:PackIcon Kind=Send}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Margin="826,620,0,0" Click="btnSendMessage_Click" Height="40" Grid.Column="1" RenderTransformOrigin="1.393,0.575"/>
+        <Label HorizontalAlignment="Left" Margin="428,3,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="40,82,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="198"/>
+        <ScrollViewer Name="chatViewScroller" Background="White" HorizontalAlignment="Left" Height="575" VerticalAlignment="Top" Width="901" Grid.Column="1">
             <StackPanel CanVerticallyScroll="True" x:Name="splChat" >
             </StackPanel>
         </ScrollViewer>
-        <ScrollViewer HorizontalAlignment="Left" Height="39" Margin="278,436,0,0" VerticalAlignment="Top" Width="515" Grid.Row="1">
-            <TextBox x:Name="txtMessage" TextWrapping="Wrap" Text="Nachricht" />
+        <ScrollViewer Margin="10,606,0,10" HorizontalAlignment="Left" Width="797" Grid.Column="1" >
+            <TextBox x:Name="txtMessage" TextWrapping="Wrap" Text="Nachricht"  />
         </ScrollViewer>
 
         <!--#region Kontaktliste-->
-        <ListView Name="lvContacts" HorizontalAlignment="Left" Height="435" Margin="10,10,0,0" VerticalAlignment="Top" Width="240"  Grid.Row="1" SelectionChanged="lvContacts_SelectionChanged">
-        </ListView>
         <!--#endregion-->
-        <Button Name="tmpWhoIsOnline" Content="&lt;---&gt;" HorizontalAlignment="Left" Margin="278,12,0,0" VerticalAlignment="Top" Width="75" Click="tmpWhoIsOnline_Click" Grid.RowSpan="2"/>
-        <Label Name="YourEmail" Content="Email" HorizontalAlignment="Left" Margin="26,10,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="131"/>
 
     </Grid>
 </Window>

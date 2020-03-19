@@ -39,7 +39,6 @@ namespace Client
             this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
 
             cClient.RefreshContacts += new EventHandler(ReloadContacts);
-            YourEmail.Content = cClient.email;
 
             // Kontrollelemente zum Senden einer Nachricht verstecken
             btnSendMessage.Visibility = Visibility.Hidden;
@@ -131,7 +130,8 @@ namespace Client
 
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
-            cClient.AddContact(tbContactName.Text);
+            //cClient.AddContact(tbContactName.Text);
+
         }
 
         private void lvContacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
