@@ -3,6 +3,7 @@ CREATE DATABASE telefonico;
 create table user (
  
   email varchar(255),
+  fsname varchar(255), -- Vor- und Nachname
   password varchar(255),
   status boolean, -- Aktivitätsstatus des Benutzers. Wird u.a. benötigt, damit der mehrmalige Anmeldungen unter demselben Namen verhindert werden.
   
@@ -45,15 +46,24 @@ create table user (
   
   
  -- Die Benutzer
-insert into user (email, password, status) values ('admin@telefonico.com','1',0);
-insert into user (email, password, status) values ('user@telefonico.com','1',0);
-insert into user (email, password, status) values ('absender@gmail.com','1',0);
-insert into user (email, password, status) values ('empfänger@gmail.com','1',0);
-insert into user (email, password, status) values ('freund1@gmail.com','1',0);
-insert into user (email, password, status) values ('freund2@gmail.com','1',0);
-insert into user (email, password, status) values ('freund3@gmail.com','1',0);
-insert into user (email, password, status) values ('freund4@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Der Admin','admin@telefonico.com','1',0);
+insert into user (fsname, email, password, status) values ('Ein Benutzer','user@telefonico.com','1',0);
+insert into user (fsname, email, password, status) values ('Der Absender','absender@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Der Empfänger','empfänger@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Ein Freund','freund1@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Ein Freund2','freund2@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Ein Freund3','freund3@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Ein Freund4','freund4@gmail.com','1',0);
 
+
+insert into user (fsname, email, password, status) values ('Thomas Anderson','neo@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Elicia Coates','elicia.coates@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Daniaal Merrill','daniaal.merrill@outlook.de','1',0);
+insert into user (fsname, email, password, status) values ('Kean Bannister','b.kean@live.de','1',0);
+insert into user (fsname, email, password, status) values ('Ammara Medrano','a.medrano@gmx.de','1',0);
+insert into user (fsname, email, password, status) values ('Elisha Harmon','e.harmon@telefonico.com','1',0);
+insert into user (fsname, email, password, status) values ('Kyra Cooper','k.cooper@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Johnnie Senior','j.senior@mail.com','1',0);
 
 -- Die Kontakte
 
