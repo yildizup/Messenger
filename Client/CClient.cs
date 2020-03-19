@@ -38,6 +38,8 @@ namespace Client
 
         }
 
+        public string FsName { get; set; }
+
 
         #region Verbindungsauf- und Abbau
 
@@ -95,7 +97,6 @@ namespace Client
             }
             else
             {
-
                 Register(email, password);
 
                 byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
@@ -148,6 +149,7 @@ namespace Client
             LoginData loginData = new LoginData();
             loginData.Email = email;
             loginData.Password = password;
+            loginData.FsName = FsName;
 
             bFormatter.Serialize(netStream, loginData);
 

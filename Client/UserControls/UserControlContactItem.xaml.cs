@@ -23,22 +23,25 @@ namespace Client
         private string email;
         private bool status;
         private int newMessages;
+        private string fsname; //vor- und nachname
         /// <summary>
         /// 
         /// </summary>
         /// <param name="email"></param>
         /// <param name="status">Ist der User online ? </param>
-        public UserControlContactItem(string email, bool status, int newMessages)
+        public UserControlContactItem(string email, bool status, int newMessages, string fsname)
         {
             InitializeComponent();
             this.email = email;
-            tbEmail.Text = this.email;
 
             this.status = status;
             SetStatusColor();
 
             this.newMessages = newMessages;
             lblNewMessages.Content = newMessages.ToString();
+
+            this.fsname = fsname;
+            tbName.Text = this.fsname;
 
 
 

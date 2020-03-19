@@ -23,6 +23,7 @@ namespace SharedClass
         public string Email { get; set; }
         public bool Status { get; set; } //ist der Benutzer eingeloggt ?
         public int NewMessages { get; set; }
+        public string FsName { get; set; } //Vor- und Nachname 
 
         //TODO: Recherchieren nach Vor- und Nachteilen
         public object Connection; //Um die jeweiligen Clients anzusprechen
@@ -48,6 +49,7 @@ namespace SharedClass
     {
         public string Email { get; set; }
         public string Password { get; set; }
+        public string FsName { get; set; }
     }
 
     [Serializable]
