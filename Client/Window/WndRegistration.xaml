@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="windowRegister" Height="450" Width="500"
+        Title="windowRegister" Height="440" Width="409"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -13,16 +13,16 @@
         FontFamily="{materialDesign:MaterialDesignFont}"
         >
     <Grid>
-        <Label Content="Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="177,10,188,0" Width="127" />
-        <TextBox Name="tbPassword" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="155,219,179,0" />
-        <Label Content="Email" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,122,255,0" Width="82"/>
-        <Label Content="Passwort" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,188,255,0" Width="82"/>
-        <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="110" Margin="203,378,179,0" Height="23" Click="btnRegister_Click"/>
-        <TextBox Name="tbEmail" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="156" Margin="157,147,179,0" RenderTransformOrigin="0.5,0.5"></TextBox>
-        <TextBox Name="tbPassword_Again" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="158" Margin="158,300,176,0"/>
-        <Label Content="Passwort erneut eingeben" HorizontalAlignment="Center"  VerticalAlignment="Top" Margin="155,270,179,0" Width="158"/>
-        <TextBox Name="tbfsName" HorizontalAlignment="Left" Height="23" Margin="155,89,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168"/>
-        <Label Content="Vor- und Nachname" HorizontalAlignment="Center"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="155,59,188,0" Width="149"/>
+        <TextBox Name="tbPassword" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="288" Margin="56,219,0,0" />
+        <Label Content="Email" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="56,122,0,0" Width="288"/>
+        <Label Content="Passwort" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="56,188,0,0" Width="288"/>
+        <Button Name="btnRegister" Content="Registrieren" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="288" Margin="56,352,0,0" Height="23" Click="btnRegister_Click"/>
+        <TextBox Name="tbEmail" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" Margin="60,147,0,0" RenderTransformOrigin="0.5,0.5"></TextBox>
+        <TextBox Name="tbPassword_Again" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="283" Margin="61,300,0,0"/>
+        <Label Content="Passwort erneut eingeben" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="56,259,0,0" Width="288"/>
+        <TextBox Name="tbfsName" HorizontalAlignment="Left" Height="23" Margin="56,89,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="288"/>
+        <Label Content="Vor- und Nachname" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="56,59,0,0" Width="288"/>
+        <Label FontSize="20" FontWeight="Bold" Foreground="Purple" Content="Telefonico" HorizontalAlignment="Left" Margin="141,10,0,0" VerticalAlignment="Top" Height="29" Width="108"/>
 
     </Grid>
 </Window>
