@@ -78,13 +78,13 @@
     <Compile Include="UserControls\UserControlMessageSent.xaml.cs">
       <DependentUpon>UserControlMessageSent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\WndChat.xaml.cs">
+    <Compile Include="Windows\WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\WndMain.xaml.cs">
+    <Compile Include="Windows\WndMain.xaml.cs">
       <DependentUpon>WndMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window\WndRegistration.xaml.cs">
+    <Compile Include="Windows\WndRegistration.xaml.cs">
       <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControls\UserControlContactItem.xaml">
@@ -99,7 +99,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\WndChat.xaml">
+    <Page Include="Windows\WndChat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -108,11 +108,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CClient.cs" />
-    <Page Include="Window\WndMain.xaml">
+    <Page Include="Windows\WndMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window\WndRegistration.xaml">
+    <Page Include="Windows\WndRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
