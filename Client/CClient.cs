@@ -14,7 +14,6 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
-        Thread pullThread;
 
         public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
@@ -22,7 +21,7 @@ namespace Client
         public TcpClient client;
         public NetworkStream netStream; //Die Klasse stellt Methoden zum Senden und empfangen von Daten über Stream Sockets bereit.
         public BinaryFormatter bFormatter;
-        string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
+        public string email; //TODO: schönes Feature "Passwort vergessen ? --> Email senden"
         string password;
 
         public ContactList contactList;
@@ -42,13 +41,38 @@ namespace Client
 
         #region Verbindungsauf- und Abbau
 
-        public void Connect(string email, string password)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <param name="regMode">true --> Registrierungsanfrage</param>
+        public void Connect(string email, string password, bool regMode)
         {
             this.email = email;
             this.password = password;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-            pullThread = new Thread(WhoIsOnline);
+
+            if (regMode)
+            {
+                registrationMode = true;
+            }
+            else
+            {
+                registrationMode = false;
+            }
+
+            try
+            {
+                client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
+                tcpThread = new Thread(SetupConn);
+                tcpThread.Start();
+            }
+
+            catch (Exception e)
+            {
+                OnLoginNotOk();
+            }
+
         }
 
         public void SetupConn()  // Verbindung aufbauen
@@ -89,7 +113,7 @@ namespace Client
                         break;
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
-                        OnRegistrationNotOk();
+                        OnRegistrationWrong();
                         //CloseConn();
                         client.Client.Disconnect(true);
                         break;
@@ -100,39 +124,10 @@ namespace Client
 
         }
 
-
-        public void ConnectToRegistrate(string email, string password)
-        {
-            this.email = email;
-            this.password = password;
-            registrationMode = true;
-            tcpThread = new Thread(EstablishConnection);
-            tcpThread.Start();
-        }
-
-        /// <summary>
-        /// Versucht eine Verbindung aufzubauen
-        /// </summary>
-        public void EstablishConnection()
-        {
-            //try
-            //{
-            client = new TcpClient(Server, Port); //Verbindung zum Server aufbauen
-            SetupConn();
-            //}
-
-            //catch (Exception e)
-            //{
-            //AreWeConnected = false;
-            //}
-
-
-        }
-
         public void CloseConn() // Verbindung beenden
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
         }
 
         #endregion
@@ -148,7 +143,7 @@ namespace Client
         public void Register(string email, string password)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
@@ -161,7 +156,7 @@ namespace Client
         public void Login(string email, string password)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
@@ -215,8 +210,8 @@ namespace Client
         /// </summary>
         public void WhoIsOnline()
         {
-                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-                bFormatter.Serialize(netStream, header);
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+            SendHeader(header);
         }
 
 
@@ -227,15 +222,13 @@ namespace Client
 
         public void LoadChat(string friend_email)
         {
-
             AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             ChatPerson chatPerson = new ChatPerson();
             chatPerson.Email = friend_email;
 
             bFormatter.Serialize(netStream, chatPerson);
-
         }
 
         /// <summary>
@@ -246,7 +239,7 @@ namespace Client
         public void SendMessage(string to, string msg)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
             MessageSend message = new MessageSend();
             message.To = to;
             message.Msg = msg;
@@ -260,10 +253,15 @@ namespace Client
         public void AddContact(string friend_email)
         {
             AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
             ChatPerson friend = new ChatPerson();
             friend.Email = friend_email;
             bFormatter.Serialize(netStream, friend);
+        }
+
+        void SendHeader(AdditionalHeader h)
+        {
+            bFormatter.Serialize(netStream, h);
         }
 
         #endregion
@@ -272,6 +270,7 @@ namespace Client
         #region Events
 
         public event EventHandler LoginOK;
+        public event EventHandler LoginNotOk;
         public event CReceivedEventHandler MessageReceived;
         public event EventHandler RegistrationOK;
         public event EventHandler RegistrationNotOk;
@@ -286,6 +285,13 @@ namespace Client
             }
         }
 
+        virtual protected void OnLoginNotOk()
+        {
+            if (LoginNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
+            {
+                LoginNotOk(this, EventArgs.Empty);
+            }
+        }
         virtual protected void OnMessageReceived(CReceivedEventArgs e)
         {
             if (MessageReceived != null)
@@ -311,7 +317,7 @@ namespace Client
 
         }
 
-        virtual protected void OnRegistrationNotOk()
+        virtual protected void OnRegistrationWrong()
         {
             if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
             {

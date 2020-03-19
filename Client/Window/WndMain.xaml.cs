@@ -28,7 +28,7 @@ namespace Client
             InitializeComponent();
             cClient = new CClient();
             cClient.LoginOK += new EventHandler(cOnLoginOk); //Das Event "subscriben"
-
+            cClient.LoginNotOk += new EventHandler(cOnLoginNotOk); //Das Event "subscriben"
 
         }
 
@@ -53,8 +53,12 @@ namespace Client
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            cClient.Connect(tbEmail.Text, tbPassword.Text);
+            cClient.Connect(tbEmail.Text, tbPassword.Text, false);
+        }
 
+        void cOnLoginNotOk(object sender, EventArgs e)
+        {
+            MessageBox.Show("Es konnte keine Verbindung zum Server hergestellt werden.");
         }
 
         void cOnLoginOk(object sender, EventArgs e)

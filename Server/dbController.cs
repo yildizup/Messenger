@@ -196,8 +196,6 @@ namespace Server
 
         static internal DataTable LoadUsers()
         {
-
-
             MySqlCommand cmd = new MySqlCommand();
             cmd.CommandText = "Select * from user";
             cmd.Connection = con;
@@ -353,16 +351,39 @@ namespace Server
         /// <param name="friend_email"></param>
         static internal void AddContact(string main_email, string friend_email)
         {
-
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
-            cmd.Parameters.AddWithValue("@mainemail", main_email);
-            cmd.Parameters.AddWithValue("@friendemail", friend_email);
-            cmd.Connection = con;
-
+            #region prüfen, ob der Kontakt bereits existiert
+            MySqlCommand checkCmd = new MySqlCommand();
+            checkCmd.CommandText = "Select * from contacts where main_email=@main_email && friend_email=@friend_email";
+            checkCmd.Parameters.AddWithValue("@main_email", main_email);
+            checkCmd.Parameters.AddWithValue("@friend_email", friend_email);
+            checkCmd.Connection = con;
             con.Open();
-            cmd.ExecuteNonQuery();
+            MySqlDataReader check = checkCmd.ExecuteReader();
+            bool valueOfRead = check.Read();
+            check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
             con.Close();
+            #endregion
+
+            // Man darf sich nicht als Kontakt hinzufügen
+            if (!(main_email == friend_email)) 
+            {
+                // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
+                if (!valueOfRead)
+                {
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
+                    cmd.Parameters.AddWithValue("@mainemail", main_email);
+                    cmd.Parameters.AddWithValue("@friendemail", friend_email);
+                    cmd.Connection = con;
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+            else
+            {
+                //TODO: Fehlermeldung implementieren
+            }
         }
 
 
