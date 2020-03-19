@@ -18,7 +18,7 @@
             <RowDefinition Height="9*"/>
             <RowDefinition Height="164*"/>
         </Grid.RowDefinitions>
-        <Button Name="btnSendMessage" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Margin="798,451,0,0" Click="btnSendMessage_Click" Height="24" Grid.Row="1"/>
+        <Button   Name="btnSendMessage" Content="{materialDesign:PackIcon Kind=Send}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="58" Margin="806,445,0,0" Click="btnSendMessage_Click" Height="33" Grid.Row="1"/>
         <Button Name="btnAddContact" Content="Kontakt Hinzufügen" HorizontalAlignment="Left" Margin="717,10,0,0" VerticalAlignment="Top" Width="165" Click="btnAddContact_Click" Grid.RowSpan="2"/>
         <Label HorizontalAlignment="Left" Margin="704,3,0,0" VerticalAlignment="Top" Grid.Row="1"/>
         <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="523,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="181" Grid.RowSpan="2"/>
@@ -27,7 +27,7 @@
             </StackPanel>
         </ScrollViewer>
         <ScrollViewer HorizontalAlignment="Left" Height="39" Margin="278,436,0,0" VerticalAlignment="Top" Width="515" Grid.Row="1">
-            <TextBox x:Name="txtMessage" TextWrapping="Wrap" Text="TextBox" />
+            <TextBox x:Name="txtMessage" TextWrapping="Wrap" Text="Nachricht" />
         </ScrollViewer>
 
         <!--#region Kontaktliste-->
