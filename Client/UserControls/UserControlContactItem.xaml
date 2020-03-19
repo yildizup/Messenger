@@ -14,7 +14,7 @@
             <ColumnDefinition Width="25*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock VerticalAlignment="Center" Name="tbEmail" Grid.Column="0" Text="Email" Margin="10 0" Opacity="0.8"/>
+        <TextBlock VerticalAlignment="Center" Name="tbName" Grid.Column="0" Text="Vor- und Nachname" Margin="10 0" Opacity="0.8"/>
         <Border Name="borderStatus" Grid.Column="2" Width="10" Height="10" VerticalAlignment="Bottom" Margin="0,0,6,10" HorizontalAlignment="Right" CornerRadius="15" Background="LightGreen" RenderTransformOrigin="-3.167,-0.033"/>
         <Border   Background="Black" BorderBrush="Black" BorderThickness="1" Grid.Column="1" HorizontalAlignment="Left" Height="14" Margin="2,4,0,0" VerticalAlignment="Top" Width="13" RenderTransformOrigin="0.625,-2.312">
             <Label Name="lblNewMessages" Foreground="White"  FontSize="9" Content="3" Margin="-2,-3,-9,-6" Height="21" VerticalAlignment="Bottom" RenderTransformOrigin="0.59,0.81"/>

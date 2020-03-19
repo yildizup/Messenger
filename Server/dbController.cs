@@ -220,7 +220,8 @@ namespace Server
             List<User> listContacts = new List<User>();
 
             MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select main_email, friend_email, status from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            cmd.CommandText = "Select main_email, friend_email, status, fsname from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            //cmd.CommandText = "Select main_email, friend_email, status from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
             cmd.Parameters.AddWithValue("@email", email);
             cmd.Connection = con;
 
@@ -240,6 +241,7 @@ namespace Server
                 User tmpUser = new User();
                 tmpUser.Email = row["friend_email"].ToString();
                 tmpUser.Status = (bool)row["status"];
+                tmpUser.FsName = row["fsname"].ToString();
 
                 #region Neue Nachrichten
 

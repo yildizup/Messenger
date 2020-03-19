@@ -31,7 +31,7 @@ namespace Client
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages);
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages, user.FsName );
                 lvContacts.Items.Add(contact);
             }
 
@@ -82,7 +82,7 @@ namespace Client
                                          // der neue Kontakt wird in die "listview" hinzugefügt
                                          int tmpIndex = cClient.contactList.listContacts.Count - 1;
                                          User tmpUser = cClient.contactList.listContacts[cClient.contactList.listContacts.Count - 1];
-                                         lvContacts.Items.Add(new UserControlContactItem(tmpUser.Email, tmpUser.Status, tmpUser.NewMessages));
+                                         lvContacts.Items.Add(new UserControlContactItem(tmpUser.Email, tmpUser.Status, tmpUser.NewMessages, tmpUser.FsName));
                                      }
 
                                      lvContacts.SelectedIndex = selectedContact[1];
