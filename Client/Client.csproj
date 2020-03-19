@@ -68,6 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CEvents.cs" />
+    <Compile Include="Hasher.cs" />
     <Compile Include="UserControls\UserControlContactItem.xaml.cs">
       <DependentUpon>UserControlContactItem.xaml</DependentUpon>
     </Compile>

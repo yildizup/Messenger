@@ -52,7 +52,7 @@ namespace Client
         public void Connect(string email, string password, bool regMode)
         {
             this.email = email;
-            this.password = password;
+            this.password = Hasher.SHA1(password);
 
             if (regMode)
             {

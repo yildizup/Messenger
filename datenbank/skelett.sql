@@ -46,24 +46,24 @@ create table user (
   
   
  -- Die Benutzer
-insert into user (fsname, email, password, status) values ('Der Admin','admin@telefonico.com','1',0);
-insert into user (fsname, email, password, status) values ('Ein Benutzer','user@telefonico.com','1',0);
-insert into user (fsname, email, password, status) values ('Der Absender','absender@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Der Empfänger','empfänger@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Ein Freund','freund1@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Ein Freund2','freund2@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Ein Freund3','freund3@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Ein Freund4','freund4@gmail.com','1',0);
+insert into user (fsname, email, password, status) values ('Der Admin','admin@telefonico.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Ein Benutzer','user@telefonico.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Der Absender','absender@gmail.com','356a192b7913b04c54574d18c28d46e6395428ab',0);
+insert into user (fsname, email, password, status) values ('Der Empfänger','empfänger@gmail.com','356a192b7913b04c54574d18c28d46e6395428ab',0);
+insert into user (fsname, email, password, status) values ('Ein Freund','freund1@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Ein Freund2','freund2@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Ein Freund3','freund3@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Ein Freund4','freund4@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
 
 
-insert into user (fsname, email, password, status) values ('Thomas Anderson','neo@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Elicia Coates','elicia.coates@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Daniaal Merrill','daniaal.merrill@outlook.de','1',0);
-insert into user (fsname, email, password, status) values ('Kean Bannister','b.kean@live.de','1',0);
-insert into user (fsname, email, password, status) values ('Ammara Medrano','a.medrano@gmx.de','1',0);
-insert into user (fsname, email, password, status) values ('Elisha Harmon','e.harmon@telefonico.com','1',0);
-insert into user (fsname, email, password, status) values ('Kyra Cooper','k.cooper@gmail.com','1',0);
-insert into user (fsname, email, password, status) values ('Johnnie Senior','j.senior@mail.com','1',0);
+insert into user (fsname, email, password, status) values ('Thomas Anderson','neo@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Elicia Coates','elicia.coates@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Daniaal Merrill','daniaal.merrill@outlook.de','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Kean Bannister','b.kean@live.de','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Ammara Medrano','a.medrano@gmx.de','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Elisha Harmon','e.harmon@telefonico.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Kyra Cooper','k.cooper@gmail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
+insert into user (fsname, email, password, status) values ('Johnnie Senior','j.senior@mail.com','7110eda4d09e062aa5e4a390b0a572ac0d2c0220',0);
 
 -- Die Kontakte
 

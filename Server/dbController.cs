@@ -26,7 +26,7 @@ namespace Server
 
         static internal void CreateUser(string email, string password, string fsname)
         {
-            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password,fsname) values(@email,@password,@fsname)");
+            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password,fsname, status) values(@email,@password,@fsname, false)");
             insertCommand.Parameters.AddWithValue("@email", email);
             insertCommand.Parameters.AddWithValue("@password", password);
             insertCommand.Parameters.AddWithValue("@fsname", fsname);
