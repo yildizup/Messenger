@@ -28,6 +28,7 @@ namespace Client
                 password = tbPassword.Text;
             }
 
+            cClient.FsName = tbfsName.Text; //Vor- und Nachname initialisieren
             cClient.Connect(tbEmail.Text, password, true);
 
         }

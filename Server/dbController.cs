@@ -24,11 +24,12 @@ namespace Server
 
         #region Anmeldung und Registrierung
 
-        static internal void CreateUser(string email, string password)
+        static internal void CreateUser(string email, string password, string fsname)
         {
-            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password) values(@email,@password)");
+            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password,fsname) values(@email,@password,@fsname)");
             insertCommand.Parameters.AddWithValue("@email", email);
             insertCommand.Parameters.AddWithValue("@password", password);
+            insertCommand.Parameters.AddWithValue("@fsname", fsname);
             insertCommand.Connection = con;
 
             con.Open();
@@ -69,12 +70,12 @@ namespace Server
         /// <param name="email"></param>
         /// <param name="password"></param>
         /// <returns>true, wenn der User erstellt werden konnte</returns>
-        static internal bool CheckUserAndCreate(string email, string password)
+        static internal bool CheckUserAndCreate(string email, string password, string fsname)
         {
             // Wenn ein User nicht existiert, kann ein Konto erstellt werden
             if (!DoesUserExist(email))
             {
-                CreateUser(email, password);
+                CreateUser(email, password, fsname);
                 return true;
             }
             else

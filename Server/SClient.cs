@@ -47,6 +47,7 @@ namespace Server
                 LoginData loginData = ((LoginData)bFormatter.Deserialize(netStream));
                 string email = loginData.Email;
                 string password = loginData.Password;
+                string fsName = loginData.FsName;
 
 
                 switch (clientMode)
@@ -54,7 +55,7 @@ namespace Server
                     // Wenn der Client sich registrieren möchte
                     case ComHeader.hRegister:
                         Console.WriteLine("[{0}] Ein Client möchte sich registrieren...", DateTime.Now);
-                        CreateUser(email, password);
+                        CreateUser(email, password, fsName);
                         Receiver(); // Dem Client in einer Dauerschleife zuhören. 
                         break;
                     case ComHeader.hLogin:
@@ -97,11 +98,11 @@ namespace Server
 
         #region Anmeldung- und Registrierung
 
-        public void CreateUser(string email, string password)
+        public void CreateUser(string email, string password, string fsname)
         {
 
             // Wenn die Email noch nicht existiert, kann der Benutzer erstellt werden
-            if (dbController.CheckUserAndCreate(email, password))
+            if (dbController.CheckUserAndCreate(email, password, fsname))
             {
                 // Benutzer in die Liste "ConnectedUsers" hinzufügen. Mithilfe dieser Liste wird der jeweilige Socket des Clients angesprochen.
                 User user = new User();
