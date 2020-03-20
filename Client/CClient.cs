@@ -13,6 +13,9 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
+        Thread pollingThread;
+
+        readonly object _object = new object();
 
         public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
@@ -34,7 +37,6 @@ namespace Client
         {
             bFormatter = new BinaryFormatter();
             contactList = new ContactList();
-
         }
 
         public string FsName { get; set; }
@@ -91,6 +93,8 @@ namespace Client
                 {
                     contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
                     OnLoginOK(); //Publisher aufrufen
+                    pollingThread = new Thread(WhoIsOnline);
+                    pollingThread.Start();
                     Receiver();
                 }
             }
@@ -177,6 +181,7 @@ namespace Client
         /// </summary>
         void Receiver()
         {
+
             while (client.Connected)
             {
                 byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
@@ -215,8 +220,12 @@ namespace Client
         /// </summary>
         public void WhoIsOnline()
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-            SendHeader(header);
+            while (client.Connected)
+            {
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+                SendHeader(header);
+                Thread.Sleep(1000);
+            }
         }
 
 
@@ -266,7 +275,10 @@ namespace Client
 
         void SendHeader(AdditionalHeader h)
         {
-            bFormatter.Serialize(netStream, h);
+            lock (_object)
+            {
+                bFormatter.Serialize(netStream, h);
+            }
         }
 
         #endregion

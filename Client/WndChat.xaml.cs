@@ -157,7 +157,7 @@ namespace Client
                 selectedContact[0] = selectedContact[1];
                 selectedContact[1] = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
-                cClient.WhoIsOnline();
+                //cClient.WhoIsOnline();
 
             }
         }
