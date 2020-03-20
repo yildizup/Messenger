@@ -38,7 +38,7 @@ namespace Client
             SetStatusColor();
 
             this.newMessages = newMessages;
-            lblNewMessages.Content = newMessages.ToString();
+            SetNewMessages(newMessages);
 
             this.fsname = fsname;
             tbName.Text = this.fsname;
@@ -57,6 +57,19 @@ namespace Client
             {
                 borderStatus.Background = Brushes.DarkRed;
             }
+        }
+
+        void SetNewMessages(int count)
+        {
+            if (count == 0)
+            {
+                lblNewMessages.Content = "";
+            }
+            else
+            {
+                lblNewMessages.Content = count.ToString();
+            }
+
         }
 
         public string Email
@@ -80,7 +93,7 @@ namespace Client
             set
             {
                 newMessages = value;
-                lblNewMessages.Content = newMessages.ToString();
+                SetNewMessages(newMessages);
             }
         }
 

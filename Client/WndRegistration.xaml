@@ -1,0 +1,28 @@
+﻿<Window x:Class="Client.WndRegistration"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Telefonico" Height="440" Width="409"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="DarkGray"
+        Background="{DynamicResource MaterialDesignDarkBackground}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
+    <Grid>
+        <TextBox TabIndex="2" Name="tbPassword" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="288" Margin="56,219,0,0" />
+        <Label Foreground="LightGray" Content="Email" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="56,122,0,0" Width="288"/>
+        <Label Foreground="LightGray" Content="Passwort" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="56,188,0,0" Width="288"/>
+        <Button TabIndex="4" Name="btnRegister" Content="Registrieren" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="288" Margin="56,352,0,0" Height="23" Click="btnRegister_Click"/>
+        <TextBox TabIndex="1" Name="tbEmail" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="284" Margin="60,147,0,0" RenderTransformOrigin="0.5,0.5"></TextBox>
+        <TextBox TabIndex="3" Name="tbPassword_Again" HorizontalAlignment="Left" Height="23"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="283" Margin="61,300,0,0"/>
+        <Label Foreground="LightGray" Content="Passwort erneut eingeben" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="56,265,0,0" Width="288"/>
+        <TextBox TabIndex="0" Name="tbfsName" HorizontalAlignment="Left" Height="23" Margin="56,89,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="288"/>
+        <Label  Foreground="LightGray" Content="Vor- und Nachname" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="56,59,0,0" Width="288"/>
+        <Label FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryHueMidBrush}" Content="Telefonico" HorizontalAlignment="Left" Margin="141,10,0,0" VerticalAlignment="Top" Height="29" Width="108"/>
+
+    </Grid>
+</Window>
