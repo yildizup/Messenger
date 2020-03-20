@@ -356,7 +356,9 @@ namespace Server
         /// <returns>true, wenn der Benutzer bereits in der Kontaktliste ist. </returns>
         static internal bool AlreadyFriends(string main_email, string friend_email)
         {
-            if (!(main_email == friend_email))
+
+            // Wenn dieser Kontakt existiert und nicht er selber ist
+            if (!(main_email == friend_email) && DoesUserExist(friend_email))
             {
                 // prüfen, ob der Kontakt bereits in der Kontaktliste existiert
                 MySqlCommand checkCmd = new MySqlCommand();

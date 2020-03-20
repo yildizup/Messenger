@@ -107,7 +107,7 @@ namespace Client
                         OnRegistrationOK();
                         CloseConn();
                         Receiver();
-                        /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfra  sendet, um die Verbindung zu beenden und bevor er 
+                        /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfrage  sendet, um die Verbindung zu beenden und bevor er 
                          * dem Server lauschen kann, der Server bereits ein Paket gesendet hat, um die Verbindung zu schließen ?
                          */
                         break;
@@ -202,6 +202,10 @@ namespace Client
                         contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
+                    case ComHeader.hAddContactWrong:
+                        //Wenn der Kontakt nicht hinzugefügt werden kann
+                        OnAddContactWrong();
+                        break;
                 }
             }
         }
@@ -277,6 +281,7 @@ namespace Client
         public event EventHandler RegistrationNotOk;
         public event CChatContentEventHandler ChatReceived;
         public event EventHandler RefreshContacts;
+        public event EventHandler AddContactWrong;
 
         virtual protected void OnLoginOK()
         {
@@ -285,7 +290,6 @@ namespace Client
                 LoginOK(this, EventArgs.Empty);
             }
         }
-
         virtual protected void OnLoginNotOk()
         {
             if (LoginNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
@@ -300,7 +304,6 @@ namespace Client
                 MessageReceived(this, e);
             }
         }
-
         virtual protected void OnChatReceived(CChatContentEventArgs e)
         {
             if (ChatReceived != null)
@@ -308,7 +311,6 @@ namespace Client
                 ChatReceived(this, e);
             }
         }
-
         virtual protected void OnRegistrationOK()
         {
             if (RegistrationOK != null)
@@ -317,7 +319,6 @@ namespace Client
             }
 
         }
-
         virtual protected void OnRegistrationWrong()
         {
             if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
@@ -325,7 +326,6 @@ namespace Client
                 RegistrationNotOk(this, EventArgs.Empty);
             }
         }
-
         virtual protected void OnRefreshContacts()
         {
             if (RefreshContacts != null)
@@ -334,6 +334,13 @@ namespace Client
 
             }
 
+        }
+        virtual protected void OnAddContactWrong()
+        {
+            if (AddContactWrong != null)
+            {
+                AddContactWrong(this, EventArgs.Empty);
+            }
         }
 
         #endregion

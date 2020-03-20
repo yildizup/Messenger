@@ -85,7 +85,7 @@ namespace Server
             }
 
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             // Verbindung schließen
             //tcpThread.Abort();
@@ -183,8 +183,7 @@ namespace Server
         {
             try
             {
-
-                while (client.Client.Connected) //solange der Client verbunden ist
+                while (client.Client.Connected) 
                 {
                     byte cHeader = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
                     sHeader = null;
@@ -264,7 +263,9 @@ namespace Server
                             }
                             else
                             {
-
+                                // Wenn der Kontakt nicht hinzugeüft werden kann
+                                sHeader = new AdditionalHeader(ComHeader.hAddContactWrong);
+                                SendHeader(sHeader);
                             }
 
                             #endregion
