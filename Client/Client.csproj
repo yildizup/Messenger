@@ -69,37 +69,37 @@
     </ApplicationDefinition>
     <Compile Include="CEvents.cs" />
     <Compile Include="Hasher.cs" />
-    <Compile Include="UserControls\UserControlContactItem.xaml.cs">
+    <Compile Include="UserControlContactItem.xaml.cs">
       <DependentUpon>UserControlContactItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\UserControlMessageReceived.xaml.cs">
+    <Compile Include="UserControlMessageReceived.xaml.cs">
       <DependentUpon>UserControlMessageReceived.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\UserControlMessageSent.xaml.cs">
+    <Compile Include="UserControlMessageSent.xaml.cs">
       <DependentUpon>UserControlMessageSent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WndChat.xaml.cs">
+    <Compile Include="WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WndMain.xaml.cs">
+    <Compile Include="WndMain.xaml.cs">
       <DependentUpon>WndMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WndRegistration.xaml.cs">
+    <Compile Include="WndRegistration.xaml.cs">
       <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
-    <Page Include="UserControls\UserControlContactItem.xaml">
+    <Page Include="UserControlContactItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UserControls\UserControlMessageReceived.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="UserControlMessageReceived.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UserControlMessageSent.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\WndChat.xaml">
+    <Page Include="UserControlMessageSent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WndChat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -108,11 +108,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CClient.cs" />
-    <Page Include="Windows\WndMain.xaml">
+    <Page Include="WndMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\WndRegistration.xaml">
+    <Page Include="WndRegistration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -143,9 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.3.0.1\build\MaterialDesignThemes.targets')" />
