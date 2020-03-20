@@ -78,6 +78,9 @@
     <Compile Include="UserControlMessageSent.xaml.cs">
       <DependentUpon>UserControlMessageSent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WndAddContact.xaml.cs">
+      <DependentUpon>WndAddContact.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
     <Page Include="UserControlMessageSent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WndAddContact.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WndChat.xaml">
       <SubType>Designer</SubType>

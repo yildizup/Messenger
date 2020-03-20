@@ -29,7 +29,6 @@
         </Grid>
         <Button   Name="btnSendMessage" Content="{materialDesign:PackIcon Kind=Send}"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="70" Margin="826,620,0,0" Click="btnSendMessage_Click" Height="40" Grid.Column="1" RenderTransformOrigin="1.393,0.575"/>
         <Label HorizontalAlignment="Left" Margin="428,3,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <TextBox Name="tbContactName" HorizontalAlignment="Left" Height="23" Margin="40,82,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="198"/>
         <ScrollViewer Name="chatViewScroller" Background="{StaticResource MaterialDesignDarkBackground}" HorizontalAlignment="Left" Height="575" VerticalAlignment="Top" Width="901" Grid.Column="1">
             <StackPanel CanVerticallyScroll="True" x:Name="splChat" >
             </StackPanel>

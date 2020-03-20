@@ -130,7 +130,9 @@ namespace Client
 
         private void btnAddContact_Click(object sender, RoutedEventArgs e)
         {
-            //cClient.AddContact(tbContactName.Text);
+            WndAddContact wndAddContact = new WndAddContact();
+            wndAddContact.ShowDialog();
+            cClient.AddContact(wndAddContact.Email);
 
         }
 
