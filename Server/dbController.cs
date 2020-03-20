@@ -347,46 +347,59 @@ namespace Server
             con.Close();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="main_email"></param>
+        /// <param name="friend_email"></param>
+        /// <returns>true, wenn der Benutzer bereits in der Kontaktliste ist. </returns>
+        static internal bool AlreadyFriends(string main_email, string friend_email)
+        {
+            if (!(main_email == friend_email))
+            {
+                // prüfen, ob der Kontakt bereits in der Kontaktliste existiert
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkCmd.CommandText = "Select * from contacts where main_email=@main_email && friend_email=@friend_email";
+                checkCmd.Parameters.AddWithValue("@main_email", main_email);
+                checkCmd.Parameters.AddWithValue("@friend_email", friend_email);
+                checkCmd.Connection = con;
+                con.Open();
+                MySqlDataReader check = checkCmd.ExecuteReader();
+                bool valueOfRead = check.Read();
+                check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
+                con.Close();
+
+                return valueOfRead;
+            }
+            else
+            {
+                return true; // Man darf sich nicht als Kontakt hinzufügen
+            }
+        }
+
         /// <summary>
         /// Kontakt des Benutzers in die Datenbank hinzufügen
         /// </summary>
         /// <param name="main_email"></param>
         /// <param name="friend_email"></param>
-        static internal void AddContact(string main_email, string friend_email)
+        /// <returns>true, wenn der Kontakt hinzugefügt werden konnte.</returns>
+        static internal bool AddContact(string main_email, string friend_email)
         {
-            #region prüfen, ob der Kontakt bereits existiert
-            MySqlCommand checkCmd = new MySqlCommand();
-            checkCmd.CommandText = "Select * from contacts where main_email=@main_email && friend_email=@friend_email";
-            checkCmd.Parameters.AddWithValue("@main_email", main_email);
-            checkCmd.Parameters.AddWithValue("@friend_email", friend_email);
-            checkCmd.Connection = con;
-            con.Open();
-            MySqlDataReader check = checkCmd.ExecuteReader();
-            bool valueOfRead = check.Read();
-            check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
-            con.Close();
-            #endregion
-
-            // Man darf sich nicht als Kontakt hinzufügen
-            if (!(main_email == friend_email))
+            // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
+            if (!AlreadyFriends(main_email, friend_email))
             {
-                // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
-                if (!valueOfRead)
-                {
-                    MySqlCommand cmd = new MySqlCommand();
-                    cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
-                    cmd.Parameters.AddWithValue("@mainemail", main_email);
-                    cmd.Parameters.AddWithValue("@friendemail", friend_email);
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
+                cmd.Parameters.AddWithValue("@mainemail", main_email);
+                cmd.Parameters.AddWithValue("@friendemail", friend_email);
+                cmd.Connection = con;
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                return true;
             }
-            else
-            {
-                //TODO: Fehlermeldung implementieren
-            }
+            else { return false; }
         }
 
 

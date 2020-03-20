@@ -252,17 +252,21 @@ namespace Server
                             #region Kontakt hinzufügen
                             ChatPerson friend = new ChatPerson();
                             friend = (ChatPerson)bFormatter.Deserialize(netStream);
-                            // Nur wenn der zu Hinzufügende Freund existiert TODO: Fehlermeldung wenn Benutzer nicht existiert
-                            if (dbController.DoesUserExist(friend.Email))
+
+                            // Wenn der Kontakt hinzugefügt wurden konnte 
+                            if (dbController.AddContact(individualUser.Email, friend.Email))
                             {
-                                // neuen Kontakt in die Datenbank hinzufügen
-                                dbController.AddContact(individualUser.Email, friend.Email);
 
                                 sHeader = new AdditionalHeader(ComHeader.hAddContact);
                                 SendHeader(sHeader);
 
                                 bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
                             }
+                            else
+                            {
+
+                            }
+
                             #endregion
                             break;
                         case ComHeader.hState:
