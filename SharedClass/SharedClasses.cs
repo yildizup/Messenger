@@ -106,6 +106,12 @@ namespace SharedClass
                 case ComHeader.hAddContactWrong:
                     PHeader = ComHeader.hAddContactWrong;
                     break;
+                case ComHeader.hWrongPass:
+                    PHeader = ComHeader.hWrongPass;
+                    break;
+                case ComHeader.hDoesntExist:
+                    PHeader = ComHeader.hDoesntExist;
+                    break;
             }
         }
     }

@@ -129,6 +129,7 @@ namespace Server
 
         public void Login(string email, string password)
         {
+            AdditionalHeader header;
 
             switch (dbController.Login(email, password))
             {
@@ -147,9 +148,8 @@ namespace Server
                     listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.Email);
 
-                    AdditionalHeader header = new AdditionalHeader(ComHeader.hLoginOk);
-                    bFormatter.Serialize(netStream, header);
-
+                    header = new AdditionalHeader(ComHeader.hLoginOk);
+                    SendHeader(header);
 
                     ContactList contactList = new ContactList();
                     List<User> tmp = dbController.LoadContacts(email);
@@ -163,11 +163,15 @@ namespace Server
                 case 1:
                     //Benutzer existiert nicht
                     Console.WriteLine("Benutzer existiert nicht");
+                    header = new AdditionalHeader(ComHeader.hDoesntExist);
+                    SendHeader(header);
                     break;
 
                 case 2:
                     //Passwort ist falsch
                     Console.WriteLine("Passwort ist falsch");
+                    header = new AdditionalHeader(ComHeader.hWrongPass);
+                    SendHeader(header);
                     break;
             }
         }

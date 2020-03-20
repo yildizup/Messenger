@@ -54,15 +54,7 @@ namespace Client
         {
             this.email = email;
             this.password = Hasher.SHA1(password);
-
-            if (regMode)
-            {
-                registrationMode = true;
-            }
-            else
-            {
-                registrationMode = false;
-            }
+            registrationMode = regMode;
 
             try
             {
@@ -70,7 +62,7 @@ namespace Client
                 tcpThread = new Thread(SetupConn);
                 tcpThread.Start();
             }
-
+            // Wenn keine Verbindung aufgebaut werden konnte.
             catch (Exception e)
             {
                 OnLoginNotOk();
@@ -84,18 +76,27 @@ namespace Client
 
             if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
-
                 Login(email, password);
 
                 byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
-                if (answer == ComHeader.hLoginOk)
+                switch (answer)
                 {
-                    contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
-                    OnLoginOK(); //Publisher aufrufen
-                    pollingThread = new Thread(WhoIsOnline);
-                    pollingThread.Start();
-                    Receiver();
+                    case ComHeader.hLoginOk:
+                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
+                        OnLoginOK(); //Publisher aufrufen
+                        pollingThread = new Thread(WhoIsOnline);
+                        pollingThread.Start();
+                        Receiver();
+                        break;
+                    case ComHeader.hWrongPass:
+                        OnLoginNotOk();
+                        client.Close(); //Socket "schließen"
+                        break;
+                    case ComHeader.hDoesntExist:
+                        OnLoginNotOk();
+                        client.Close(); //Socket "schließen"
+                        break;
                 }
             }
             else
@@ -216,7 +217,7 @@ namespace Client
         }
 
         /// <summary>
-        /// Fragt wiederholen in einem bestimmten Zeitintervall wer online ist
+        /// Fragt wiederholend in einem bestimmten Zeitintervall wer online ist
         /// </summary>
         public void WhoIsOnline()
         {
