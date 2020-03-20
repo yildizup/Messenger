@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SharedClass;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using SharedClass;
 
 namespace Server
 {

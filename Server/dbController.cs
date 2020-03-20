@@ -1,7 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
+using SharedClass;
 using System.Collections.Generic;
 using System.Data;
-using SharedClass;
 
 namespace Server
 {
@@ -368,7 +368,7 @@ namespace Server
             #endregion
 
             // Man darf sich nicht als Kontakt hinzufügen
-            if (!(main_email == friend_email)) 
+            if (!(main_email == friend_email))
             {
                 // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
                 if (!valueOfRead)

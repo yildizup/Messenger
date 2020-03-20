@@ -31,7 +31,7 @@ namespace Client
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages, user.FsName );
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages, user.FsName);
                 lvContacts.Items.Add(contact);
             }
 
