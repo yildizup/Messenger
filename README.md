@@ -9,6 +9,12 @@ Bitte zuerst die Datenbank einrichten. Bitte führen Sie dafür den Code in folg
 
 ![Rückmeldung](./medien/doku/datenbank_reply.jpg)
 
+### Adressen festlegen
+
+Die Adresse können Sie in folgenden Klassen festlegen:
+
+![](./medien/doku/ip-adressen_festlegen.jpg)
+
 ## Server und Client starten
 
 Nun können Sie den Server und den Client starten.

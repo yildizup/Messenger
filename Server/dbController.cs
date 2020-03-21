@@ -19,7 +19,6 @@ namespace Server
         {
             //Datenbank Verbindung
             connectionString = @"host=127.0.0.1;user=root;database=telefonico";
-            //con = new MySqlConnection(connectionString);
         }
 
         #region Anmeldung und Registrierung
