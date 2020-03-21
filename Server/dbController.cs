@@ -26,7 +26,7 @@ namespace Server
 
         static internal void CreateUser(string email, string password, string fsname)
         {
-            string query = "insert into user (email,password,fsname, status) values (@email, @password, @fsname, false)";
+            string query = "insert into users (email,password,fsname, status) values (@email, @password, @fsname, false)";
 
             using (var conn = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand(query, conn))
@@ -50,7 +50,7 @@ namespace Server
         static internal bool DoesUserExist(string email)
         {
             bool valueOfRead;
-            string query = "Select * from user where email=@email";
+            string query = "Select * from users where email=@email";
 
             using (var conn = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand(query, conn))
@@ -101,7 +101,7 @@ namespace Server
         static internal bool CheckPassword(string email, string password)
         {
             DataTable dt = new DataTable();
-            string query = "Select password from user where email=@email";
+            string query = "Select password from users where email=@email";
 
             using (var conn = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand(query, conn))
@@ -175,7 +175,7 @@ namespace Server
         {
             if (status)
             {
-                string query = "update user set status = true where email=@email";
+                string query = "update users set status = true where email=@email";
                 using (var conn = new MySqlConnection(connectionString))
                 using (var command = new MySqlCommand(query, conn))
                 {
@@ -188,7 +188,7 @@ namespace Server
             }
             else
             {
-                string query = "update user set status = false where email=@email";
+                string query = "update users set status = false where email=@email";
                 using (var conn = new MySqlConnection(connectionString))
                 using (var command = new MySqlCommand(query, conn))
                 {
@@ -207,7 +207,7 @@ namespace Server
 
         static internal DataTable LoadUsers()
         {
-            string query = "Select * from user";
+            string query = "Select * from users";
             DataTable dt = new DataTable();
             using (var conn = new MySqlConnection(connectionString))
             using (var command = new MySqlCommand(query, conn))
@@ -229,7 +229,7 @@ namespace Server
         static internal List<User> LoadContacts(string email)
         {
             List<User> listContacts = new List<User>();
-            string query = "Select main_email, friend_email, status, fsname from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
+            string query = "Select main_email, friend_email, status, fsname from contacts c join users u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
             DataTable dt = new DataTable();
 
 
