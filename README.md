@@ -1,5 +1,13 @@
 # Telefonico
 
+## Inhaltsverzeichnis
+- [Telefonico](#telefonico)
+  * [toc](#toc)
+  * [Einrichten](#einrichten)
+    + [Adressen festlegen](#adressen-festlegen)
+  * [Testdaten](#testdaten)
+  * [Server und Client starten](#server-und-client-starten)
+  * [Chat](#chat)
 
 ## Einrichten
 
@@ -15,11 +23,7 @@ Die Adresse können Sie in folgenden Klassen festlegen:
 
 ![](./medien/doku/ip-adressen_festlegen.jpg)
 
-## Server und Client starten
-
-Nun können Sie den Server und den Client starten.
-
-![Hauptmenü. Links: Cient Rechts: Server](./medien/doku/hauptmenue.jpg)
+## Testdaten
 
 Zum testen können Sie gerne folgende Datensätze verwenden.
 
@@ -30,7 +34,14 @@ Zum testen können Sie gerne folgende Datensätze verwenden.
 | absender@gmail.com | 1|
 | empfänger@gmail.com | 1|
 
-## Chatmenü
+## Server und Client starten
+
+Nun können Sie den Server und den Client starten.
+
+![Hauptmenü. Links: Cient Rechts: Server](./medien/doku/hauptmenue.jpg)
+
+
+## Chat
 
 ![Chatmenü](./medien/doku/chatmenue.jpg)
 
