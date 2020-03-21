@@ -1,7 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
+using SharedClass;
 using System.Collections.Generic;
 using System.Data;
-using SharedClass;
 
 namespace Server
 {
@@ -9,7 +9,7 @@ namespace Server
     {
         #region Variablen
 
-        internal static MySqlConnection con;  // wird verwendet, um eine Verbindung mit der Datenbank herzustellen.
+        //internal static MySqlConnection con;  // wird verwendet, um eine Verbindung mit der Datenbank herzustellen.
         internal static string connectionString;
 
 
@@ -19,22 +19,25 @@ namespace Server
         {
             //Datenbank Verbindung
             connectionString = @"host=127.0.0.1;user=root;database=telefonico";
-            con = new MySqlConnection(connectionString);
+            //con = new MySqlConnection(connectionString);
         }
 
         #region Anmeldung und Registrierung
 
         static internal void CreateUser(string email, string password, string fsname)
         {
-            MySqlCommand insertCommand = new MySqlCommand("insert into user (email,password,fsname, status) values(@email,@password,@fsname, false)");
-            insertCommand.Parameters.AddWithValue("@email", email);
-            insertCommand.Parameters.AddWithValue("@password", password);
-            insertCommand.Parameters.AddWithValue("@fsname", fsname);
-            insertCommand.Connection = con;
+            string query = "insert into user (email,password,fsname, status) values (@email, @password, @fsname, false)";
 
-            con.Open();
-            insertCommand.ExecuteNonQuery();
-            con.Close();
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@email", email);
+                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@fsname", fsname);
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
 
         }
 
@@ -46,21 +49,23 @@ namespace Server
         /// <returns>true, wenn user existiert</returns>
         static internal bool DoesUserExist(string email)
         {
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from user where email=@email";
-            cmd.Parameters.AddWithValue("@email", email);
-            cmd.Connection = con;
+            bool valueOfRead;
+            string query = "Select * from user where email=@email";
 
-            con.Open();
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@email", email);
 
-            MySqlDataReader check = cmd.ExecuteReader();
-            bool valueOfRead = check.Read();
-            check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
-            con.Close();
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    valueOfRead = reader.Read();
+                }
+                conn.Close();
+            }
 
             return valueOfRead;
-
-
         }
 
 
@@ -95,22 +100,22 @@ namespace Server
         /// <returns>true, wenn Passwort mit der Datenbank übereinstimmt</returns>
         static internal bool CheckPassword(string email, string password)
         {
-
-            MySqlCommand cmd = new MySqlCommand();
-
-            cmd.CommandText = "Select password from user where email=@email";
-            cmd.Parameters.AddWithValue("@email", email);
-            cmd.Connection = con;
-
-            con.Open();
-
-            MySqlDataReader dr = cmd.ExecuteReader();
-
-            // In ein 'DataTable' Objekt schreiben.
             DataTable dt = new DataTable();
-            dt.Load(dr);
+            string query = "Select password from user where email=@email";
 
-            con.Close(); //TODO: Schauen, ob ein Fehler auftritt
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@email", email);
+
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    // In ein 'DataTable'  schreiben.
+                    dt.Load(reader);
+                }
+                conn.Close();
+            }
 
             // eingegebenes Passwort mit der Datenbank vergleichen
             if (password == (string)dt.Rows[0][0])
@@ -170,23 +175,28 @@ namespace Server
         {
             if (status)
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.CommandText = "update user set status = true where email=@email";
-                cmd.Parameters.AddWithValue("@email", email);
-                cmd.Connection = con;
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
+                string query = "update user set status = true where email=@email";
+                using (var conn = new MySqlConnection(connectionString))
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@email", email);
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    conn.Close();
+                }
+
             }
             else
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.CommandText = "update user set status = false where email=@email";
-                cmd.Parameters.AddWithValue("@email", email);
-                cmd.Connection = con;
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
+                string query = "update user set status = false where email=@email";
+                using (var conn = new MySqlConnection(connectionString))
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@email", email);
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
         }
         #endregion
@@ -197,19 +207,19 @@ namespace Server
 
         static internal DataTable LoadUsers()
         {
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from user";
-            cmd.Connection = con;
-
-            con.Open();
-
-            MySqlDataReader dr = cmd.ExecuteReader();
-
-            // In ein 'DataTable' Objekt schreiben.
+            string query = "Select * from user";
             DataTable dt = new DataTable();
-            dt.Load(dr);
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                }
+                conn.Close();
+            }
 
-            con.Close();
 
             return dt;
         }
@@ -219,23 +229,21 @@ namespace Server
         static internal List<User> LoadContacts(string email)
         {
             List<User> listContacts = new List<User>();
-
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select main_email, friend_email, status, fsname from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
-            //cmd.CommandText = "Select main_email, friend_email, status from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
-            cmd.Parameters.AddWithValue("@email", email);
-            cmd.Connection = con;
-
-            con.Open();
-
-            MySqlDataReader dr = cmd.ExecuteReader();
-
-            // In ein 'DataTable' Objekt schreiben.
+            string query = "Select main_email, friend_email, status, fsname from contacts c join user u on (c.friend_email = u.email) where main_email=@email"; // Abfrage nach allen Kontakten des Users
             DataTable dt = new DataTable();
-            dt.Load(dr);
 
-            con.Close();
 
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@email", email);
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                }
+                conn.Close();
+            }
 
             foreach (DataRow row in dt.Rows)
             {
@@ -258,46 +266,41 @@ namespace Server
 
         static internal int CountNewMessages(string email, string friend_email)
         {
-            MySqlCommand cmd = new MySqlCommand();
-            // Alle Nachrichten, die vom "Freund" gesendet wurden und noch nicht gelesen wurden zählen
-            cmd.CommandText = "Select count(main_email) as sum from chat where (( main_email=@friendemail)&& (friend_email=@mainemail) && received = 0)";
-            cmd.Parameters.AddWithValue("@mainemail", email);
-            cmd.Parameters.AddWithValue("@friendemail", friend_email);
-            cmd.Connection = con;
-
-            con.Open();
-            MySqlDataReader dr = cmd.ExecuteReader();
-
-            // In ein 'DataTable' Objekt schreiben.
             DataTable dt = new DataTable();
-            dt.Load(dr);
-
+            // Alle Nachrichten, die vom "Freund" gesendet wurden und noch nicht gelesen wurden zählen
+            string query = "Select count(main_email) as sum from chat where (( main_email=@friendemail)&& (friend_email=@mainemail) && received = 0)";
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@mainemail", email);
+                command.Parameters.AddWithValue("@friendemail", friend_email);
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                }
+                conn.Close();
+            }
             DataRow tmpRow = dt.Rows[0];
-
-            con.Close();
-
-
             return int.Parse(tmpRow["sum"].ToString()); //Die Anzahl der neuen Nachrichten zurücksenden
         }
 
         static internal DataTable LoadChat(string main_email, string friend_email)
         {
             DataTable dtChat = new DataTable();
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by thetime asc";
-            cmd.Parameters.AddWithValue("@mainemail", main_email);
-            cmd.Parameters.AddWithValue("@friendemail", friend_email);
-            cmd.Connection = con;
-
-            con.Open();
-
-            MySqlDataReader dr = cmd.ExecuteReader();
-
-            // In ein 'DataTable' Objekt schreiben.
-            dtChat.Load(dr);
-            con.Close();
-
-
+            string query = "Select * from chat where (main_email=@mainemail || main_email=@friendemail)&& (friend_email=@friendemail || friend_email=@mainemail) order by thetime asc";
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@mainemail", main_email);
+                command.Parameters.AddWithValue("@friendemail", friend_email);
+                conn.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    dtChat.Load(reader);
+                }
+                conn.Close();
+            }
 
             // Wenn die Nachricht vom aktuellen Client ist, soll statt der Email "Sie" stehen
             foreach (DataRow r in dtChat.Rows)
@@ -313,16 +316,17 @@ namespace Server
 
         static internal void MarkNotReceivedMessagesAsReceived(string main_email, string friend_email)
         {
+            string query = "update chat set received = true where main_email=@friendemail && friend_email=@mainemail && received = false;";
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@mainemail", main_email);
+                command.Parameters.AddWithValue("@friendemail", friend_email);
 
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "update chat set received = true where main_email=@friendemail && friend_email=@mainemail && received = false;";
-            cmd.Parameters.AddWithValue("@mainemail", main_email);
-            cmd.Parameters.AddWithValue("@friendemail", friend_email);
-            cmd.Connection = con;
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
-
+                conn.Open();
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
         }
 
 
@@ -334,17 +338,59 @@ namespace Server
 
         static internal void SaveMessage(string main_email, string friend_email, string message, bool received)
         {
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.CommandText = "insert into chat (main_email, friend_email, message, thetime, received) values (@mainemail,@friendemail,@message, now(), @received);";
-            cmd.Parameters.AddWithValue("@mainemail", main_email);
-            cmd.Parameters.AddWithValue("@friendemail", friend_email);
-            cmd.Parameters.AddWithValue("@message", message);
-            cmd.Parameters.AddWithValue("@received", received);
-            cmd.Connection = con;
+            string query = "insert into chat (main_email, friend_email, message, thetime, received) values (@mainemail,@friendemail,@message, now(), @received);";
 
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            using (var conn = new MySqlConnection(connectionString))
+            using (var command = new MySqlCommand(query, conn))
+            {
+                command.Parameters.AddWithValue("@mainemail", main_email);
+                command.Parameters.AddWithValue("@friendemail", friend_email);
+                command.Parameters.AddWithValue("@message", message);
+                command.Parameters.AddWithValue("@received", received);
+
+                conn.Open();
+                command.ExecuteNonQuery();
+                //conn.Close(); Kann man weglassen, da automatisch disposed wird
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="main_email"></param>
+        /// <param name="friend_email"></param>
+        /// <returns>true, wenn der Benutzer bereits in der Kontaktliste ist. </returns>
+        static internal bool AlreadyFriends(string main_email, string friend_email)
+        {
+            // Wenn dieser Kontakt existiert und nicht er selber ist
+            if (!(main_email == friend_email) && DoesUserExist(friend_email))
+            {
+                bool valueOfRead;
+                // prüfen, ob der Kontakt bereits in der Kontaktliste existiert
+                string query = "Select * from contacts where main_email=@main_email && friend_email=@friend_email";
+
+                using (var conn = new MySqlConnection(connectionString))
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@main_email", main_email);
+                    command.Parameters.AddWithValue("@friend_email", friend_email);
+
+                    conn.Open();
+                    using (var reader = command.ExecuteReader())
+                    {
+                        valueOfRead = reader.Read();
+                    }
+                    conn.Close();
+                }
+
+                return valueOfRead;
+            }
+            else
+            {
+                return true; // Man darf sich nicht als Kontakt hinzufügen
+            }
+
         }
 
         /// <summary>
@@ -352,41 +398,27 @@ namespace Server
         /// </summary>
         /// <param name="main_email"></param>
         /// <param name="friend_email"></param>
-        static internal void AddContact(string main_email, string friend_email)
+        /// <returns>true, wenn der Kontakt hinzugefügt werden konnte.</returns>
+        static internal bool AddContact(string main_email, string friend_email)
         {
-            #region prüfen, ob der Kontakt bereits existiert
-            MySqlCommand checkCmd = new MySqlCommand();
-            checkCmd.CommandText = "Select * from contacts where main_email=@main_email && friend_email=@friend_email";
-            checkCmd.Parameters.AddWithValue("@main_email", main_email);
-            checkCmd.Parameters.AddWithValue("@friend_email", friend_email);
-            checkCmd.Connection = con;
-            con.Open();
-            MySqlDataReader check = checkCmd.ExecuteReader();
-            bool valueOfRead = check.Read();
-            check.Close(); // Warum muss das DataReader Objekt "geschlossen" werden ?
-            con.Close();
-            #endregion
+            // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
+            if (!AlreadyFriends(main_email, friend_email))
+            {
+                string query = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
 
-            // Man darf sich nicht als Kontakt hinzufügen
-            if (!(main_email == friend_email)) 
-            {
-                // Wenn der Kontakt noch nicht existiert, wird er hinzugefügt
-                if (!valueOfRead)
+                using (var conn = new MySqlConnection(connectionString))
+                using (var command = new MySqlCommand(query, conn))
                 {
-                    MySqlCommand cmd = new MySqlCommand();
-                    cmd.CommandText = "insert into contacts (main_email, friend_email) values (@mainemail,@friendemail);";
-                    cmd.Parameters.AddWithValue("@mainemail", main_email);
-                    cmd.Parameters.AddWithValue("@friendemail", friend_email);
-                    cmd.Connection = con;
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+                    command.Parameters.AddWithValue("@mainemail", main_email);
+                    command.Parameters.AddWithValue("@friendemail", friend_email);
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                    conn.Close();
                 }
+                return true;
+
             }
-            else
-            {
-                //TODO: Fehlermeldung implementieren
-            }
+            else { return false; }
         }
 
 

@@ -23,29 +23,34 @@ namespace Client
             selectedContact = new int[2];
             selectedContact[1] = 99; // zur Initialisierung müssen zwei unterschiedliche Werte vorhanden sein.
 
-            this.cClient = cClient;
-            receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
-
-            this.cClient.MessageReceived += receivedHandler;
-            this.cClient.ChatReceived += CClient_ChatReceived;
 
             foreach (User user in cClient.contactList.listContacts)
             {
-                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages, user.FsName );
+                UserControlContactItem contact = new UserControlContactItem(user.Email, user.Status, user.NewMessages, user.FsName);
                 lvContacts.Items.Add(contact);
             }
 
-
-            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
-
-            cClient.RefreshContacts += new EventHandler(ReloadContacts);
-
-            // Kontrollelemente zum Senden einer Nachricht verstecken
+            #region Kontrollelemente zum Senden einer Nachricht verstecken
             btnSendMessage.Visibility = Visibility.Hidden;
             txtMessage.Visibility = Visibility.Hidden;
             splChat.Children.Add(new UserControlMessageSent("Bitte wählen Sie einen Chat aus, um eine Unterhaltung zu beginnen", " "));
+            #endregion
 
+            #region EventListener
+            this.Closing += ManageClosing; //Wenn der User das Fenster schließen möchte
+            cClient.RefreshContacts += new EventHandler(ReloadContacts);
+            this.cClient = cClient;
+            receivedHandler = new CReceivedEventHandler(cMessageReceived);//TODO: Recherchieren "Wie übergebe ich mit einem Event Parameter ?"
+            this.cClient.MessageReceived += receivedHandler;
+            this.cClient.ChatReceived += CClient_ChatReceived;
+            this.cClient.AddContactWrong += CClient_AddContactWrong;
+            #endregion
 
+        }
+
+        private void CClient_AddContactWrong(object sender, EventArgs e)
+        {
+            MessageBox.Show("Der Kontakt kann nicht hinzugefügt werden. Bitte kontrollieren Sie die E-Mail Adresse.");
         }
 
         /// <summary>
@@ -76,14 +81,15 @@ namespace Client
                                              }
                                          }
                                      }
+                                     // Wenn ein neuer Kontakt hinzugefügt wurde
                                      else
                                      {
                                          // der neue Kontakt wird in die "listview" hinzugefügt
-                                         int tmpIndex = cClient.contactList.listContacts.Count - 1;
                                          User tmpUser = cClient.contactList.listContacts[cClient.contactList.listContacts.Count - 1];
                                          lvContacts.Items.Add(new UserControlContactItem(tmpUser.Email, tmpUser.Status, tmpUser.NewMessages, tmpUser.FsName));
                                      }
 
+                                     // zuletzt ausgewählter Kontakt soll nach der Aktualisierung ausgewählt sein
                                      lvContacts.SelectedIndex = selectedContact[1];
 
                                  });
@@ -92,6 +98,7 @@ namespace Client
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
         {
 
+            // Chat wird nur komplett aktualisert, wenn man einen neuen Kontakt auswählt
             if (selectedContact[0] != selectedContact[1])
             {
 
@@ -138,12 +145,14 @@ namespace Client
 
         private void lvContacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Um die versteckten Steuerelemente wieder anzuzeigen. (Wird nur am Anfang benötigt)
             if (btnSendMessage.Visibility == Visibility.Hidden && txtMessage.Visibility == Visibility.Hidden)
             {
                 btnSendMessage.Visibility = Visibility.Visible;
                 txtMessage.Visibility = Visibility.Visible;
                 splChat.Children.Clear();
             }
+
             if (lvContacts.SelectedItem != null)
             {
                 // Alle Elemente im Array werden 1 nach links "geshiftet". Wird benötigt, um zu testen, ob ein neuer Kontakt ausgewählt wurde
@@ -183,13 +192,15 @@ namespace Client
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           // Nachricht wird nur angezeigt, wenn man sich im selben Chat befinden
+                           // Nachricht wird nur angezeigt, wenn man sich im selben Chat befindet
                            if (lvContacts.SelectedItem != null)
                            {
                                if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
                                {
                                    UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
                                    splChat.Children.Add(messagereceived);
+                                   cClient.MessagesRead(((UserControlContactItem)lvContacts.SelectedItem).Email);
+                                   // TODO: LoadChat aktualisert den ganzen Chat. Benötigt wird eine Methode, die die Nachrichten als gelesen markiert. (CHECK)
                                }
                            }
 

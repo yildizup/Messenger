@@ -1,11 +1,10 @@
-﻿using System;
+﻿using SharedClass;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using SharedClass;
 
 namespace Client
 {
@@ -14,6 +13,9 @@ namespace Client
         #region Variablen
 
         Thread tcpThread;
+        Thread pollingThread;
+
+        readonly object _object = new object();
 
         public string Server { get { return "127.0.0.1"; } }
         public int Port { get { return 2000; } }
@@ -35,7 +37,6 @@ namespace Client
         {
             bFormatter = new BinaryFormatter();
             contactList = new ContactList();
-
         }
 
         public string FsName { get; set; }
@@ -53,15 +54,7 @@ namespace Client
         {
             this.email = email;
             this.password = Hasher.SHA1(password);
-
-            if (regMode)
-            {
-                registrationMode = true;
-            }
-            else
-            {
-                registrationMode = false;
-            }
+            registrationMode = regMode;
 
             try
             {
@@ -69,7 +62,7 @@ namespace Client
                 tcpThread = new Thread(SetupConn);
                 tcpThread.Start();
             }
-
+            // Wenn keine Verbindung aufgebaut werden konnte.
             catch (Exception e)
             {
                 OnLoginNotOk();
@@ -83,16 +76,27 @@ namespace Client
 
             if (!registrationMode) //Wenn der Client sich nicht registrieren möchte
             {
-
                 Login(email, password);
 
                 byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
 
-                if (answer == ComHeader.hLoginOk)
+                switch (answer)
                 {
-                    contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
-                    OnLoginOK(); //Publisher aufrufen
-                    Receiver();
+                    case ComHeader.hLoginOk:
+                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
+                        OnLoginOK(); //Publisher aufrufen
+                        pollingThread = new Thread(WhoIsOnline);
+                        pollingThread.Start();
+                        Receiver();
+                        break;
+                    case ComHeader.hWrongPass:
+                        OnLoginNotOk();
+                        client.Close(); //Socket "schließen"
+                        break;
+                    case ComHeader.hDoesntExist:
+                        OnLoginNotOk();
+                        client.Close(); //Socket "schließen"
+                        break;
                 }
             }
             else
@@ -108,7 +112,7 @@ namespace Client
                         OnRegistrationOK();
                         CloseConn();
                         Receiver();
-                        /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfra  sendet, um die Verbindung zu beenden und bevor er 
+                        /* TODO: Wie läuft das zeitlich ab ? Was passiert, wenn der Client eine Anfrage  sendet, um die Verbindung zu beenden und bevor er 
                          * dem Server lauschen kann, der Server bereits ein Paket gesendet hat, um die Verbindung zu schließen ?
                          */
                         break;
@@ -178,6 +182,7 @@ namespace Client
         /// </summary>
         void Receiver()
         {
+
             while (client.Connected)
             {
                 byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
@@ -203,17 +208,25 @@ namespace Client
                         contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
                         OnRefreshContacts(); //Event auslösen
                         break;
+                    case ComHeader.hAddContactWrong:
+                        //Wenn der Kontakt nicht hinzugefügt werden kann
+                        OnAddContactWrong();
+                        break;
                 }
             }
         }
 
         /// <summary>
-        /// Fragt wiederholen in einem bestimmten Zeitintervall wer online ist
+        /// Fragt wiederholend in einem bestimmten Zeitintervall wer online ist
         /// </summary>
         public void WhoIsOnline()
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-            SendHeader(header);
+            while (client.Connected)
+            {
+                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+                SendHeader(header);
+                Thread.Sleep(1500);
+            }
         }
 
 
@@ -233,8 +246,18 @@ namespace Client
             bFormatter.Serialize(netStream, chatPerson);
         }
 
+        public void MessagesRead(string friend_email)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hMessagesRead);
+            SendHeader(header);
+
+            ChatPerson chatPerson = new ChatPerson();
+            chatPerson.Email = friend_email;
+            bFormatter.Serialize(netStream, chatPerson);
+        }
+
         /// <summary>
-        /// Sendet eine Nachrichtig an einen anderen Client
+        /// Sendet eine Nachricht an einen anderen Client
         /// </summary>
         /// <param name="to">Empfänger</param>
         /// <param name="msg">Nachricht</param>
@@ -263,7 +286,10 @@ namespace Client
 
         void SendHeader(AdditionalHeader h)
         {
-            bFormatter.Serialize(netStream, h);
+            lock (_object)
+            {
+                bFormatter.Serialize(netStream, h);
+            }
         }
 
         #endregion
@@ -278,6 +304,7 @@ namespace Client
         public event EventHandler RegistrationNotOk;
         public event CChatContentEventHandler ChatReceived;
         public event EventHandler RefreshContacts;
+        public event EventHandler AddContactWrong;
 
         virtual protected void OnLoginOK()
         {
@@ -286,7 +313,6 @@ namespace Client
                 LoginOK(this, EventArgs.Empty);
             }
         }
-
         virtual protected void OnLoginNotOk()
         {
             if (LoginNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
@@ -301,7 +327,6 @@ namespace Client
                 MessageReceived(this, e);
             }
         }
-
         virtual protected void OnChatReceived(CChatContentEventArgs e)
         {
             if (ChatReceived != null)
@@ -309,7 +334,6 @@ namespace Client
                 ChatReceived(this, e);
             }
         }
-
         virtual protected void OnRegistrationOK()
         {
             if (RegistrationOK != null)
@@ -318,7 +342,6 @@ namespace Client
             }
 
         }
-
         virtual protected void OnRegistrationWrong()
         {
             if (RegistrationNotOk != null) // Wenn keiner "subscribet" hat, brauch man auch kein Publisher aufzurufen
@@ -326,7 +349,6 @@ namespace Client
                 RegistrationNotOk(this, EventArgs.Empty);
             }
         }
-
         virtual protected void OnRefreshContacts()
         {
             if (RefreshContacts != null)
@@ -335,6 +357,13 @@ namespace Client
 
             }
 
+        }
+        virtual protected void OnAddContactWrong()
+        {
+            if (AddContactWrong != null)
+            {
+                AddContactWrong(this, EventArgs.Empty);
+            }
         }
 
         #endregion

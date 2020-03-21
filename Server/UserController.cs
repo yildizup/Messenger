@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using SharedClass;
+using System.Collections.Generic;
 using System.Data;
-using SharedClass;
 
 namespace Server
 {
@@ -31,7 +31,7 @@ namespace Server
 
         static internal int GetIndexOfUser(string mail)
         {
-            int index = ConnectedUsers.FindIndex(i => i.Email == mail); 
+            int index = ConnectedUsers.FindIndex(i => i.Email == mail);
             return index;
         }
 

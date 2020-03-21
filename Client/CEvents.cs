@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Client
 {
@@ -14,7 +10,7 @@ namespace Client
         string message;
         string date;
 
-        public CReceivedEventArgs(string user, string message,string date)
+        public CReceivedEventArgs(string user, string message, string date)
         {
             this.email = user;
             this.message = message;

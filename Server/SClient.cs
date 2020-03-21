@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SharedClass;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using SharedClass;
 
 namespace Server
 {
@@ -85,7 +85,7 @@ namespace Server
             }
 
             AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Bestätigung an Client senden
-            bFormatter.Serialize(netStream, header);
+            SendHeader(header);
 
             // Verbindung schließen
             //tcpThread.Abort();
@@ -129,6 +129,7 @@ namespace Server
 
         public void Login(string email, string password)
         {
+            AdditionalHeader header;
 
             switch (dbController.Login(email, password))
             {
@@ -147,9 +148,8 @@ namespace Server
                     listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.Email);
 
-                    AdditionalHeader header = new AdditionalHeader(ComHeader.hLoginOk);
-                    bFormatter.Serialize(netStream, header);
-
+                    header = new AdditionalHeader(ComHeader.hLoginOk);
+                    SendHeader(header);
 
                     ContactList contactList = new ContactList();
                     List<User> tmp = dbController.LoadContacts(email);
@@ -163,11 +163,15 @@ namespace Server
                 case 1:
                     //Benutzer existiert nicht
                     Console.WriteLine("Benutzer existiert nicht");
+                    header = new AdditionalHeader(ComHeader.hDoesntExist);
+                    SendHeader(header);
                     break;
 
                 case 2:
                     //Passwort ist falsch
                     Console.WriteLine("Passwort ist falsch");
+                    header = new AdditionalHeader(ComHeader.hWrongPass);
+                    SendHeader(header);
                     break;
             }
         }
@@ -183,8 +187,7 @@ namespace Server
         {
             try
             {
-
-                while (client.Client.Connected) //solange der Client verbunden ist
+                while (client.Client.Connected) 
                 {
                     byte cHeader = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
                     sHeader = null;
@@ -252,23 +255,35 @@ namespace Server
                             #region Kontakt hinzufügen
                             ChatPerson friend = new ChatPerson();
                             friend = (ChatPerson)bFormatter.Deserialize(netStream);
-                            // Nur wenn der zu Hinzufügende Freund existiert TODO: Fehlermeldung wenn Benutzer nicht existiert
-                            if (dbController.DoesUserExist(friend.Email))
+
+                            // Wenn der Kontakt hinzugefügt wurden konnte 
+                            if (dbController.AddContact(individualUser.Email, friend.Email))
                             {
-                                // neuen Kontakt in die Datenbank hinzufügen
-                                dbController.AddContact(individualUser.Email, friend.Email);
 
                                 sHeader = new AdditionalHeader(ComHeader.hAddContact);
                                 SendHeader(sHeader);
 
                                 bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
                             }
+                            else
+                            {
+                                // Wenn der Kontakt nicht hinzugeüft werden kann
+                                sHeader = new AdditionalHeader(ComHeader.hAddContactWrong);
+                                SendHeader(sHeader);
+                            }
+
                             #endregion
                             break;
                         case ComHeader.hState:
                             AdditionalHeader head = new AdditionalHeader(ComHeader.hState);
                             SendHeader(head);
                             bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
+                            break;
+                        case ComHeader.hMessagesRead:
+                            ChatPerson chat_friend = new ChatPerson();
+                            chat_friend.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+                            //Die Nachrichten als gelesen markieren
+                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.Email, chat_friend.Email);
                             break;
                     }
                 }
@@ -319,4 +334,6 @@ namespace Server
 
     }
 }
+
+
 
