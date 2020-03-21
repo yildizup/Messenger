@@ -199,6 +199,7 @@ namespace Client
                         OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
                     case ComHeader.hDisconnect:
+                        pollingThread.Abort(); 
                         tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Paketen. 
                         client.Close();
                         break;

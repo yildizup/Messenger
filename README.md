@@ -1,14 +1,15 @@
 # Telefonico
 
 ## Inhaltsverzeichnis
+
 - [Telefonico](#telefonico)
-  * [toc](#toc)
+  * [Inhaltsverzeichnis](#inhaltsverzeichnis)
   * [Einrichten](#einrichten)
     + [Adressen festlegen](#adressen-festlegen)
   * [Testdaten](#testdaten)
   * [Server und Client starten](#server-und-client-starten)
   * [Chat](#chat)
-
+  
 ## Einrichten
 
 Bitte zuerst die Datenbank einrichten. Bitte führen Sie dafür den Code in folgender Datei aus: "datenbank/skelett.sql".
