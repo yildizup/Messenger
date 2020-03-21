@@ -110,6 +110,6 @@ insert into chat (main_email, friend_email, message, thetime, received) values
 -- zwischen neo@matrix.com und cooper@interstellar.com
 ('neo@matrix.com','cooper@interstellar.com','Hallo Cooper. Wo bist du gerade ?', '2020-02-15 08:46:38', true),
 ('cooper@interstellar.com','neo@matrix.com','Hey Neo. Ich "fliege" gerade durch ein Wurmloch. Sry, für die späte Antwort. Und was machst du ?', '2020-02-18 08:48:00', true),
-('neo@matrix.com','cooper@interstellar.com','Kein Problem. Ach nicht viel. Wir sind gerade in einer Besprechung.', '2020-02-15 08:49:38', true),
-('cooper@interstellar.com','neo@matrix.com','Ok, viel Erfolg.', '2020-02-15 08:55:38', true),
-('neo@matrix.com','cooper@interstellar.com','Danke dir auch.', '2020-02-15 09:10:12', true);
+('neo@matrix.com','cooper@interstellar.com','Kein Problem. Ach nicht viel. Wir sind gerade in einer Besprechung.', '2020-02-19 08:49:38', true),
+('cooper@interstellar.com','neo@matrix.com','Ok, viel Erfolg.', '2020-02-19 08:55:38', true),
+('neo@matrix.com','cooper@interstellar.com','Danke dir auch.', '2020-02-19 09:10:12', true);
