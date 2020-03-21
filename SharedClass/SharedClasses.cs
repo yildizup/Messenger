@@ -112,6 +112,9 @@ namespace SharedClass
                 case ComHeader.hDoesntExist:
                     PHeader = ComHeader.hDoesntExist;
                     break;
+                case ComHeader.hMessagesRead:
+                    PHeader = ComHeader.hMessagesRead;
+                    break;
             }
         }
     }
@@ -136,6 +139,7 @@ namespace SharedClass
         public const byte hAddContact = 12; //Kontakt hinzufügen
         public const byte hState = 13; //Paket, um nach dem Status der Kontakte zu fragen.
         public const byte hAddContactWrong = 14; // Wenn der Kontakt nicht hinzugefügt werden kann
+        public const byte hMessagesRead = 15; // Nachrichten als gelesen markieren
     }
 }
 

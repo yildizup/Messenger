@@ -279,6 +279,12 @@ namespace Server
                             SendHeader(head);
                             bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
                             break;
+                        case ComHeader.hMessagesRead:
+                            ChatPerson chat_friend = new ChatPerson();
+                            chat_friend.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+                            //Die Nachrichten als gelesen markieren
+                            dbController.MarkNotReceivedMessagesAsReceived(individualUser.Email, chat_friend.Email);
+                            break;
                     }
                 }
             }

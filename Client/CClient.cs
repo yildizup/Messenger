@@ -225,7 +225,7 @@ namespace Client
             {
                 AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
                 SendHeader(header);
-                Thread.Sleep(1000);
+                Thread.Sleep(1500);
             }
         }
 
@@ -246,8 +246,18 @@ namespace Client
             bFormatter.Serialize(netStream, chatPerson);
         }
 
+        public void MessagesRead(string friend_email)
+        {
+            AdditionalHeader header = new AdditionalHeader(ComHeader.hMessagesRead);
+            SendHeader(header);
+
+            ChatPerson chatPerson = new ChatPerson();
+            chatPerson.Email = friend_email;
+            bFormatter.Serialize(netStream, chatPerson);
+        }
+
         /// <summary>
-        /// Sendet eine Nachrichtig an einen anderen Client
+        /// Sendet eine Nachricht an einen anderen Client
         /// </summary>
         /// <param name="to">Empfänger</param>
         /// <param name="msg">Nachricht</param>

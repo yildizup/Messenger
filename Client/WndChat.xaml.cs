@@ -81,14 +81,15 @@ namespace Client
                                              }
                                          }
                                      }
+                                     // Wenn ein neuer Kontakt hinzugefügt wurde
                                      else
                                      {
                                          // der neue Kontakt wird in die "listview" hinzugefügt
-                                         int tmpIndex = cClient.contactList.listContacts.Count - 1;
                                          User tmpUser = cClient.contactList.listContacts[cClient.contactList.listContacts.Count - 1];
                                          lvContacts.Items.Add(new UserControlContactItem(tmpUser.Email, tmpUser.Status, tmpUser.NewMessages, tmpUser.FsName));
                                      }
 
+                                     // zuletzt ausgewählter Kontakt soll nach der Aktualisierung ausgewählt sein
                                      lvContacts.SelectedIndex = selectedContact[1];
 
                                  });
@@ -97,6 +98,7 @@ namespace Client
         private void CClient_ChatReceived(object sender, CChatContentEventArgs e)
         {
 
+            // Chat wird nur komplett aktualisert, wenn man einen neuen Kontakt auswählt
             if (selectedContact[0] != selectedContact[1])
             {
 
@@ -157,7 +159,6 @@ namespace Client
                 selectedContact[0] = selectedContact[1];
                 selectedContact[1] = lvContacts.SelectedIndex; //speichern des zuletzt ausgewählten Kontaktes
                 cClient.LoadChat(((UserControlContactItem)lvContacts.SelectedItem).Email); //TODO: Das kann man besser lösen. MVVM anschauen
-                //cClient.WhoIsOnline();
 
             }
         }
@@ -191,13 +192,15 @@ namespace Client
         {
             Application.Current.Dispatcher.Invoke((Action)delegate
                        {
-                           // Nachricht wird nur angezeigt, wenn man sich im selben Chat befinden
+                           // Nachricht wird nur angezeigt, wenn man sich im selben Chat befindet
                            if (lvContacts.SelectedItem != null)
                            {
                                if (e.From == ((UserControlContactItem)lvContacts.SelectedItem).Email)
                                {
                                    UserControlMessageReceived messagereceived = new UserControlMessageReceived(e.Message, e.Date);
                                    splChat.Children.Add(messagereceived);
+                                   cClient.MessagesRead(((UserControlContactItem)lvContacts.SelectedItem).Email);
+                                   // TODO: LoadChat aktualisert den ganzen Chat. Benötigt wird eine Methode, die die Nachrichten als gelesen markiert. (CHECK)
                                }
                            }
 
