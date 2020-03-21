@@ -23,7 +23,6 @@
             <StackPanel Orientation="Horizontal" Background="{StaticResource MaterialDesignDarkBackground}" HorizontalAlignment="Left" Height="120" VerticalAlignment="Top" Width="300">
                 <Label FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryHueMidBrush}" Content="&#xD;&#xA;      Telefonico" HorizontalAlignment="Center" VerticalAlignment="Top" Height="77" Width="163" Margin="2,10,0,0"/>
                 <Button ToolTip="Kontakt hinzufügen" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" x:Name="btnAddContact"  Content="{materialDesign:PackIcon Kind=Plus}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="36" Click="btnAddContact_Click" Margin="0,38,0,46" Height="36" RenderTransformOrigin="0.444,0.306"/>
-                <Button  ToolTip="Aktualisieren" x:Name="tmpWhoIsOnline" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" Content="{materialDesign:PackIcon Sync}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="37" Click="tmpWhoIsOnline_Click" Height="36" Margin="0,38,0,46"/>
             </StackPanel>
             <ListView Grid.Column="0"  x:Name="lvContacts" Height="565" Margin="0,120,0,0" VerticalAlignment="Top" SelectionChanged="lvContacts_SelectionChanged" HorizontalAlignment="Left" Width="300"/>
         </Grid>
