@@ -10,6 +10,8 @@
   * [Server und Client starten](#server-und-client-starten)
   * [Chat](#chat)
   * [Known bugs](#known-bugs)
+    + [SharedClass DLL](sharedclass-dll)
+    + [Material Design](material-design)
 
 ## Einrichten
 
@@ -55,8 +57,31 @@ Der Client fragt wiederholend in einem bestimmten Zeitintervall den Server nach 
 
 ## Known bugs
 
+### SharedClass DLL
+
 Falls Sie während des Kompiliervorgangs folgende Fehlermeldung erhalten:
 
 ![Fehlermeldung](./medien/doku/Fehlermeldung.jpg)
 
-müssen Sie zuerst das Projekt "SharedClass" kompilieren. Denn diese erstellt die DLL, welche von Client und Server benötigt werden.
+müssen Sie zuerst das Projekt "SharedClass" kompilieren. Denn diese erstellt die DLL, welche vonm Client und vom Server benötigt werden.
+
+### Material Design
+
+Falls andere Probleme aufgrund von fehlenden DLLs auftreten, liegt es eventuell daran, dass die MaterialDesign Packages nicht runtergeladen werden konnten. Bitte stellen Sie sicher, dass Sie eine Internetverbindung haben.
+(Das Problem ist bis jetzt noch nicht aufgetreten.)
+
+```
+// Die benötigten DLLS. (Sollten automatisch heruntergeladen werden)
+<ItemGroup>
+   <Reference Include="MaterialDesignColors, Version=1.2.2.920, Culture=neutral, processorArchitecture=MSIL">
+     <HintPath>..\packages\MaterialDesignColors.1.2.2\lib\net45\MaterialDesignColors.dll</HintPath>
+   </Reference>
+   <Reference Include="MaterialDesignThemes.Wpf, Version=3.0.1.920, Culture=neutral, processorArchitecture=MSIL">
+     <HintPath>..\packages\MaterialDesignThemes.3.0.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+   </Reference>
+
+   // SharedClass bitte zuerst kompilieren
+   <Reference Include="SharedClass">
+     <HintPath>..\SharedClass\bin\Debug\netstandard2.0\SharedClass.dll</HintPath>
+   </Reference>
+```
