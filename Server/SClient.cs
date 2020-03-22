@@ -90,7 +90,7 @@ namespace Server
             GeneralPackage package = new GeneralPackage();
             package.Header = ComHeader.hDisconnect;
 
-            SendHeader(package);
+            SendPackage(package);
 
             // Verbindung schließen
             //tcpThread.Abort();
@@ -120,7 +120,7 @@ namespace Server
                 Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
                 GeneralPackage package = new GeneralPackage();
                 package.Header = ComHeader.hRegistrationOk;
-                SendHeader(package);
+                SendPackage(package);
                 Receiver(); //Dem Client in einer Dauerschleife zuhören
             }
             else
@@ -129,7 +129,7 @@ namespace Server
                 Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
                 GeneralPackage package = new GeneralPackage();
                 package.Header = ComHeader.hRegistrationNotOk;
-                SendHeader(package);
+                SendPackage(package);
             }
         }
 
@@ -164,7 +164,7 @@ namespace Server
 
                     package.Content = contactList;
 
-                    SendHeader(package);
+                    SendPackage(package);
 
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
@@ -173,13 +173,13 @@ namespace Server
                 case 1:
                     //Benutzer existiert nicht
                     package.Header = ComHeader.hDoesntExist;
-                    SendHeader(package);
+                    SendPackage(package);
                     break;
 
                 case 2:
                     //Passwort ist falsch
                     package.Header = ComHeader.hWrongPass;
-                    SendHeader(package);
+                    SendPackage(package);
                     break;
             }
         }
@@ -261,7 +261,7 @@ namespace Server
 
                             sendPackage.Content = chatContent;
 
-                            SendHeader(sendPackage);
+                            SendPackage(sendPackage);
                             break;
 
                         case ComHeader.hAddContact:
@@ -274,13 +274,13 @@ namespace Server
                                 sendPackage.Header = ComHeader.hAddContact;
                                 sendPackage.Content = dbController.LoadContacts(individualUser.Email);
 
-                                SendHeader(sendPackage);
+                                SendPackage(sendPackage);
                             }
                             else
                             {
                                 // Wenn der Kontakt nicht hinzugeüft werden kann
                                 sendPackage.Header = ComHeader.hAddContactWrong;
-                                SendHeader(sendPackage);
+                                SendPackage(sendPackage);
                             }
 
                             #endregion
@@ -288,7 +288,7 @@ namespace Server
                         case ComHeader.hState:
                             sendPackage.Header = ComHeader.hState;
                             sendPackage.Content = dbController.LoadContacts(individualUser.Email);
-                            SendHeader(sendPackage);
+                            SendPackage(sendPackage);
                             break;
                         case ComHeader.hMessagesRead:
                             ChatPerson chat_friend = ((ChatPerson)receivedPackage.Content);
@@ -317,7 +317,7 @@ namespace Server
         /// Vor jeder Nachricht wird dem Client ein Header gesendet
         /// </summary>
         /// <param name="h"></param>
-        void SendHeader(GeneralPackage p)
+        void SendPackage(GeneralPackage p)
         {
             bFormatter.Serialize(netStream, p);
         }
