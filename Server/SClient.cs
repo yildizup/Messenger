@@ -58,7 +58,7 @@ namespace Server
                     case ComHeader.hRegister:
                         Console.WriteLine("[{0}] Ein Client möchte sich registrieren...", DateTime.Now);
                         CreateUser(email, password, fsName);
-                        Receiver(); // Dem Client in einer Dauerschleife zuhören. 
+                        //Receiver(); // Dem Client in einer Dauerschleife zuhören. 
                         break;
                     case ComHeader.hLogin:
                         Login(email, password);
@@ -68,7 +68,8 @@ namespace Server
             catch (Exception e)
             {
                 //Falls während eines Vorgangs ein Fehler auftreten sollte, wird von einer Verbindungsunterbrechung ausgegangen.
-                Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.Email);
+                //Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, individualUser.Email);
+                Console.WriteLine("[{0}] Client ({1}) hat sich abgemeldet", DateTime.Now, "ABC");
                 Console.WriteLine("{0}", e.ToString());
             }
 
@@ -120,6 +121,7 @@ namespace Server
                 GeneralPackage package = new GeneralPackage();
                 package.Header = ComHeader.hRegistrationOk;
                 SendHeader(package);
+                Receiver(); //Dem Client in einer Dauerschleife zuhören
             }
             else
             {
@@ -170,15 +172,12 @@ namespace Server
 
                 case 1:
                     //Benutzer existiert nicht
-                    Console.WriteLine("Benutzer existiert nicht");
                     package.Header = ComHeader.hDoesntExist;
-
                     SendHeader(package);
                     break;
 
                 case 2:
                     //Passwort ist falsch
-                    Console.WriteLine("Passwort ist falsch");
                     package.Header = ComHeader.hWrongPass;
                     SendHeader(package);
                     break;

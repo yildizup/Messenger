@@ -103,6 +103,7 @@ namespace Client
             {
                 Register(email, password);
 
+                //Auf eine Antwort warten
                 GeneralPackage package = (GeneralPackage)bFormatter.Deserialize(netStream);
 
                 switch (package.Header)
@@ -119,8 +120,8 @@ namespace Client
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
                         OnRegistrationWrong();
-                        //CloseConn();
-                        client.Client.Disconnect(true);
+                        CloseConn();
+                        //client.Client.Disconnect(true);
                         break;
 
                 }
@@ -244,7 +245,7 @@ namespace Client
                 GeneralPackage package = new GeneralPackage();
                 package.Header = ComHeader.hState;
                 SendHeader(package);
-                Thread.Sleep(1900);
+                Thread.Sleep(1500);
             }
         }
 
