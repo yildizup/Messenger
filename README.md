@@ -10,8 +10,8 @@
   * [Server und Client starten](#server-und-client-starten)
   * [Chat](#chat)
   * [Known bugs](#known-bugs)
-    + [SharedClass DLL](sharedclass-dll)
-    + [Material Design](material-design)
+    + [SharedClass DLL](#sharedclass-dll)
+    + [Material Design](#material-design)
 
 ## Einrichten
 
