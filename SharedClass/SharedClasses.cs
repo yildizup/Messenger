@@ -59,70 +59,21 @@ namespace SharedClass
     }
 
     /// <summary>
-    /// alle möglichen Header
+    /// Ein Packet hat immer ein Header und ein Inhalt. Falls keine Inhalt vorhanden sein sollte ist es = null. 
     /// </summary>
     [Serializable]
-    public class AdditionalHeader
+    public class GeneralPackage
     {
-        public byte PHeader { get; }
-
-        public AdditionalHeader(byte b)
-        {
-            switch (b)
-            {
-                case ComHeader.hLoginOk:
-                    PHeader = ComHeader.hLoginOk;
-                    break;
-                case ComHeader.hLogin:
-                    PHeader = ComHeader.hLogin;
-                    break;
-                case ComHeader.hRegister:
-                    PHeader = ComHeader.hRegister;
-                    break;
-                case ComHeader.hRegistrationOk:
-                    PHeader = ComHeader.hRegistrationOk;
-                    break;
-                case ComHeader.hRegistrationNotOk:
-                    PHeader = ComHeader.hRegistrationNotOk;
-                    break;
-                case ComHeader.hDisconnect:
-                    PHeader = ComHeader.hDisconnect;
-                    break;
-                case ComHeader.hReceived:
-                    PHeader = ComHeader.hReceived;
-                    break;
-                case ComHeader.hSend:
-                    PHeader = ComHeader.hSend;
-                    break;
-                case ComHeader.hChat:
-                    PHeader = ComHeader.hChat;
-                    break;
-                case ComHeader.hAddContact:
-                    PHeader = ComHeader.hAddContact;
-                    break;
-                case ComHeader.hState:
-                    PHeader = ComHeader.hState;
-                    break;
-                case ComHeader.hAddContactWrong:
-                    PHeader = ComHeader.hAddContactWrong;
-                    break;
-                case ComHeader.hWrongPass:
-                    PHeader = ComHeader.hWrongPass;
-                    break;
-                case ComHeader.hDoesntExist:
-                    PHeader = ComHeader.hDoesntExist;
-                    break;
-                case ComHeader.hMessagesRead:
-                    PHeader = ComHeader.hMessagesRead;
-                    break;
-            }
-        }
+        public byte Header { get; set; }
+        public object Content { get; set; }
     }
 
+    [Serializable]
     public class ComHeader
     {
         /* Hier kommen die Header rein. Jeder Byte wird eine bestimmte Bedeutung haben. 
          * Die Header werden verwendet, damit der Server die Pakete zuordnen kann */
+
 
         public const byte hRegister = 0;     // Registrieren
         public const byte hLogin = 1; //Login

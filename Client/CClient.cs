@@ -63,7 +63,7 @@ namespace Client
                 tcpThread.Start();
             }
             // Wenn keine Verbindung aufgebaut werden konnte.
-            catch (Exception e)
+            catch (Exception)
             {
                 OnLoginNotOk();
             }
@@ -78,12 +78,12 @@ namespace Client
             {
                 Login(email, password);
 
-                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+                GeneralPackage package = (GeneralPackage)bFormatter.Deserialize(netStream);
 
-                switch (answer)
+                switch (package.Header)
                 {
                     case ComHeader.hLoginOk:
-                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream); //TODO: Nach dem Ausdruck "typeof" recherchieren
+                        contactList.listContacts = ((ContactList)package.Content).listContacts; //TODO: Nach dem Ausdruck "typeof" recherchieren
                         OnLoginOK(); //Publisher aufrufen
                         pollingThread = new Thread(WhoIsOnline);
                         pollingThread.Start();
@@ -103,9 +103,10 @@ namespace Client
             {
                 Register(email, password);
 
-                byte answer = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+                //Auf eine Antwort warten
+                GeneralPackage package = (GeneralPackage)bFormatter.Deserialize(netStream);
 
-                switch (answer)
+                switch (package.Header)
                 {
                     // Wenn die Registrierung erfolgreich war
                     case ComHeader.hRegistrationOk:
@@ -119,8 +120,8 @@ namespace Client
                     // Wenn die Registrierung nicht erfolgreich war
                     case ComHeader.hRegistrationNotOk:
                         OnRegistrationWrong();
-                        //CloseConn();
-                        client.Client.Disconnect(true);
+                        CloseConn();
+                        //client.Client.Disconnect(true);
                         break;
 
                 }
@@ -131,8 +132,9 @@ namespace Client
 
         public void CloseConn() // Verbindung beenden
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hDisconnect;
+            SendHeader(package);
         }
 
         #endregion
@@ -147,28 +149,32 @@ namespace Client
         /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
         public void Register(string email, string password)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hRegister;
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
             loginData.Password = password;
             loginData.FsName = FsName;
 
-            bFormatter.Serialize(netStream, loginData);
+            package.Content = loginData;
+
+            SendHeader(package);
 
         }
 
         public void Login(string email, string password)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hLogin;
 
             LoginData loginData = new LoginData();
             loginData.Email = email;
             loginData.Password = password;
 
-            bFormatter.Serialize(netStream, loginData);
+            package.Content = loginData;
+
+            SendHeader(package);
         }
 
 
@@ -185,28 +191,41 @@ namespace Client
 
             while (client.Connected)
             {
-                byte header = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
+                GeneralPackage package = (GeneralPackage)bFormatter.Deserialize(netStream);
 
-                switch (header)
+                switch (package.Header)
                 {
                     case ComHeader.hReceived:
                         // Eine Nachricht von einem anderen Client
-                        MessageReceived messageReceived = (MessageReceived)bFormatter.Deserialize(netStream);
+                        MessageReceived messageReceived = (MessageReceived)package.Content;
                         OnMessageReceived(new CReceivedEventArgs(messageReceived.From, messageReceived.Message, DateTime.Now.ToString())); //Event auslösen
+
                         break;
                     case ComHeader.hChat: //Chat Inhalt 
-                        DataTable dtChat = ((ChatContent)bFormatter.Deserialize(netStream)).chatContent;
+                        DataTable dtChat = (((ChatContent)package.Content).chatContent);
+
                         OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
                     case ComHeader.hDisconnect:
+                        if (pollingThread != null)
+                        {
+                            pollingThread.Abort();
+                        }
                         tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Paketen. 
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
                     case ComHeader.hState: // Wenn Aktivitätsstatus der User mitgeteilt wird
                         //Kontaktliste aktualiseren
-                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
-                        OnRefreshContacts(); //Event auslösen
+                        try
+                        {
+                            contactList.listContacts = ((List<User>)package.Content);
+                            OnRefreshContacts(); //Event auslösen
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                         break;
                     case ComHeader.hAddContactWrong:
                         //Wenn der Kontakt nicht hinzugefügt werden kann
@@ -223,8 +242,9 @@ namespace Client
         {
             while (client.Connected)
             {
-                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
-                SendHeader(header);
+                GeneralPackage package = new GeneralPackage();
+                package.Header = ComHeader.hState;
+                SendHeader(package);
                 Thread.Sleep(1500);
             }
         }
@@ -237,23 +257,27 @@ namespace Client
 
         public void LoadChat(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hChat;
 
             ChatPerson chatPerson = new ChatPerson();
             chatPerson.Email = friend_email;
 
-            bFormatter.Serialize(netStream, chatPerson);
+            package.Content = chatPerson;
+
+            SendHeader(package);
         }
 
         public void MessagesRead(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hMessagesRead);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hMessagesRead;
 
             ChatPerson chatPerson = new ChatPerson();
             chatPerson.Email = friend_email;
-            bFormatter.Serialize(netStream, chatPerson);
+
+            package.Content = chatPerson;
+            SendHeader(package);
         }
 
         /// <summary>
@@ -263,12 +287,15 @@ namespace Client
         /// <param name="msg">Nachricht</param>
         public void SendMessage(string to, string msg)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hSend;
+
             MessageSend message = new MessageSend();
             message.To = to;
             message.Msg = msg;
-            bFormatter.Serialize(netStream, message);
+
+            package.Content = message;
+            SendHeader(package);
         }
 
         /// <summary>
@@ -277,18 +304,22 @@ namespace Client
         /// <param name="friend_email"></param>
         public void AddContact(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hAddContact;
+
             ChatPerson friend = new ChatPerson();
             friend.Email = friend_email;
-            bFormatter.Serialize(netStream, friend);
+
+            package.Content = friend;
+
+            SendHeader(package); 
         }
 
-        void SendHeader(AdditionalHeader h)
+        void SendHeader(GeneralPackage p)
         {
             lock (_object)
             {
-                bFormatter.Serialize(netStream, h);
+                bFormatter.Serialize(netStream, p);
             }
         }
 
