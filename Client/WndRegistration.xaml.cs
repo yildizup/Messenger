@@ -8,7 +8,6 @@ namespace Client
     /// </summary>
     public partial class WndRegistration : Window
     {
-        string password;
         CClient cClient;
         public WndRegistration()
         {
@@ -22,15 +21,49 @@ namespace Client
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
         {
+            bool validEmail;
+            bool validPassword;
 
-            if (tbPassword.Text == tbPassword_Again.Text)
+            validEmail = IsValidEmail(tbEmail.Text);
+            validPassword = tbPassword.Text == tbPassword_Again.Text;
+
+            #region Bedingungen
+            if (!validEmail && !validPassword) // 00
             {
-                password = tbPassword.Text;
+                MessageBox.Show("Bitte überprüfen Sie Ihr Passwort und Ihre E-Mail Adresse.");
             }
+            if (!validEmail && validPassword) //01
+            {
+                MessageBox.Show("Bitte überprüfen Sie Ihre E-Mail Adresse.");
+            }
+            if (validEmail && !validPassword) //10
+            {
+                MessageBox.Show("Bitte überprüfen Sie Ihr Passwort.");
+            }
+            if (validEmail && validPassword) //11
+            {
+                cClient.FsName = tbfsName.Text; //Vor- und Nachname initialisieren
+                cClient.Connect(tbEmail.Text, tbPassword.Text, true);
+            }
+            #endregion
 
-            cClient.FsName = tbfsName.Text; //Vor- und Nachname initialisieren
-            cClient.Connect(tbEmail.Text, password, true);
 
+
+
+        }
+
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                //return addr.Address == email;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         void cOnLoginNotOk(object sender, EventArgs e)
