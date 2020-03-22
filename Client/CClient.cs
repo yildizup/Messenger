@@ -134,7 +134,7 @@ namespace Client
         {
             GeneralPackage package = new GeneralPackage();
             package.Header = ComHeader.hDisconnect;
-            SendHeader(package);
+            SendPackage(package);
         }
 
         #endregion
@@ -159,7 +159,7 @@ namespace Client
 
             package.Content = loginData;
 
-            SendHeader(package);
+            SendPackage(package);
 
         }
 
@@ -174,7 +174,7 @@ namespace Client
 
             package.Content = loginData;
 
-            SendHeader(package);
+            SendPackage(package);
         }
 
 
@@ -244,7 +244,7 @@ namespace Client
             {
                 GeneralPackage package = new GeneralPackage();
                 package.Header = ComHeader.hState;
-                SendHeader(package);
+                SendPackage(package);
                 Thread.Sleep(1500);
             }
         }
@@ -265,7 +265,7 @@ namespace Client
 
             package.Content = chatPerson;
 
-            SendHeader(package);
+            SendPackage(package);
         }
 
         public void MessagesRead(string friend_email)
@@ -277,7 +277,7 @@ namespace Client
             chatPerson.Email = friend_email;
 
             package.Content = chatPerson;
-            SendHeader(package);
+            SendPackage(package);
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Client
             message.Msg = msg;
 
             package.Content = message;
-            SendHeader(package);
+            SendPackage(package);
         }
 
         /// <summary>
@@ -312,10 +312,10 @@ namespace Client
 
             package.Content = friend;
 
-            SendHeader(package); 
+            SendPackage(package); 
         }
 
-        void SendHeader(GeneralPackage p)
+        void SendPackage(GeneralPackage p)
         {
             lock (_object)
             {

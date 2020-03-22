@@ -9,7 +9,8 @@
   * [Testdaten](#testdaten)
   * [Server und Client starten](#server-und-client-starten)
   * [Chat](#chat)
-  
+  * [Known bugs](#known-bugs)
+
 ## Einrichten
 
 Bitte zuerst die Datenbank einrichten. Bitte führen Sie dafür den Code in folgender Datei aus: "datenbank/skelett.sql".
@@ -51,3 +52,11 @@ Der Client fragt wiederholend in einem bestimmten Zeitintervall den Server nach 
 ![neue Nachrichten](./medien/doku/chatmenue_neue-nachrichten.jpg)
 
 ![Ihre neuen Nachrichten](./medien/doku/chatmenue_chatinhalt.jpg)
+
+## Known bugs
+
+Falls Sie während des Kompiliervorgangs folgende Fehlermeldung erhalten:
+
+![Fehlermeldung](./medien/doku/Fehlermeldung.jpg)
+
+müssen Sie zuerst das Projekt "SharedClass" kompilieren. Denn diese erstellt die DLL, welche von Client und Server benötigt werden.
