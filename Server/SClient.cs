@@ -21,7 +21,6 @@ namespace Server
         Thread tcpThread;
         #endregion
 
-        AdditionalHeader sHeader;
 
         public SClient(TcpClient c)
         {
@@ -42,15 +41,18 @@ namespace Server
                 Console.WriteLine("[{0}] Neue Verbindung!", DateTime.Now);
                 netStream = client.GetStream();
 
-                byte clientMode = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; //Abfragen, ob Client sich registrieren oder einloggen möchte.
+                GeneralPackage package = new GeneralPackage();
+                package = (GeneralPackage)bFormatter.Deserialize(netStream);
 
-                LoginData loginData = ((LoginData)bFormatter.Deserialize(netStream));
+
+
+                LoginData loginData = ((LoginData)package.Content);
                 string email = loginData.Email;
                 string password = loginData.Password;
                 string fsName = loginData.FsName;
 
 
-                switch (clientMode)
+                switch (package.Header)
                 {
                     // Wenn der Client sich registrieren möchte
                     case ComHeader.hRegister:
@@ -84,9 +86,10 @@ namespace Server
                 dbController.ChangeStatus(individualUser.Email, false);
             }
 
-            AdditionalHeader header = new AdditionalHeader(); //Bestätigung an Client senden
-            header.PHeader = ComHeader.hDisconnect;
-            SendHeader(header);
+            GeneralPackage package = new GeneralPackage();
+            package.Header = ComHeader.hDisconnect;
+
+            SendHeader(package);
 
             // Verbindung schließen
             //tcpThread.Abort();
@@ -114,17 +117,17 @@ namespace Server
                 // Benutzer konnte erfolgreich erstellt werden
                 // Rückmeldung, dass die Registrierung erfolgreich war
                 Console.WriteLine("[{0}] Die Registrierung war erfolgreich", DateTime.Now);
-                AdditionalHeader header = new AdditionalHeader();
-                header.PHeader = ComHeader.hRegistrationOk;
-                bFormatter.Serialize(netStream, header);
+                GeneralPackage package = new GeneralPackage();
+                package.Header = ComHeader.hRegistrationOk;
+                SendHeader(package);
             }
             else
             {
                 //Email adresse existiert bereits
                 Console.WriteLine("[{0}] Die E-Mail Adresse existiert bereits.", DateTime.Now);
-                AdditionalHeader header = new AdditionalHeader();
-                header.PHeader = ComHeader.hRegistrationNotOk;
-                bFormatter.Serialize(netStream, header);
+                GeneralPackage package = new GeneralPackage();
+                package.Header = ComHeader.hRegistrationNotOk;
+                SendHeader(package);
             }
         }
 
@@ -132,7 +135,7 @@ namespace Server
 
         public void Login(string email, string password)
         {
-            AdditionalHeader header = new AdditionalHeader();
+            GeneralPackage package = new GeneralPackage();
 
             switch (dbController.Login(email, password))
             {
@@ -151,13 +154,15 @@ namespace Server
                     listContacts = dbController.LoadContacts(email);
                     Console.WriteLine("[{0}] Client ({1}) hat sich angemeldet.", DateTime.Now, individualUser.Email);
 
-                    header.PHeader = ComHeader.hLoginOk;
-                    SendHeader(header);
+                    package.Header = ComHeader.hLoginOk;
 
                     ContactList contactList = new ContactList();
                     List<User> tmp = dbController.LoadContacts(email);
                     contactList.listContacts = dbController.LoadContacts(email);//Die Kontakte des eingeloggten Users laden
-                    bFormatter.Serialize(netStream, contactList.listContacts);
+
+                    package.Content = contactList;
+
+                    SendHeader(package);
 
 
                     Receiver(); // Dem Client in einer Dauerschleife zuhören
@@ -166,15 +171,16 @@ namespace Server
                 case 1:
                     //Benutzer existiert nicht
                     Console.WriteLine("Benutzer existiert nicht");
-                    header.PHeader = ComHeader.hDoesntExist;
-                    SendHeader(header);
+                    package.Header = ComHeader.hDoesntExist;
+
+                    SendHeader(package);
                     break;
 
                 case 2:
                     //Passwort ist falsch
                     Console.WriteLine("Passwort ist falsch");
-                    header.PHeader = ComHeader.hWrongPass;
-                    SendHeader(header);
+                    package.Header = ComHeader.hWrongPass;
+                    SendHeader(package);
                     break;
             }
         }
@@ -192,30 +198,31 @@ namespace Server
             {
                 while (client.Client.Connected)
                 {
-                    byte cHeader = ((AdditionalHeader)bFormatter.Deserialize(netStream)).PHeader; // Um welche Art von Paket handelt es sich
-                    sHeader = null;
+                    GeneralPackage receivedPackage = (GeneralPackage)bFormatter.Deserialize(netStream);
 
-                    switch (cHeader)
+                    GeneralPackage sendPackage = new GeneralPackage();
+
+                    switch (receivedPackage.Header)
                     {
                         case ComHeader.hSend:
                             MessageSend message = new MessageSend();
-                            message = (MessageSend)bFormatter.Deserialize(netStream);
+                            message = (MessageSend)receivedPackage.Content;
                             int indexReceiver = UserController.GetIndexOfUser(message.To);
                             //Ist der Empfänger Online ?
                             if (UserController.ConnectedUsers[indexReceiver].Status == true)
                             {
                                 NetworkStream netStreamOfReceiver = ((SClient)UserController.ConnectedUsers[indexReceiver].Connection).netStream;
 
-                                //Zuerst den Header senden
-                                sHeader = new AdditionalHeader();
-                                sHeader.PHeader = ComHeader.hReceived;
-                                bFormatter.Serialize(netStreamOfReceiver, sHeader);
+                                // An den Empfänger senden
+                                sendPackage.Header = ComHeader.hReceived;
 
                                 //Sende Nachricht zum Empfänger
                                 MessageReceived messageReceived = new MessageReceived();
                                 messageReceived.From = individualUser.Email;
                                 messageReceived.Message = message.Msg;
-                                bFormatter.Serialize(netStreamOfReceiver, messageReceived);
+                                sendPackage.Content = messageReceived;
+
+                                bFormatter.Serialize(netStreamOfReceiver, sendPackage);
 
                                 //Speichere Nachricht in der Datenbank
                                 dbController.SaveMessage(individualUser.Email, message.To, message.Msg, false);
@@ -241,11 +248,10 @@ namespace Server
                             break;
                         case ComHeader.hChat: // Wenn nach dem Inhalt eines "Chats" gefragt wird
 
-                            sHeader = new AdditionalHeader();
-                            sHeader.PHeader = ComHeader.hChat;
-                            SendHeader(sHeader);
-                            ChatPerson chatPerson = new ChatPerson();
-                            chatPerson.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+                            sendPackage.Header = ComHeader.hChat;
+
+                            ChatPerson chatPerson = ((ChatPerson)receivedPackage.Content);
+
 
                             //Die ungelesenen Nachrichten als gelesen markieren
                             dbController.MarkNotReceivedMessagesAsReceived(individualUser.Email, chatPerson.Email);
@@ -253,43 +259,40 @@ namespace Server
 
                             ChatContent chatContent = new ChatContent();
                             chatContent.chatContent = dbController.LoadChat(individualUser.Email, chatPerson.Email);
-                            bFormatter.Serialize(netStream, chatContent);
+
+                            sendPackage.Content = chatContent;
+
+                            SendHeader(sendPackage);
                             break;
 
                         case ComHeader.hAddContact:
                             #region Kontakt hinzufügen
-                            ChatPerson friend = new ChatPerson();
-                            friend = (ChatPerson)bFormatter.Deserialize(netStream);
+                            ChatPerson friend = ((ChatPerson)receivedPackage.Content);
 
                             // Wenn der Kontakt hinzugefügt wurden konnte 
                             if (dbController.AddContact(individualUser.Email, friend.Email))
                             {
+                                sendPackage.Header = ComHeader.hAddContact;
+                                sendPackage.Content = dbController.LoadContacts(individualUser.Email);
 
-                                sHeader = new AdditionalHeader();
-                                sHeader.PHeader = ComHeader.hAddContact;
-                                SendHeader(sHeader);
-
-                                bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
+                                SendHeader(sendPackage);
                             }
                             else
                             {
                                 // Wenn der Kontakt nicht hinzugeüft werden kann
-                                sHeader = new AdditionalHeader();
-                                sHeader.PHeader = ComHeader.hAddContactWrong;
-                                SendHeader(sHeader);
+                                sendPackage.Header = ComHeader.hAddContactWrong;
+                                SendHeader(sendPackage);
                             }
 
                             #endregion
                             break;
                         case ComHeader.hState:
-                            AdditionalHeader head = new AdditionalHeader();
-                            head.PHeader = ComHeader.hState;
-                            SendHeader(head);
-                            bFormatter.Serialize(netStream, dbController.LoadContacts(individualUser.Email));//Die Kontakte des Users erneut laden
+                            sendPackage.Header = ComHeader.hState;
+                            sendPackage.Content = dbController.LoadContacts(individualUser.Email);
+                            SendHeader(sendPackage);
                             break;
                         case ComHeader.hMessagesRead:
-                            ChatPerson chat_friend = new ChatPerson();
-                            chat_friend.Email = ((ChatPerson)bFormatter.Deserialize(netStream)).Email;
+                            ChatPerson chat_friend = ((ChatPerson)receivedPackage.Content);
                             //Die Nachrichten als gelesen markieren
                             dbController.MarkNotReceivedMessagesAsReceived(individualUser.Email, chat_friend.Email);
                             break;
@@ -315,9 +318,9 @@ namespace Server
         /// Vor jeder Nachricht wird dem Client ein Header gesendet
         /// </summary>
         /// <param name="h"></param>
-        void SendHeader(AdditionalHeader h)
+        void SendHeader(GeneralPackage p)
         {
-            bFormatter.Serialize(netStream, h);
+            bFormatter.Serialize(netStream, p);
         }
 
         public void LoadChat()

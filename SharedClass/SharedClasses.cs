@@ -59,25 +59,21 @@ namespace SharedClass
     }
 
     /// <summary>
-    /// alle möglichen Header
+    /// Ein Packet hat immer ein Header und ein Inhalt. Falls keine Inhalt vorhanden sein sollte ist es = null. 
     /// </summary>
-    [Serializable]
-    public class AdditionalHeader
-    {
-        public byte PHeader { get; set; }
-    }
-
     [Serializable]
     public class GeneralPackage
     {
-        public AdditionalHeader Header { get; set; }
+        public byte Header { get; set; }
         public object Content { get; set; }
     }
 
+    [Serializable]
     public class ComHeader
     {
         /* Hier kommen die Header rein. Jeder Byte wird eine bestimmte Bedeutung haben. 
          * Die Header werden verwendet, damit der Server die Pakete zuordnen kann */
+
 
         public const byte hRegister = 0;     // Registrieren
         public const byte hLogin = 1; //Login
