@@ -63,7 +63,7 @@ namespace Client
                 tcpThread.Start();
             }
             // Wenn keine Verbindung aufgebaut werden konnte.
-            catch (Exception e)
+            catch (Exception )
             {
                 OnLoginNotOk();
             }
@@ -131,7 +131,8 @@ namespace Client
 
         public void CloseConn() // Verbindung beenden
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hDisconnect); //Server benachrichtigen, dass die Verbindung geschlossen wird
+            AdditionalHeader header= new AdditionalHeader(); //Server benachrichtigen, dass die Verbindung geschlossen wird
+            header.PHeader = ComHeader.hDisconnect;
             SendHeader(header);
         }
 
@@ -147,7 +148,8 @@ namespace Client
         /// <param name="password">Paswort des Users</param> TODO: Passwort verschlüsseln
         public void Register(string email, string password)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hRegister);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hRegister;
             SendHeader(header);
 
             LoginData loginData = new LoginData();
@@ -161,7 +163,8 @@ namespace Client
 
         public void Login(string email, string password)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hLogin);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hLogin;
             SendHeader(header);
 
             LoginData loginData = new LoginData();
@@ -199,15 +202,25 @@ namespace Client
                         OnChatReceived(new CChatContentEventArgs(dtChat)); // DataTable als Parameter übergeben. Siehe Klasse "CEvents"
                         break;
                     case ComHeader.hDisconnect:
-                        pollingThread.Abort(); 
+                        if (pollingThread != null)
+                        {
+                            pollingThread.Abort();
+                        }
                         tcpThread.Abort(); //In diesem Thread läuft die Methode zum Empfangen von Paketen. 
                         client.Close();
                         break;
                     case ComHeader.hAddContact: //Kontaktliste aktualisieren, wenn ein neuer Kontakt hinzugefügt wurde
                     case ComHeader.hState: // Wenn Aktivitätsstatus der User mitgeteilt wird
                         //Kontaktliste aktualiseren
-                        contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
-                        OnRefreshContacts(); //Event auslösen
+                        try
+                        {
+                            contactList.listContacts = (List<User>)bFormatter.Deserialize(netStream);
+                            OnRefreshContacts(); //Event auslösen
+                        }
+                        catch (Exception)
+                        {
+                            
+                        }
                         break;
                     case ComHeader.hAddContactWrong:
                         //Wenn der Kontakt nicht hinzugefügt werden kann
@@ -224,9 +237,10 @@ namespace Client
         {
             while (client.Connected)
             {
-                AdditionalHeader header = new AdditionalHeader(ComHeader.hState);
+                AdditionalHeader header = new AdditionalHeader();
+                header.PHeader = ComHeader.hState;
                 SendHeader(header);
-                Thread.Sleep(1500);
+                Thread.Sleep(1900);
             }
         }
 
@@ -238,7 +252,8 @@ namespace Client
 
         public void LoadChat(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hChat);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hChat;
             SendHeader(header);
 
             ChatPerson chatPerson = new ChatPerson();
@@ -249,7 +264,8 @@ namespace Client
 
         public void MessagesRead(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hMessagesRead);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hMessagesRead;
             SendHeader(header);
 
             ChatPerson chatPerson = new ChatPerson();
@@ -264,7 +280,8 @@ namespace Client
         /// <param name="msg">Nachricht</param>
         public void SendMessage(string to, string msg)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hSend);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hSend;
             SendHeader(header);
             MessageSend message = new MessageSend();
             message.To = to;
@@ -278,7 +295,8 @@ namespace Client
         /// <param name="friend_email"></param>
         public void AddContact(string friend_email)
         {
-            AdditionalHeader header = new AdditionalHeader(ComHeader.hAddContact);
+            AdditionalHeader header = new AdditionalHeader();
+            header.PHeader = ComHeader.hAddContact;
             SendHeader(header);
             ChatPerson friend = new ChatPerson();
             friend.Email = friend_email;
