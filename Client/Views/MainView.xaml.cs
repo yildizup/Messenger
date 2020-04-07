@@ -29,6 +29,7 @@ namespace Client.Views
             cClient = new CClient();
             cClient.LoginOK += new EventHandler(cOnLoginOk); //Das Event "subscriben"
             cClient.LoginNotOk += new EventHandler(cOnLoginNotOk); //Das Event "subscriben"
+            DataContext = new ViewModels.MainViewModel();
 
         }
 
