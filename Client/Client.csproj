@@ -84,17 +84,14 @@
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RegistrationView.xaml.cs">
+      <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WndAddContact.xaml.cs">
       <DependentUpon>WndAddContact.xaml</DependentUpon>
     </Compile>
     <Compile Include="WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WndMain.xaml.cs">
-      <DependentUpon>WndMain.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WndRegistration.xaml.cs">
-      <DependentUpon>WndRegistration.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControlContactItem.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -112,6 +109,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WndAddContact.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,14 +126,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CClient.cs" />
-    <Page Include="WndMain.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WndRegistration.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

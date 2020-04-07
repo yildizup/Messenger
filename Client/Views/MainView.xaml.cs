@@ -38,7 +38,7 @@ namespace Client.Views
             Application.Current.Dispatcher.Invoke((Action)delegate
          {
              this.Hide();
-             WndRegistration wndRegistration = new WndRegistration();
+             RegistrationView wndRegistration = new RegistrationView();
              wndRegistration.ShowDialog();
              this.Show();
          });
