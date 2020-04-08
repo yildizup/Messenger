@@ -1,4 +1,5 @@
-﻿using SharedClass; //TODO: Recherchieren
+﻿using Client.Models;
+using SharedClass; //TODO: Recherchieren
 using System;
 using System.Data;
 using System.Windows;

@@ -13,10 +13,6 @@ namespace Client.ViewModels
 
         private string _email;
 
-        public string TextEmail { get; }
-        public string TextPasswort { get; }
-        public string TextEinloggen { get;}
-        public string TextRegistrieren { get; }
 
 
         public string Email
@@ -29,10 +25,6 @@ namespace Client.ViewModels
 
         public MainViewModel()
         {
-            TextEmail = "E-Mail";
-            TextPasswort = "Passwort";
-            TextEinloggen = "Einloggen";
-            TextRegistrieren = "Registrieren";
         }
 
 
