@@ -6,10 +6,18 @@
       xmlns:local="clr-namespace:Client"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
+      Background="{DynamicResource MaterialDesignDarkBackground}"
       Title="LoginPage">
 
     <Grid>
-        <Label Content="Label" HorizontalAlignment="Left" Margin="342,229,0,0" VerticalAlignment="Top"/>
+        <Label Foreground="LightGray" Content="Email" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="281,111,0,0" Width="244" Height="41"/>
+        <Label Foreground="LightGray" Content="Passwort" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="281,219,0,0" Width="244" RenderTransformOrigin="-0.841,0.227" Height="21"/>
+        <Button x:Name="btnLogin" Content="Einloggen"  VerticalAlignment="Top" Margin="281,328,0,0" HorizontalAlignment="Left" Width="244"   />
+        <Button x:Name="btnRegister" Content="Registrieren" Margin="281,371,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="244" />
+        <TextBox x:Name="tbEmail"  HorizontalAlignment="Left" Foreground="White" Height="24" Margin="281,157,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>
+        <TextBox Foreground="White" x:Name="tbPassword" HorizontalAlignment="Left" Height="23" Margin="281,268,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>
+        <Label FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryHueMidBrush}" Content="Telefonico" HorizontalAlignment="Left" Margin="343,30,0,0" VerticalAlignment="Top" Height="29" Width="108"/>
+
 
     </Grid>
 </Page>
