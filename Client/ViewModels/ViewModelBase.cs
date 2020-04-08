@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.ViewModels
+namespace Client
 {
     public class ViewModelBase : INotifyPropertyChanged, INotifyPropertyChanging
     {
