@@ -47,27 +47,16 @@ namespace Client
         /// <returns></returns>
         public async Task Login()
         {
-
-            if (LoginIsRunning)
-                return; //Mache garnichts
-
-            try
+            await RunCommand(() => this.LoginIsRunning, async () =>
             {
-                LoginIsRunning = true;
-                await Task.Delay(3000); 
-                /* Task.Delay(3000) simuliert den Server, der die Daten noch verarbeitet. Wenn der Server noch die Daten verarbeitet, kann der User den Button nicht mehrmals verwenden,
-                 * deswegen wird LoginIsRunning verwendet. Solange LoginIsRunning = true ist, wird nicht erneut eine Verbindung aufgebaut.
-                 */
+                await Task.Delay(3000);
+                 /* Task.Delay(3000) simuliert den Server, der die Daten noch verarbeitet. Wenn der Server noch die Daten verarbeitet, kann der User den Button nicht mehrmals verwenden,
+                  * deswegen wird LoginIsRunning verwendet. Solange LoginIsRunning = true ist, wird nicht erneut eine Verbindung aufgebaut.
+                  */
 
                 var email = this.Email;
                 var password = this.Password;
-            }
-            catch { }
-            finally
-            {
-
-                LoginIsRunning = false;
-            }
+            });
 
         }
     }
