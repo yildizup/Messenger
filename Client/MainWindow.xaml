@@ -18,7 +18,10 @@
         
         <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding CurrentPage, Converter={local:ApplicationPageValueConverter}}" />
 
-       
+        
+        <!-- Side Menu -->
+        <local:SideMenuControl>
+        </local:SideMenuControl>
 
 
     </Grid>

@@ -6,45 +6,56 @@
              xmlns:local="clr-namespace:Client"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="300">
-    <Border Background="{DynamicResource PrimaryHueDarkBrush}" >
+             d:DesignHeight="400" d:DesignWidth="300"
+     Background="{DynamicResource PrimaryHueDarkBrush}" >
 
-        <!-- Inhalt -->
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <UserControl.Template>
+        <ControlTemplate TargetType="UserControl">
 
-            <!-- Menü oben-->
+            <!-- Inhalt -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <Grid Height="50" Background="{DynamicResource MaterialDesignDarkBackground}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <!-- Menü oben-->
+
+                <Grid Height="50" Background="{DynamicResource MaterialDesignDarkBackground}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
 
-                <!-- Chat/Kontakt Button -->
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="{materialDesign:PackIcon Kind=Contacts}" />
+                    <!-- Chat/Kontakt Button -->
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{materialDesign:PackIcon Kind=Contacts}" />
 
-                </StackPanel>
+                    </StackPanel>
 
-                <!-- Kontakt hinzufügen Button-->
-                <Button Grid.Column="2" Content="{materialDesign:PackIcon Kind=Plus}" />
+                    <!-- Kontakt hinzufügen Button-->
+                    <Button Grid.Column="2" Content="{materialDesign:PackIcon Kind=Plus}" />
+
+
+                </Grid>
+
+                <!--- Die Useritems-->
+                
+                <ContentPresenter Grid.Row="2" />
 
 
             </Grid>
 
 
-        </Grid>
 
 
 
+        </ControlTemplate>
+
+    </UserControl.Template>
 
 
 
-    </Border>
 </UserControl>

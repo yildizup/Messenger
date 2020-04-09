@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Client.ChatListItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="300">
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <!-- Benachrichtigung bei einer neuen Nachricht -->
+            <ColumnDefinition Width="Auto" />
+            <!-- Name des Kontakts -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Benachrichtigung bei einer neuen Nachricht -->
+        <Border Background="Red" Width="5" />
+
+        <!-- Name des Kontakts -->
+        <Border Grid.Column="1" Padding="8" >
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="Thomas Anderson" FontWeight="Bold" />
+                <TextBlock Text="Online" FontWeight="Light" />
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>
