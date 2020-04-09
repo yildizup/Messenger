@@ -31,7 +31,7 @@ namespace Client
         public LoginViewModel()
         {
             // Erstellt ein Command
-            LoginCommand = new RelayParameterizedCommand(async (parameter) => await Login(parameter));
+            LoginCommand = new RelayCommand(Login);
 
 
         }
@@ -41,10 +41,10 @@ namespace Client
         /// </summary>
         /// <param name="parameter">Das Passwort des Users, welcher vom View übergeben wird </param>
         /// <returns></returns>
-        public async Task Login(object parameter)
+        public void Login()
         {
-            await Task.Delay(500);
-
+            var email = this.Email;
+            var password = this.Password;
 
         }
     }
