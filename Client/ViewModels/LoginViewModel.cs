@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Client.ViewModels
+namespace Client
 {
     public class LoginViewModel : ViewModelBase
     {

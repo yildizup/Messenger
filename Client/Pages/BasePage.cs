@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Animation;
 using System;
 
-namespace Client.Pages
+namespace Client
 {
 
     /// <summary>
