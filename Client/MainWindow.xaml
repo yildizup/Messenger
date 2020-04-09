@@ -21,6 +21,7 @@
         
         <!-- Side Menu -->
         <local:SideMenuControl>
+            <local:ChatListItemControl />
         </local:SideMenuControl>
 
 

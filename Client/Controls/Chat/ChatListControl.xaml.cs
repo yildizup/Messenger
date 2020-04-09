@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Client.Controls.Chat
+namespace Client
 {
     /// <summary>
     /// Interaction logic for ChatListControl.xaml

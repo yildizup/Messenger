@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
              d:DesignHeight="60" d:DesignWidth="300">
-    <Grid Background="White">
+    <Grid Background="White" DataContext="{x:Static local:ChatListItemDesignModel.Instance}">
         <Grid.ColumnDefinitions>
             <!-- Benachrichtigung bei einer neuen Nachricht -->
             <ColumnDefinition Width="Auto" />
@@ -20,8 +20,8 @@
         <!-- Name des Kontakts -->
         <Border Grid.Column="1" Padding="8" >
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock Text="Thomas Anderson" FontWeight="Bold" />
-                <TextBlock Text="Online" FontWeight="Light" />
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                <TextBlock Text="{Binding Status}" FontWeight="Light" />
             </StackPanel>
         </Border>
 

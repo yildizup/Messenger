@@ -70,6 +70,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\Chat\ChatListControl.xaml.cs">
+      <DependentUpon>ChatListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Chat\ChatListItemControl.xaml.cs">
       <DependentUpon>ChatListItemControl.xaml</DependentUpon>
     </Compile>
@@ -101,6 +104,8 @@
     </Compile>
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ViewModels\Chat\ChatListItemViewModel.cs" />
+    <Compile Include="ViewModels\Chat\DesignModels\ChatListItemDesignModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\RelayParameterizedCommand.cs" />
@@ -116,6 +121,10 @@
     <Compile Include="WndChat.xaml.cs">
       <DependentUpon>WndChat.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\Chat\ChatListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Chat\ChatListItemControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
