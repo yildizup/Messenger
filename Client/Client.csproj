@@ -104,7 +104,9 @@
     </Compile>
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ViewModels\ChatListViewModel.cs" />
     <Compile Include="ViewModels\Chat\ChatListItemViewModel.cs" />
+    <Compile Include="ViewModels\Chat\DesignModels\ChatListDesignModel.cs" />
     <Compile Include="ViewModels\Chat\DesignModels\ChatListItemDesignModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
