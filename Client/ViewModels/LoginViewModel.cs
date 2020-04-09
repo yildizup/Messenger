@@ -20,6 +20,11 @@ namespace Client
         /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Gibt an, ob Login noch ausgeführt wird
+        /// </summary>
+        public bool LoginIsRunning { get; set; }
+
         #endregion
 
         /// <summary>
@@ -31,7 +36,7 @@ namespace Client
         public LoginViewModel()
         {
             // Erstellt ein Command
-            LoginCommand = new RelayCommand(Login);
+            LoginCommand = new RelayCommand(async () => await Login());
 
 
         }
@@ -39,12 +44,30 @@ namespace Client
         /// <summary>
         /// Versucht den Benutzer anzumelden
         /// </summary>
-        /// <param name="parameter">Das Passwort des Users, welcher vom View übergeben wird </param>
         /// <returns></returns>
-        public void Login()
+        public async Task Login()
         {
-            var email = this.Email;
-            var password = this.Password;
+
+            if (LoginIsRunning)
+                return; //Mache garnichts
+
+            try
+            {
+                LoginIsRunning = true;
+                await Task.Delay(3000); 
+                /* Task.Delay(3000) simuliert den Server, der die Daten noch verarbeitet. Wenn der Server noch die Daten verarbeitet, kann der User den Button nicht mehrmals verwenden,
+                 * deswegen wird LoginIsRunning verwendet. Solange LoginIsRunning = true ist, wird nicht erneut eine Verbindung aufgebaut.
+                 */
+
+                var email = this.Email;
+                var password = this.Password;
+            }
+            catch { }
+            finally
+            {
+
+                LoginIsRunning = false;
+            }
 
         }
     }
