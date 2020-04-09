@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -11,25 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Client.Models;
 
-namespace Client.Views
+namespace Client
 {
     /// <summary>
-    /// Interaction logic for MainView.xaml
+    /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class MainView : Window
+    public partial class ChatPage : BasePage<LoginViewModel>
     {
-
-        public MainView()
+        public ChatPage()
         {
             InitializeComponent();
-            DataContext = new ViewModels.MainViewModel();
-
         }
-
-
-
     }
 }

@@ -7,9 +7,14 @@
     public enum ApplicationPage
     {
         /// <summary>
-        /// Das Login Fenster
+        /// Der Login "Page"
         /// </summary>
         Login = 0,
+
+        /// <summary>
+        /// Der Chat "Page"
+        /// </summary>
+        Chat = 1,
 
     }
 }

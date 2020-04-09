@@ -12,7 +12,8 @@
     <Grid>
         <Label Foreground="LightGray" Content="Email" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="-0.395,-0.115" Margin="281,111,0,0" Width="244" Height="41"/>
         <Label Foreground="LightGray" Content="Passwort" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="281,219,0,0" Width="244" RenderTransformOrigin="-0.841,0.227" Height="21"/>
-        <Button x:Name="btnLogin" Content="Einloggen"  Command="{Binding LoginCommand}"  VerticalAlignment="Top" Margin="281,328,0,0" HorizontalAlignment="Left" Width="244"   />
+        <!-- TODO: Attached Properties anschauen. Während der Anmeldung soll eine Animation gezeigt werden-->
+        <Button x:Name="btnLogin" Content="Login"  Command="{Binding LoginCommand}"  VerticalAlignment="Top" Margin="281,328,0,0" HorizontalAlignment="Left" Width="244"   />
         <Button x:Name="btnRegister" Content="Registrieren" Margin="281,371,0,0" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="244" />
         <TextBox x:Name="tbEmail" Text="{Binding Email}" HorizontalAlignment="Left" Foreground="White" Height="24" Margin="281,157,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>
         <TextBox Foreground="White" Text="{Binding Password}" x:Name="tbPassword" HorizontalAlignment="Left" Height="23" Margin="281,268,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244"/>

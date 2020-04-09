@@ -78,6 +78,9 @@
     <Compile Include="Models\CEvents.cs" />
     <Compile Include="Hasher.cs" />
     <Compile Include="Pages\BasePage.cs" />
+    <Compile Include="Pages\ChatPage.xaml.cs">
+      <DependentUpon>ChatPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
@@ -98,9 +101,6 @@
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\RegistrationView.xaml.cs">
       <DependentUpon>RegistrationView.xaml</DependentUpon>
     </Compile>
@@ -113,6 +113,10 @@
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ChatPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
@@ -129,10 +133,6 @@
     <Page Include="UserControlMessageSent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RegistrationView.xaml">
       <SubType>Designer</SubType>
