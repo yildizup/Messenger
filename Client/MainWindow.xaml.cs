@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Telefonico.Core;
 
 namespace Client
 {
@@ -7,10 +8,12 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ApplicationViewModel ApplicationViewModel => new ApplicationViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new WindowViewModel(this);
+            DataContext = new WindowViewModel(this);
         }
     }
 }

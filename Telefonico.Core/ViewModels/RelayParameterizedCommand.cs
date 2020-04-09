@@ -2,9 +2,9 @@
 using System.Windows.Input;
 
 
-namespace Client
+namespace Telefonico.Core
 {
-   /// <summary>
+    /// <summary>
     /// Ein Befehl, der eine Aktion ausführt
     /// </summary>
     public class RelayParameterizedCommand : ICommand
@@ -54,4 +54,5 @@ namespace Client
         }
 
         #endregion
-    }}
+    }
+}

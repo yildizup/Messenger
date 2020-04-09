@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Client
+namespace Telefonico.Core
 {
     /// <summary>
     /// Helper für expressions

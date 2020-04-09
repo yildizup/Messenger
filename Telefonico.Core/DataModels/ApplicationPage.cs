@@ -1,4 +1,4 @@
-﻿namespace Client
+﻿namespace Telefonico.Core
 {
 
     /// <summary>
@@ -15,6 +15,10 @@
         /// Der Chat "Page"
         /// </summary>
         Chat = 1,
+        /// <summary>
+        /// Registrierungsfenster
+        /// </summary>
+        Register = 2,
 
     }
 }

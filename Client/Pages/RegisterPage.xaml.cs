@@ -3,11 +3,11 @@
 namespace Client
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
+    /// Interaction logic for RegisterPage.xaml
     /// </summary>
-    public partial class LoginPage : BasePage<LoginViewModel>
+    public partial class RegisterPage : BasePage<LoginViewModel>
     {
-        public LoginPage()
+        public RegisterPage()
         {
             InitializeComponent();
         }

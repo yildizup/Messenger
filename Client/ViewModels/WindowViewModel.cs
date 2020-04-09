@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Telefonico.Core;
 
 namespace Client
 {
@@ -25,16 +26,6 @@ namespace Client
 
 
         #endregion
-
-
-        /// <summary>
-        /// Aktuelles "Page" der Anwendung
-        /// (Vorerst Default LoginPage)
-        /// </summary>
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Chat;
-
-
-
 
     }
 }

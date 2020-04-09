@@ -1,4 +1,4 @@
-﻿namespace Client
+﻿namespace Telefonico.Core
 {
 
     /// <summary>
@@ -6,7 +6,7 @@
     /// </summary>
     public class ChatListItemDesignModel : ChatListItemViewModel
     {
-         #region Singleton
+        #region Singleton
 
         /// <summary>
         /// Eine einzige Instanz des Design Models

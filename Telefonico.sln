@@ -10,12 +10,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{6F739D3D-AECB-4491-B03A-A6A7F971BFA7}"
 	ProjectSection(ProjectDependencies) = postProject
+		{B20D80C3-9727-4EA8-9306-F86AE0811201} = {B20D80C3-9727-4EA8-9306-F86AE0811201}
 		{A2F407DB-E1F2-4140-AF32-1646FA146352} = {A2F407DB-E1F2-4140-AF32-1646FA146352}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDEFCE3A-CA2B-42C6-A8DC-7DCD3427645A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedClass", "SharedClass\SharedClass.csproj", "{A2F407DB-E1F2-4140-AF32-1646FA146352}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telefonico.Core", "Telefonico.Core\Telefonico.Core.csproj", "{B20D80C3-9727-4EA8-9306-F86AE0811201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +38,10 @@ Global
 		{A2F407DB-E1F2-4140-AF32-1646FA146352}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2F407DB-E1F2-4140-AF32-1646FA146352}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2F407DB-E1F2-4140-AF32-1646FA146352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B20D80C3-9727-4EA8-9306-F86AE0811201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B20D80C3-9727-4EA8-9306-F86AE0811201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B20D80C3-9727-4EA8-9306-F86AE0811201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B20D80C3-9727-4EA8-9306-F86AE0811201}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

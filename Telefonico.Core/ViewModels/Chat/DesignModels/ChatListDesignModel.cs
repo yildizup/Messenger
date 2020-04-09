@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Client
+namespace Telefonico.Core
 {
 
     /// <summary>

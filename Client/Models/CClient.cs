@@ -312,7 +312,7 @@ namespace Client.Models
 
             package.Content = friend;
 
-            SendPackage(package); 
+            SendPackage(package);
         }
 
         void SendPackage(GeneralPackage p)

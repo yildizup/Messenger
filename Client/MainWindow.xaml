@@ -6,6 +6,7 @@
         x:Name="AppWindow"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:core="clr-namespace:Telefonico.Core;assembly=Telefonico.Core"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
@@ -16,8 +17,7 @@
         </Grid.ColumnDefinitions>
         
         
-        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding CurrentPage, Converter={local:ApplicationPageValueConverter}}" />
-
+        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding ApplicationViewModel.CurrentPage, ElementName=AppWindow ,Converter={local:ApplicationPageValueConverter}}" />
         
         <!-- Side Menu -->
         <local:SideMenuControl>

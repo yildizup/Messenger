@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using Telefonico.Core;
 
 namespace Client
 {
@@ -8,7 +9,7 @@ namespace Client
     /// <summary>
     /// Konvertiert <see cref="ApplicationPage"/> see zu einem view bzw. page />
     /// </summary>
-    public class ApplicationPageValueConverter :  BaseValueConverter<ApplicationPageValueConverter>
+    public class ApplicationPageValueConverter : BaseValueConverter<ApplicationPageValueConverter>
     {
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -18,8 +19,12 @@ namespace Client
             {
                 case ApplicationPage.Login:
                     return new LoginPage();
+
                 case ApplicationPage.Chat:
                     return new ChatPage();
+
+                case ApplicationPage.Register:
+                    return new RegisterPage();
 
                 default:
                     Debugger.Break();
