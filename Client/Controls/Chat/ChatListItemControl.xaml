@@ -7,26 +7,67 @@
              mc:Ignorable="d" 
              Height="60"
              d:DesignHeight="60" d:DesignWidth="300">
-    
-    <!-- d: wird ignoriert-->
-    <Grid Background="White" d:DataContext="{x:Static local:ChatListItemDesignModel.Instance}">
-        <Grid.ColumnDefinitions>
-            <!-- Benachrichtigung bei einer neuen Nachricht -->
-            <ColumnDefinition Width="Auto" />
-            <!-- Name des Kontakts -->
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <!-- Benachrichtigung bei einer neuen Nachricht -->
-        <Border Background="Red" Width="5" />
+    <UserControl.Resources>
+        <Style x:Key="ContentStyle" TargetType="{x:Type ContentControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <!-- d: wird ignoriert-->
+                        <Border x:Name="background" Background="White">
+                            <Grid x:Name="container" Background="Transparent" >
+                                <Grid.ColumnDefinitions>
+                                    <!-- Benachrichtigung bei einer neuen Nachricht -->
+                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Name des Kontakts -->
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-        <!-- Name des Kontakts -->
-        <Border Grid.Column="1" Padding="8" >
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                <TextBlock Text="{Binding Status}" FontWeight="Light" />
-            </StackPanel>
-        </Border>
+                                <!-- Benachrichtigung bei einer neuen Nachricht -->
+                                <Border Background="Red" Width="5" Visibility="{Binding NewMessages, Converter={local:BooleanToVisiblityConverter}, ConverterParameter=True}" />
 
-    </Grid>
+                                <!-- Name des Kontakts -->
+                                <Border Grid.Column="1" Padding="8" >
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Status}" FontWeight="Light" />
+                                    </StackPanel>
+                                </Border>
+
+                            </Grid>
+                        </Border>
+
+                        <!-- Hover Effekt -->
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="LightBlue" Duration="0:0:0.3" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Duration="0:0:0.3" Storyboard.TargetName="container" Storyboard.TargetProperty="Background.Color" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" TargetName="container" Value="Red"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Background" TargetName="background" Value="Blue"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <ContentControl d:DataContext="{x:Static local:ChatListItemDesignModel.Instance}" Style="{StaticResource ContentStyle}" />
+
 </UserControl>

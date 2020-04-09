@@ -28,22 +28,27 @@ namespace Client
                 new ChatListItemViewModel
                 {
                     Name = "Cooper",
-                    Status = "Online"
+                    Status = "Online",
+                    NewMessages = true
                 },
                 new ChatListItemViewModel
                 {
                     Name = "Morpheus",
-                    Status = "Offline"
+                    Status = "Offline",
+                    NewMessages = false
                 },
                 new ChatListItemViewModel
                 {
                     Name = "Mark",
-                    Status = "Offline"
+                    Status = "Offline",
+                    NewMessages = true,
+                    IsSelected = true
                 },
                 new ChatListItemViewModel
                 {
                     Name = "Salvadore",
-                    Status = "Offline"
+                    Status = "Offline",
+                    NewMessages = false
                 }
 
 

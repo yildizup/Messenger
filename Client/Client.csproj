@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ValueConverters\BooleanToVisibilityConverter.cs" />
     <Compile Include="ViewModels\ChatListViewModel.cs" />
     <Compile Include="ViewModels\Chat\ChatListItemViewModel.cs" />
     <Compile Include="ViewModels\Chat\DesignModels\ChatListDesignModel.cs" />

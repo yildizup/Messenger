@@ -17,5 +17,19 @@
         /// </summary>
         public string Status { get; set; }
 
+
+
+        /// <summary>
+        /// true, wenn neue Nachrichten vorhanden sind
+        /// </summary>
+        public bool NewMessages { get; set; }
+
+
+
+        /// <summary>
+        /// True, wenn Kontakt ausgewählt ist
+        /// </summary>
+        public bool IsSelected { get; set; }
+
     }
 }
