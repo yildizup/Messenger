@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
         
         
-        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding ApplicationViewModel.CurrentPage, ElementName=AppWindow ,Converter={local:ApplicationPageValueConverter}}" />
+        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding ApplicationViewModel.CurrentPage, Source={x:Static local:ViewModelLocator.Instance}, ConverterParameter=ApplicationViewModel, Converter={local:ApplicationPageValueConverter}}" />
         
         <!-- Side Menu -->
         <local:SideMenuControl>

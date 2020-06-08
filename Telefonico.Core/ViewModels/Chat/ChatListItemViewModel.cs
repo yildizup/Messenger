@@ -3,7 +3,7 @@
     /// <summary>
     /// ein View Model für jeden individuellen "ChatListItem"
     /// </summary>
-    public class ChatListItemViewModel : ViewModelBase
+    public class ChatListItemViewModel : BaseViewModel
     {
 
         /// <summary>

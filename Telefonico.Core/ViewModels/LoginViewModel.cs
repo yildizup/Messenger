@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace Telefonico.Core
 {
-    public class LoginViewModel : ViewModelBase
+    public class LoginViewModel : BaseViewModel
     {
 
         #region public Eigenschaften
@@ -41,8 +41,6 @@ namespace Telefonico.Core
             // Erstellt ein Command
             LoginCommand = new RelayCommand(async () => await LoginAsync());
             RegisterCommand = new RelayCommand(async () => await RegisterAsync());
-
-
         }
 
         /// <summary>
@@ -69,8 +67,7 @@ namespace Telefonico.Core
         /// <returns></returns>
         public async Task RegisterAsync()
         {
-            //TODO: Registrierungspage öffnen
-            // ((WindowViewModel)((MainWindow)Application.Current.MainWindow).DataContext).CurrentPage = ApplicationPage.Register;
+            IoCContainer.Get<ApplicationViewModel>().CurrentPage = ApplicationPage.Register;
             await Task.Delay(1);
         }
 

@@ -5,7 +5,7 @@ namespace Telefonico.Core
     /// <summary>
     /// ein View Model für jeden individuellen "ChatListItem"
     /// </summary>
-    public class ChatListViewModel : ViewModelBase
+    public class ChatListViewModel : BaseViewModel
     {
 
         /// <summary>

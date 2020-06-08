@@ -8,7 +8,7 @@ namespace Client
     /// Ein base page für alle Pages
     /// </summary>
     public class BasePage<VM> : Page
-        where VM : ViewModelBase, new()
+        where VM : BaseViewModel, new()
     {
 
         /// <summary>

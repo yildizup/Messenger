@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ninject;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using Telefonico.Core;
@@ -7,24 +8,19 @@ namespace Client
 {
 
     /// <summary>
-    /// Konvertiert <see cref="ApplicationPage"/> see zu einem view bzw. page />
+    /// Konvertiert ein String zu einem "Service"
     /// </summary>
-    public class ApplicationPageValueConverter : BaseValueConverter<ApplicationPageValueConverter>
+    public class IoCConverter : BaseValueConverter<IoCConverter>
     {
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Page finden
-            switch ((ApplicationPage)value)
+            switch ((string)parameter)
             {
-                case ApplicationPage.Login:
-                    return new LoginPage();
-
-                case ApplicationPage.Chat:
-                    return new ChatPage();
-
-                case ApplicationPage.Register:
-                    return new RegisterPage();
+                //TODO: Verbessern
+                case nameof(ApplicationViewModel):
+                    return IoCContainer.Get<ApplicationViewModel>();
 
                 default:
                     Debugger.Break();

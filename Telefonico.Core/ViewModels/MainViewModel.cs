@@ -1,6 +1,6 @@
 ﻿namespace Telefonico.Core.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : BaseViewModel
     {
 
         private string _email;

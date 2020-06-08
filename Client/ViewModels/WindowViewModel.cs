@@ -3,7 +3,7 @@ using Telefonico.Core;
 
 namespace Client
 {
-    public class WindowViewModel : ViewModelBase
+    public class WindowViewModel : BaseViewModel
     {
 
         #region Private Variablen

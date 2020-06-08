@@ -6,13 +6,33 @@ using System.Threading.Tasks;
 
 namespace Telefonico.Core
 {
-    public class ApplicationViewModel : ViewModelBase
+    public class ApplicationViewModel : BaseViewModel
     {
+
+        private ApplicationPage currentPage;
 
         /// <summary>
         /// Die aktuelle Seite der Anwendung
         /// </summary>
-        public ApplicationPage CurrentPage { get; set; } = ApplicationPage.Login;
+        public ApplicationPage CurrentPage
+        {
+
+            get { return currentPage; }
+
+            set
+            {
+
+                if (value == currentPage)
+                    return;
+
+                currentPage = value;
+                OnPropertyChanged();
+            }
+
+
+        }
+
+
 
     }
 }

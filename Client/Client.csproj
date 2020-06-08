@@ -46,6 +46,9 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=3.0.1.920, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.3.0.1\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="SharedClass">
       <HintPath>..\SharedClass\bin\Debug\netstandard2.0\SharedClass.dll</HintPath>
     </Reference>
@@ -103,9 +106,11 @@
     <Compile Include="UserControlMessageSent.xaml.cs">
       <DependentUpon>UserControlMessageSent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters\IoCConverter.cs" />
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Views\RegistrationView.xaml.cs">
       <DependentUpon>RegistrationView.xaml</DependentUpon>
