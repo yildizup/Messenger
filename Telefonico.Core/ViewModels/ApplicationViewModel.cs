@@ -16,21 +16,23 @@ namespace Telefonico.Core
         /// </summary>
         public ApplicationPage CurrentPage
         {
-
             get { return currentPage; }
 
             set
             {
-
                 if (value == currentPage)
                     return;
 
                 currentPage = value;
                 OnPropertyChanged();
             }
-
-
         }
+
+
+        /// <summary>
+        /// True, wenn Side Menu angezeigt werden soll
+        /// </summary>
+        public bool SideMenuVisible { get; set; } = false;
 
 
 

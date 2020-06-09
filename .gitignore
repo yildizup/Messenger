@@ -6,6 +6,7 @@
 
 notizen.rmd
 todo.rmd
+*.swp
 
 # User-specific files
 *.rsuser
