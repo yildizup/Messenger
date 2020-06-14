@@ -12,7 +12,6 @@ namespace Client
     public abstract class BaseAttachedProperty<Parent, Property>
         where Parent : BaseAttachedProperty<Parent, Property>, new()
     {
-
         #region Public Events
 
 
@@ -21,6 +20,10 @@ namespace Client
         /// </summary>
         public event Action<DependencyObject, DependencyPropertyChangedEventArgs> ValueChanged = (IChannelSender, e) => { };
 
+        /// <summary>
+        /// wird ausgelöst, wenn ein Wert sich ändert, auch wenn der Wert gleich bleibt
+        /// </summary>
+        public event Action<DependencyObject, object> ValueUpdated = (sender, value) => { };
 
         #endregion
 
@@ -40,8 +43,33 @@ namespace Client
         /// <summary>
         /// Der Attached Property für diese Klasse
         /// </summary>
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.RegisterAttached("Value", typeof(Property),
-            typeof(BaseAttachedProperty<Parent, Property>), new PropertyMetadata(new PropertyChangedCallback(OnValuePropertyChanged)));
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.RegisterAttached(
+            "Value",
+            typeof(Property),
+            typeof(BaseAttachedProperty<Parent, Property>),
+            new UIPropertyMetadata(
+                default(Property),
+                new PropertyChangedCallback(OnValuePropertyChanged),
+                new CoerceValueCallback(OnValuePropertyUpdated)
+                ));
+
+
+        /// <summary>
+        /// Callback Event, wenn <see cref="ValueProperty"/> sich geändert hat, auch wenn der Wert gleich bleibt
+        /// </summary>
+        /// <param name="d">UI Element dessen Property sich geändert hat</param>
+        /// <param name="e"></param>
+        private static object OnValuePropertyUpdated(DependencyObject d, object value)
+        {
+
+            // Parent Funktion aufrufen
+            Instance.OnValueUpdated(d, value);
+
+            // Event Listener aufrufen
+            Instance.ValueUpdated(d, value);
+
+            return value;
+        }
 
 
         /// <summary>
@@ -94,8 +122,13 @@ namespace Client
         /// <param name="e"></param>
         public virtual void OnValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn der Wert eines "attached Propertys" sich ändert, auch wenn der Wert gleich bleibt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public virtual void OnValueUpdated(DependencyObject sender, object value) { }
 
         #endregion
-
     }
 }
