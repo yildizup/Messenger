@@ -5,20 +5,20 @@ namespace Client
 {
 
     /// <summary>
-    /// Ein base page für alle Pages
+    /// A base page for all pages to gain basic functionality
     /// </summary>
     public class BasePage<VM> : Page
         where VM : BaseViewModel, new()
     {
 
         /// <summary>
-        /// Das ViewModel, das mit der Seite "verbunden" wird
+        /// The ViewModel which is binded to the View
         /// </summary>
         private VM _ViewModel;
 
 
         /// <summary>
-        /// Das ViewModel, das mit der Seite "verbunden" wird
+        /// The ViewModel which is binded to the View
         /// </summary>
         public VM ViewModel
         {

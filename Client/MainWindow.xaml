@@ -12,15 +12,15 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="5*" />
+            <local:ColumnDefinitionExtended Width="2*" />
+            <local:ColumnDefinitionExtended Width="5*" />
         </Grid.ColumnDefinitions>
         
         
-        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding ApplicationViewModel.CurrentPage, Source={x:Static local:ViewModelLocator.Instance}, ConverterParameter=ApplicationViewModel, Converter={local:ApplicationPageValueConverter}}" />
+        <Frame Grid.Column="1" x:Name="MainFrame" Content="{Binding ApplicationViewModel.CurrentPage, Source={x:Static local:ViewModelLocator.Instance}, ConverterParameter=ApplicationViewModel, Converter={local:ApplicationPageValueConverter}}" RenderTransformOrigin="0.56,0.537" />
         
         <!-- Side Menu -->
-        <local:SideMenuControl>
+        <local:SideMenuControl local:AnimateSlideInFromLeftProperty.Value="True" >
             <local:ChatListControl />
         </local:SideMenuControl>
 

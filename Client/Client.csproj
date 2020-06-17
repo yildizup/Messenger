@@ -73,13 +73,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Animations\FrameworkElementAnimations.cs" />
+    <Compile Include="Animations\StoryboardHelpers.cs" />
     <Compile Include="AttachedProperties\BaseAttachedProperty.cs" />
+    <Compile Include="AttachedProperties\FrameworkElementAnimationAttachedProperties.cs" />
     <Compile Include="Controls\Chat\ChatListControl.xaml.cs">
       <DependentUpon>ChatListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Chat\ChatListItemControl.xaml.cs">
       <DependentUpon>ChatListItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ColumnDefinitionExtended.cs" />
     <Compile Include="Controls\SideMenuControl.xaml.cs">
       <DependentUpon>SideMenuControl.xaml</DependentUpon>
     </Compile>

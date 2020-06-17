@@ -14,7 +14,7 @@
         <ControlTemplate TargetType="UserControl">
 
             <!-- Inhalt -->
-            <Grid>
+            <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*" />
@@ -43,8 +43,8 @@
                 </Grid>
 
                 <!--- Die Useritems-->
-                
-                <ContentPresenter Grid.Row="2" />
+
+                <ContentPresenter Grid.Row="2"  />
 
 
             </Grid>

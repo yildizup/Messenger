@@ -85,3 +85,5 @@ Falls andere Probleme aufgrund von fehlenden DLLs auftreten, liegt es eventuell 
      <HintPath>..\SharedClass\bin\Debug\netstandard2.0\SharedClass.dll</HintPath>
    </Reference>
 ```
+
+Guide: https://github.com/angelsix/fasetto-word
